@@ -1,0 +1,1 @@
+include ':crowdsensinglibrary', ':crowdsensingapp', ':crowdsensingtv'
