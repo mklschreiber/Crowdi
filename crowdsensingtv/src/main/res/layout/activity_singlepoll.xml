@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="20dp"
+    android:weightSum="1.0">
+
+    <FrameLayout
+        android:id="@+id/id_SinglePollActivity_FrameLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8" />
+
+    <ProgressBar
+        android:id="@+id/id_SinglePollActivity_ProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="10dp"
+        android:progress="0"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:weightSum="1.0">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="fill_parent"
+            android:text=""
+            android:id="@+id/id_SinglePollActivity_Button_Left"
+            android:layout_gravity="center_vertical" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="fill_parent"
+            android:text=""
+            android:id="@+id/id_SinglePollActivity_Button_Right"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
+</LinearLayout>
