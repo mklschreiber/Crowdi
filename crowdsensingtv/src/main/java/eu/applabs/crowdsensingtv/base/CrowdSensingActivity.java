@@ -23,14 +23,12 @@ public abstract class CrowdSensingActivity extends Activity implements Recogniti
     private boolean mSpeechRecognizerIsActive = false;
     private InputMethodManager mKeyBoard = null;
 
-    public CrowdSensingActivity() {
-        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        mSpeechRecognizer.setRecognitionListener(this);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        mSpeechRecognizer.setRecognitionListener(this);
         mKeyBoard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
@@ -51,9 +49,7 @@ public abstract class CrowdSensingActivity extends Activity implements Recogniti
                 if(!mSpeechRecognizerIsActive) {
                     // Reset input
                     try {
-                        View v = getFocusedView();
-                        EditText et = (EditText) v;
-                        et.setText("");
+                        ((EditText) getFocusedView()).setText("");
                     } catch (Exception e) {
                         Log.e(sClassName, e.getMessage());
                     }
@@ -73,9 +69,7 @@ public abstract class CrowdSensingActivity extends Activity implements Recogniti
 
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 try {
-                    View v = getFocusedView();
-                    EditText et = (EditText) v;
-                    mKeyBoard.showSoftInput(et, 0);
+                    mKeyBoard.showSoftInput(getFocusedView(), 0);
 
                     return true;
                 } catch (Exception e) {
@@ -94,7 +88,7 @@ public abstract class CrowdSensingActivity extends Activity implements Recogniti
             return true;
         }
 
-        return false;
+        return super.onKeyUp(keyCode, event);
     }
 
     /*
@@ -151,18 +145,19 @@ public abstract class CrowdSensingActivity extends Activity implements Recogniti
      */
 
     public void processSpeechResult(Bundle result) {
-        String str = new String();
-        ArrayList data = result.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        for(int i = 0; i < data.size(); ++i) {
-            str += data.get(i);
-        }
+        if(result != null) {
+            String str = "";
+            ArrayList data = result.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
-        try {
-            View v = getFocusedView();
-            EditText et = (EditText) v;
-            et.setText(str);
-        } catch (Exception e) {
-            Log.e(sClassName, e.getMessage());
+            for (int i = 0; i < data.size(); ++i) {
+                str += data.get(i);
+            }
+
+            try {
+                ((EditText) getFocusedView()).setText(str);
+            } catch (Exception e) {
+                Log.e(sClassName, e.getMessage());
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 package eu.applabs.crowdsensingtv.gui;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -58,7 +61,7 @@ public class SinglePollActivity extends CrowdSensingActivity implements ILibrary
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                loadFragment(0);
+                loadFragment(0, true);
             }
         });
     }
@@ -78,26 +81,41 @@ public class SinglePollActivity extends CrowdSensingActivity implements ILibrary
     private void loadNextFragment() {
         if(mPoll != null && mPoll.getFieldList().size() > (mCurrentField + 1)) {
             mCurrentField++;
-            loadFragment(mCurrentField);
+            loadFragment(mCurrentField, true);
+        } else {
+            // TODO: Send the data
+
+            Intent intent = new Intent(this, FinishedPollActivity.class);
+            startActivity(intent);
+
+            // Clear from stack
+            finish();
         }
     }
 
     private void loadPrevFragment() {
         if(mPoll != null && mCurrentField > 0) {
             mCurrentField--;
-            loadFragment(mCurrentField);
+            loadFragment(mCurrentField, false);
         }
     }
 
-    private void loadFragment(int number) {
+    private void loadFragment(int number, boolean leftSlide) {
         if(mPoll != null && mPoll.getFieldList().size() > number) {
             mProgressBar.setProgress((number * 100) / mPoll.getFieldList().size());
 
             mSinglePollFragment = new SinglePollFragment();
+
             FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+            if(leftSlide) {
+                ft.setCustomAnimations(R.animator.enter_right, R.animator.exit_left);
+            } else {
+                ft.setCustomAnimations(R.animator.enter_left, R.animator.exit_right);
+            }
+
             ft.replace(R.id.id_SinglePollActivity_FrameLayout, mSinglePollFragment);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.addToBackStack(null);
             ft.commit();
 
             mSinglePollFragment.setField(mPoll.getFieldList().get(number));
