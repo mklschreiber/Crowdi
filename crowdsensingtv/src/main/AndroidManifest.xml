@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.applabs.crowdsensingtv" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,6 +20,15 @@
         android:icon="@drawable/banner"
         android:banner="@drawable/banner"
         android:logo="@drawable/banner">
+
+        <receiver android:name=".gui.BootupActivity"
+            android:enabled="true"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".gui.CompletePollActivity"
@@ -44,5 +54,10 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.RecommendationService"
+            android:enabled="true" />
+
     </application>
 </manifest>

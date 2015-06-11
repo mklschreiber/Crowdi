@@ -38,4 +38,6 @@
     <string name="dismiss_error">Dismiss</string>
     <string name="oops">Oops</string>
     <string name="MainActivity_Button_Send">Send</string>
+    <string name="RecommendationService_Title_Recommendation">Poll</string>
+    <string name="RecommendationService_Content_Recommendation">How do you feel?</string>
 </resources>

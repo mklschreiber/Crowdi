@@ -3,8 +3,6 @@ package eu.applabs.crowdsensingtv.gui;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.transition.Slide;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -14,6 +12,7 @@ import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CrowdSensingActivity;
+import eu.applabs.crowdsensingtv.service.RecommendationService;
 
 public class SinglePollActivity extends CrowdSensingActivity implements ILibraryResultListener,
         View.OnClickListener {
@@ -33,16 +32,52 @@ public class SinglePollActivity extends CrowdSensingActivity implements ILibrary
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singlepoll);
 
+        startPeriodicNotification();
+        showSpecialNotification();
+
+        initializeButtons();
         mProgressBar = (ProgressBar) findViewById(R.id.id_SinglePollActivity_ProgressBar);
 
+        String url = checkStartingIntent();
         mLibrary = new Library();
         mLibrary.registerListener(this);
-        mLibrary.loadPoll("https://www.applabs.eu/json.txt"); // Web resource
+        if(url != null && url.compareTo("") != 0) {
+            mLibrary.loadPoll(url);
+        } else {
+            mLibrary.loadPoll("https://www.applabs.eu/json.txt"); // Web resource
+        }
+    }
 
+    private void startPeriodicNotification() {
+        BootupActivity ba = new BootupActivity();
+        ba.onReceive(this, new Intent().setAction(Intent.ACTION_BOOT_COMPLETED));
+    }
+
+    private void showSpecialNotification() {
+        Intent intent = new Intent(this, RecommendationService.class);
+        Bundle extras = new Bundle();
+        extras.putString(RecommendationService.sExtra_Recommendation_Content, "Special poll");
+        extras.putString(RecommendationService.sExtra_Recommendation_Url, "https://www.applabs.eu/json2.txt");
+        intent.putExtras(extras);
+        startService(intent);
+    }
+
+    private void initializeButtons() {
         Button b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Left);
         b.setOnClickListener(this);
         b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Right);
         b.setOnClickListener(this);
+    }
+
+    private String checkStartingIntent() {
+        Intent startingIntent = getIntent();
+        Bundle extras = startingIntent.getExtras();
+
+        if(extras != null && extras.containsKey(RecommendationService.sExtra_Recommendation_Url)) {
+            return extras.getString(RecommendationService.sExtra_Recommendation_Url);
+        }
+
+        return "";
     }
 
     @Override
