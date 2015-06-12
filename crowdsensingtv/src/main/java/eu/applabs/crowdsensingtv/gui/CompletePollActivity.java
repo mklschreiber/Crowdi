@@ -19,9 +19,9 @@ import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
-import eu.applabs.crowdsensingtv.base.CrowdSensingActivity;
+import eu.applabs.crowdsensingtv.base.CSActivity;
 
-public class CompletePollActivity extends CrowdSensingActivity implements ILibraryResultListener,
+public class CompletePollActivity extends CSActivity implements ILibraryResultListener,
         View.OnClickListener {
 
     private static final String sClassName = CompletePollActivity.class.getSimpleName();

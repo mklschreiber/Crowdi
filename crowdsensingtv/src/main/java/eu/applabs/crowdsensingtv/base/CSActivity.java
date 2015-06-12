@@ -15,9 +15,9 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-public abstract class CrowdSensingActivity extends Activity implements RecognitionListener {
+public abstract class CSActivity extends Activity implements RecognitionListener {
 
-    private static final String sClassName = CrowdSensingActivity.class.getSimpleName();
+    private static final String sClassName = CSActivity.class.getSimpleName();
 
     private SpeechRecognizer mSpeechRecognizer = null;
     private boolean mSpeechRecognizerIsActive = false;

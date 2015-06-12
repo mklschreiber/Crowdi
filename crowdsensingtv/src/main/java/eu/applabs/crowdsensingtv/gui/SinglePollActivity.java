@@ -13,11 +13,13 @@ import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
-import eu.applabs.crowdsensingtv.base.CrowdSensingActivity;
+import eu.applabs.crowdsensingtv.base.CSActivity;
+import eu.applabs.crowdsensingtv.base.CSDatePickerDialog;
+import eu.applabs.crowdsensingtv.base.CSTimePickerDialog;
 import eu.applabs.crowdsensingtv.service.RecommendationService;
 
-public class SinglePollActivity extends CrowdSensingActivity implements ILibraryResultListener,
-        View.OnClickListener {
+public class SinglePollActivity extends CSActivity implements ILibraryResultListener,
+        View.OnClickListener, CSDatePickerDialog.OnDateSetListener, CSTimePickerDialog.OnTimeSetListener {
 
     private static final String sClassName = SinglePollActivity.class.getSimpleName();
 
@@ -48,6 +50,13 @@ public class SinglePollActivity extends CrowdSensingActivity implements ILibrary
         } else {
             mLibrary.loadPoll("https://www.applabs.eu/json.txt"); // Web resource
         }
+
+        showTimePicker();
+    }
+
+    public void showTimePicker() {
+        CSTimePickerDialog dialog = new CSTimePickerDialog(this, this);
+        dialog.show();
     }
 
     private void startPeriodicNotification() {
@@ -169,5 +178,17 @@ public class SinglePollActivity extends CrowdSensingActivity implements ILibrary
 
             mSinglePollFragment.setField(mPoll.getFieldList().get(number));
         }
+    }
+
+    @Override
+    public void onDateSet(int year, int month, int day) {
+        Toast.makeText(this, String.valueOf(year) + ":" + String.valueOf(month) + ":"
+                + String.valueOf(day), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTimeSet(int hour, int minute) {
+        Toast.makeText(this, String.valueOf(hour) + ":" + String.valueOf(minute),
+                Toast.LENGTH_SHORT).show();
     }
 }
