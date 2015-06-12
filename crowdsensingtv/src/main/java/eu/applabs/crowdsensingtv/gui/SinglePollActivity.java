@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
+import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CrowdSensingActivity;
@@ -114,9 +116,19 @@ public class SinglePollActivity extends CrowdSensingActivity implements ILibrary
     }
 
     private void loadNextFragment() {
+        mSinglePollFragment.updateFieldValues();
+
         if(mPoll != null && mPoll.getFieldList().size() > (mCurrentField + 1)) {
-            mCurrentField++;
-            loadFragment(mCurrentField, true);
+            if(mSinglePollFragment.allRequiredFieldsFilled()) {
+                mCurrentField++;
+                loadFragment(mCurrentField, true);
+            } else {
+                Field f = mSinglePollFragment.getMissingField();
+
+                if(f != null) {
+                    Toast.makeText(this, f.getTitle() + " input is missing", Toast.LENGTH_SHORT).show();
+                }
+            }
         } else {
             // TODO: Send the data
 
@@ -129,6 +141,8 @@ public class SinglePollActivity extends CrowdSensingActivity implements ILibrary
     }
 
     private void loadPrevFragment() {
+        mSinglePollFragment.updateFieldValues();
+
         if(mPoll != null && mCurrentField > 0) {
             mCurrentField--;
             loadFragment(mCurrentField, false);

@@ -11,6 +11,7 @@ import java.util.List;
 public class Field {
 
     private static final String sClassName = Field.class.getSimpleName();
+    private static int sUniqueId = 0;
 
     public enum Type {
         undefined,
@@ -28,6 +29,7 @@ public class Field {
         radio
     }
 
+    private int mId = ++sUniqueId;
     private String mName = null;
     private String mTitle = null;
     private Type mType = Type.undefined;
@@ -121,6 +123,10 @@ public class Field {
 
     // Getter
 
+    public int getId() {
+        return mId;
+    }
+
     public String getName() {
         return mName;
     }
@@ -151,6 +157,22 @@ public class Field {
 
     public String getValue() {
         return mValue;
+    }
+
+    public Field getField(int id) {
+        if(mId == id) {
+            return this;
+        } else {
+            for(Field f : mFields) {
+                Field field = f.getField(id);
+
+                if(field != null) {
+                    return field;
+                }
+            }
+        }
+
+        return null;
     }
 
     // Misc

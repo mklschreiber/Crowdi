@@ -40,4 +40,6 @@
     <string name="MainActivity_Button_Send">Send</string>
     <string name="RecommendationService_Title_Recommendation">Poll</string>
     <string name="RecommendationService_Content_Recommendation">How do you feel?</string>
+    <string name="SinglePollActivity_Button_Left">Back</string>
+    <string name="SinglePollActivity_Button_Right">Next</string>
 </resources>

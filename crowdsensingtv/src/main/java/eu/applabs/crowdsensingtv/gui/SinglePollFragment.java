@@ -36,9 +36,30 @@ public class SinglePollFragment extends Fragment {
     }
 
     public boolean allRequiredFieldsFilled() {
-        // TODO: Implement the check --> Need the information of Marc
+        Field f = getMissingField();
 
-        return true;
+        if(f == null) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public Field getMissingField() {
+        if(mField.getRequired() &&
+                mField.getValue().compareTo("") == 0 &&
+                mField.getCompositeType().compareTo("") == 0) {
+            return mField;
+        } else {
+            for(Field f : mField.getFieldList()) {
+                if(f.getRequired() &&
+                        f.getValue().compareTo("") == 0 &&
+                        f.getCompositeType().compareTo("") == 0) {
+                    return f;
+                }
+            }
+        }
+        return null;
     }
 
     public View getFocusedView() {
@@ -51,6 +72,20 @@ public class SinglePollFragment extends Fragment {
         return null;
     }
 
+    public void updateFieldValues() {
+        if(mField != null && mViewList != null && mViewList.size() > 0) {
+            for(View v : mViewList) {
+                try {
+                    EditText et = (EditText) v;
+                    Field field = mField.getField(et.getId());
+                    field.setValue(et.getText().toString());
+                } catch (Exception e) {
+                    Log.e(sClassName, e.getMessage());
+                }
+            }
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,8 +93,9 @@ public class SinglePollFragment extends Fragment {
         mLinearLayout = (LinearLayout) v.findViewById(R.id.id_SinglePollFragment_LinearLayout);
 
         if(mField != null) {
-            View fv = createViewForField(mField);
+            View fv = createViewForField(mField, true);
             mLinearLayout.addView(fv);
+            mLinearLayout.setNextFocusUpId(R.id.id_SinglePollActivity_Button_Right);
         }
 
         return v;
@@ -69,17 +105,10 @@ public class SinglePollFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        if(mField != null && mViewList != null && mViewList.size() > 0) {
-            try {
-                EditText et = (EditText) mViewList.get(0);
-                mField.setValue(et.getText().toString());
-            } catch (Exception e) {
-                Log.e(sClassName, e.getMessage());
-            }
-        }
+        updateFieldValues();
     }
 
-    private View createViewForField(Field field) {
+    private View createViewForField(Field field, boolean firstField) {
         View view = null;
         EditText et = null;
 
@@ -88,12 +117,14 @@ public class SinglePollFragment extends Fragment {
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
                 et.setText(field.getValue());
+                et.setId(field.getId());
                 view = et;
                 break;
             case textarea:
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
                 et.setText(field.getValue());
+                et.setId(field.getId());
                 et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                 view = et;
                 break;
@@ -101,6 +132,7 @@ public class SinglePollFragment extends Fragment {
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
                 et.setText(field.getValue());
+                et.setId(field.getId());
                 et.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 view = et;
                 break;
@@ -108,12 +140,14 @@ public class SinglePollFragment extends Fragment {
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
                 et.setText(field.getValue());
+                et.setId(field.getId());
                 et.setInputType(InputType.TYPE_CLASS_NUMBER);
                 view = et;
                 break;
             case email:
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
+                et.setId(field.getId());
                 et.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 view = et;
                 break;
@@ -121,6 +155,7 @@ public class SinglePollFragment extends Fragment {
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
                 et.setText(field.getValue());
+                et.setId(field.getId());
                 et.setInputType(InputType.TYPE_CLASS_PHONE);
                 view = et;
                 break;
@@ -128,6 +163,7 @@ public class SinglePollFragment extends Fragment {
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
                 et.setText(field.getValue());
+                et.setId(field.getId());
                 et.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
                 view = et;
                 break;
@@ -135,6 +171,7 @@ public class SinglePollFragment extends Fragment {
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
                 et.setText(field.getValue());
+                et.setId(field.getId());
                 et.setInputType(InputType.TYPE_CLASS_DATETIME);
                 view = et;
                 break;
@@ -142,6 +179,7 @@ public class SinglePollFragment extends Fragment {
                 et = new EditText(getActivity());
                 et.setHint(field.getTitle());
                 et.setText(field.getValue());
+                et.setId(field.getId());
                 et.setInputType(InputType.TYPE_CLASS_DATETIME);
                 view = et;
                 break;
@@ -150,11 +188,13 @@ public class SinglePollFragment extends Fragment {
             case checkbox:
                 CheckBox cb = new CheckBox(getActivity());
                 cb.setHint(field.getTitle());
+                cb.setId(field.getId());
                 view = cb;
                 break;
             case radio:
                 RadioButton rb = new RadioButton(getActivity());
                 rb.setHint(field.getTitle());
+                rb.setId(field.getId());
                 view = rb;
                 break;
         }
@@ -163,8 +203,16 @@ public class SinglePollFragment extends Fragment {
             LinearLayout ll = new LinearLayout(getActivity());
             ll.setOrientation(LinearLayout.VERTICAL);
 
-            for(Field f : field.getFieldList()) {
-                View v = createViewForField(f);
+            for(int i = 0; i < field.getFieldList().size(); ++i) {
+                Field f = field.getFieldList().get(i);
+                View v;
+
+                if(i == 0) {
+                    v = createViewForField(f, true);
+                } else {
+                    v = createViewForField(f, false);
+                }
+
                 mViewList.add(v);
 
                 if(v != null) {
@@ -173,6 +221,11 @@ public class SinglePollFragment extends Fragment {
             }
 
             view = ll;
+        }
+
+        if(firstField) {
+            view.requestFocus();
+            view.setNextFocusUpId(R.id.id_SinglePollActivity_Button_Right);
         }
 
         mViewList.add(view);
