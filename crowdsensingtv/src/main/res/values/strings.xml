@@ -42,4 +42,6 @@
     <string name="RecommendationService_Content_Recommendation">How do you feel?</string>
     <string name="SinglePollActivity_Button_Left">Back</string>
     <string name="SinglePollActivity_Button_Right">Next</string>
+    <string name="CSTimePickerDialog_Button_Ok">Ok</string>
+    <string name="CSDatePickerDialog_Button_Ok">Ok</string>
 </resources>

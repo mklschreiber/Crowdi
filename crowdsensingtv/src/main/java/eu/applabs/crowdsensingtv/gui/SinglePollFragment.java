@@ -18,6 +18,8 @@ import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensingtv.R;
+import eu.applabs.crowdsensingtv.base.CSDateElement;
+import eu.applabs.crowdsensingtv.base.CSTimeElement;
 
 public class SinglePollFragment extends Fragment {
 
@@ -79,6 +81,22 @@ public class SinglePollFragment extends Fragment {
                     EditText et = (EditText) v;
                     Field field = mField.getField(et.getId());
                     field.setValue(et.getText().toString());
+                } catch (Exception e) {
+                    Log.e(sClassName, e.getMessage());
+                }
+
+                try {
+                    CSTimeElement te = (CSTimeElement) v;
+                    Field field = mField.getField(te.getId());
+                    field.setValue(te.getText().toString());
+                } catch (Exception e) {
+                    Log.e(sClassName, e.getMessage());
+                }
+
+                try {
+                    CSDateElement de = (CSDateElement) v;
+                    Field field = mField.getField(de.getId());
+                    field.setValue(de.getText().toString());
                 } catch (Exception e) {
                     Log.e(sClassName, e.getMessage());
                 }
@@ -168,20 +186,20 @@ public class SinglePollFragment extends Fragment {
                 view = et;
                 break;
             case date:
-                et = new EditText(getActivity());
-                et.setHint(field.getTitle());
-                et.setText(field.getValue());
-                et.setId(field.getId());
-                et.setInputType(InputType.TYPE_CLASS_DATETIME);
-                view = et;
+                CSDateElement de = new CSDateElement(getActivity());
+                de.setHint(field.getTitle());
+                de.setText(field.getValue());
+                de.setId(field.getId());
+                de.displayCurrentDate();
+                view = de;
                 break;
             case time:
-                et = new EditText(getActivity());
-                et.setHint(field.getTitle());
-                et.setText(field.getValue());
-                et.setId(field.getId());
-                et.setInputType(InputType.TYPE_CLASS_DATETIME);
-                view = et;
+                CSTimeElement te = new CSTimeElement(getActivity());
+                te.setHint(field.getTitle());
+                te.setText(field.getValue());
+                te.setId(field.getId());
+                te.displayCurrentTime();
+                view = te;
                 break;
             case range:
                 break;

@@ -6,6 +6,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Calendar;
+
 import eu.applabs.crowdsensingtv.R;
 
 public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
@@ -17,6 +19,10 @@ public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
     private OnTimeSetListener mOnTimeSetListener = null;
     private Button mButtonHour = null;
     private Button mButtonMinute = null;
+    private Calendar mCalendar = null;
+
+    private int mHour = 0;
+    private int mMinute = 0;
 
     public CSTimePickerDialog(Context context, OnTimeSetListener listener) {
         super(context);
@@ -27,26 +33,34 @@ public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
         mButtonHour = (Button) findViewById(R.id.id_CSTimePickerDialog_Button_Hour);
         mButtonMinute = (Button) findViewById(R.id.id_CSTimePickerDialog_Button_Minute);
 
+        mCalendar = Calendar.getInstance();
+        mHour = mCalendar.get(Calendar.HOUR_OF_DAY);
+        mMinute = mCalendar.get(Calendar.MINUTE);
+
+        mButtonHour.setText(String.valueOf(mHour));
+        mButtonMinute.setText(String.valueOf(mMinute));
+
         findViewById(R.id.id_CSTimePickerDialog_Button_Ok).setOnClickListener(this);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        Button button;
-        int value;
-
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_DPAD_UP:
-                button = getFocusedButton();
-                value = Integer.valueOf(button.getText().toString());
-                value++;
-                button.setText(String.valueOf(value));
+                if (getFocusedButton() == mButtonHour) {
+                    incrementHours();
+                } else {
+                    incrementMinutes();
+                }
+
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                button = getFocusedButton();
-                value = Integer.valueOf(button.getText().toString());
-                value--;
-                button.setText(String.valueOf(value));
+                if(getFocusedButton() == mButtonHour) {
+                    decrementHours();
+                } else {
+                    decrementMinutes();
+                }
+
                 break;
         }
         return super.onKeyUp(keyCode, event);
@@ -56,12 +70,11 @@ public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.id_CSTimePickerDialog_Button_Ok:
-                int hour = Integer.valueOf(mButtonHour.getText().toString());
-                int minute = Integer.valueOf(mButtonMinute.getText().toString());
-
                 if(mOnTimeSetListener != null) {
-                    mOnTimeSetListener.onTimeSet(hour, minute);
+                    mOnTimeSetListener.onTimeSet(mHour, mMinute);
                 }
+
+                dismiss();
                 break;
         }
     }
@@ -72,5 +85,55 @@ public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
         } else {
             return mButtonMinute;
         }
+    }
+
+    private void incrementHours() {
+        mHour = Integer.valueOf(mButtonHour.getText().toString());
+
+        if(mHour < 23) {
+            mHour++;
+        } else {
+            mHour = 0;
+        }
+
+        mButtonHour.setText(String.valueOf(mHour));
+    }
+
+    private void decrementHours() {
+        mHour = Integer.valueOf(mButtonHour.getText().toString());
+
+        if(mHour > 0) {
+            mHour--;
+        } else {
+            mHour = 23;
+        }
+
+        mButtonHour.setText(String.valueOf(mHour));
+    }
+
+    private void incrementMinutes() {
+        mMinute = Integer.valueOf(mButtonMinute.getText().toString());
+
+        if(mMinute < 59) {
+            mMinute++;
+        } else {
+            mMinute = 0;
+            incrementHours();
+        }
+
+        mButtonMinute.setText(String.valueOf(mMinute));
+    }
+
+    private void decrementMinutes() {
+        mMinute = Integer.valueOf(mButtonMinute.getText().toString());
+
+        if(mMinute > 0) {
+            mMinute--;
+        } else {
+            mMinute = 59;
+            decrementHours();
+        }
+
+        mButtonMinute.setText(String.valueOf(mMinute));
     }
 }

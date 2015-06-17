@@ -4,26 +4,27 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:layout_gravity="center"
     android:padding="5dp">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="true"
-        android:text="10"
+        android:text=""
         android:id="@+id/id_CSTimePickerDialog_Button_Hour" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="true"
-        android:text="10"
+        android:text=""
         android:id="@+id/id_CSTimePickerDialog_Button_Minute"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ok"
+        android:text="@string/CSTimePickerDialog_Button_Ok"
         android:id="@+id/id_CSTimePickerDialog_Button_Ok"/>
 
 </LinearLayout>
