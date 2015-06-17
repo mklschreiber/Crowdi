@@ -3,11 +3,16 @@ package eu.applabs.crowdsensinglibrary;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
-import eu.applabs.crowdsensinglibrary.source.FileSource;
-import eu.applabs.crowdsensinglibrary.source.ISource;
-import eu.applabs.crowdsensinglibrary.source.StringSource;
-import eu.applabs.crowdsensinglibrary.source.WebSource;
+import eu.applabs.crowdsensinglibrary.source.FileCommandSource;
+import eu.applabs.crowdsensinglibrary.source.FilePollSource;
+import eu.applabs.crowdsensinglibrary.source.ICommandSource;
+import eu.applabs.crowdsensinglibrary.source.IPollSource;
+import eu.applabs.crowdsensinglibrary.source.StringCommandSource;
+import eu.applabs.crowdsensinglibrary.source.StringPollSource;
+import eu.applabs.crowdsensinglibrary.source.WebCommandSource;
+import eu.applabs.crowdsensinglibrary.source.WebPollSource;
 
 public class Library {
 
@@ -21,44 +26,65 @@ public class Library {
         // Nothing to do...
     }
 
-    public void loadPoll(String source) {
-        ISource isource = null;
+    public void loadCommands(String source) {
+        ICommandSource iCommandSource;
 
         if(source.contains("http")) {
             // Seems to be a uri
-            isource = new WebSource();
+            iCommandSource = new WebCommandSource();
         } else if(source.contains(".txt")) {
             // Seems to be a file
-            isource = new FileSource();
+            iCommandSource = new FileCommandSource();
         } else {
-            isource = new StringSource();
+            iCommandSource = new StringCommandSource();
         }
 
-        SourceLoadThread slt = new SourceLoadThread(isource, source);
-        slt.start();
+        new CommandSourceLoadThread(iCommandSource, source).start();
+    }
+
+    public void loadPoll(String source) {
+        IPollSource iPollSource;
+
+        if(source.contains("http")) {
+            // Seems to be a uri
+            iPollSource = new WebPollSource();
+        } else if(source.contains(".txt")) {
+            // Seems to be a file
+            iPollSource = new FilePollSource();
+        } else {
+            iPollSource = new StringPollSource();
+        }
+
+        new PollSourceLoadThread(iPollSource, source).start();
     }
 
     public void uploadPoll(String destination, String poll) {
-        ISource isource = null;
+        IPollSource iPollSource;
 
         if(destination.contains("http")) {
             // Seems to be a uri
-            isource = new WebSource();
+            iPollSource = new WebPollSource();
         } else if(destination.contains(".txt")) {
             // Seems to be a file
-            isource = new FileSource();
+            iPollSource = new FilePollSource();
         } else {
-            isource = new StringSource();
+            iPollSource = new StringPollSource();
         }
 
-        SourceUploadThread sut = new SourceUploadThread(isource, destination, poll);
-        sut.start();
+        new PollSourceUploadThread(iPollSource, destination, poll).start();
     }
 
     private void notifyListener(ILibraryResultListener.ExecutionStatus executionStatus,
                                 Poll poll) {
         for(ILibraryResultListener listener : mILibraryResultListenerList) {
             listener.onLibraryResult(executionStatus, poll);
+        }
+    }
+
+    private void notifyListener(ILibraryResultListener.ExecutionStatus executionStatus,
+                                List<Command> list) {
+        for(ILibraryResultListener listener : mILibraryResultListenerList) {
+            listener.onLibraryResult(executionStatus, list);
         }
     }
 
@@ -72,13 +98,12 @@ public class Library {
 
     // ---------------------------------------------------------------------------------------------
 
-    private class SourceLoadThread extends Thread {
-
-        private ISource mISource = null;
+    private class CommandSourceLoadThread extends Thread {
+        private ICommandSource mICommandSource = null;
         private String mSource = null;
 
-        public SourceLoadThread(ISource isource, String source) {
-            mISource = isource;
+        public CommandSourceLoadThread(ICommandSource iCommandSource, String source) {
+            mICommandSource = iCommandSource;
             mSource = source;
         }
 
@@ -86,8 +111,38 @@ public class Library {
         public void run() {
             super.run();
 
-            if(mISource != null && mSource != null) {
-                Poll poll = mISource.loadPoll(mSource);
+            if(mICommandSource != null && mSource != null) {
+                List<Command> list = mICommandSource.loadCommands(mSource);
+
+                if(list != null) {
+                    notifyListener(ILibraryResultListener.ExecutionStatus.Success,
+                            list);
+                } else {
+                    notifyListener(ILibraryResultListener.ExecutionStatus.Error,
+                            new ArrayList<Command>());
+                }
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    private class PollSourceLoadThread extends Thread {
+
+        private IPollSource mIPollSource = null;
+        private String mSource = null;
+
+        public PollSourceLoadThread(IPollSource iPollSource, String source) {
+            mIPollSource = iPollSource;
+            mSource = source;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+
+            if(mIPollSource != null && mSource != null) {
+                Poll poll = mIPollSource.loadPoll(mSource);
 
                 if(poll != null) {
                     notifyListener(ILibraryResultListener.ExecutionStatus.Success,
@@ -103,14 +158,14 @@ public class Library {
         }
     }
 
-    private class SourceUploadThread extends Thread {
+    private class PollSourceUploadThread extends Thread {
 
-        private ISource mISource = null;
+        private IPollSource mIPollSource = null;
         private String mDestination = null;
         private String mPoll = null;
 
-        public SourceUploadThread(ISource isource, String destination, String poll) {
-            mISource = isource;
+        public PollSourceUploadThread(IPollSource iPollSource, String destination, String poll) {
+            mIPollSource = iPollSource;
             mDestination = destination;
             mPoll = poll;
         }
@@ -119,8 +174,8 @@ public class Library {
         public void run() {
             super.run();
 
-            if(mISource != null && mDestination != null && mPoll != null) {
-                List<String> uris = mISource.sendPoll(mDestination, mPoll);
+            if(mIPollSource != null && mDestination != null && mPoll != null) {
+                List<String> uris = mIPollSource.sendPoll(mDestination, mPoll);
 
                 // TODO Notify the listener
             }

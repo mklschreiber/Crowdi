@@ -4,7 +4,7 @@ import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.data.Poll;
 
-public interface ISource {
+public interface IPollSource {
     Poll loadPoll(String source);
     List<String> sendPoll(String destination, String poll);
 }

@@ -8,8 +8,11 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.util.List;
+
 import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
+import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
@@ -102,6 +105,11 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
                 loadFragment(0, true);
             }
         });
+    }
+
+    @Override
+    public void onLibraryResult(ExecutionStatus status, List<Command> list) {
+        // Show a dialog to select the next action
     }
 
     @Override

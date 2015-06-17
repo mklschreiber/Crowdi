@@ -1,15 +1,17 @@
 package eu.applabs.crowdsensinglibrary.source;
 
-
 import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.data.Poll;
+import eu.applabs.crowdsensinglibrary.parser.PollParser;
 
-public class FileSource implements ISource {
+public class StringPollSource implements IPollSource {
+
+    private static final String sClassName = StringPollSource.class.getSimpleName();
 
     @Override
     public Poll loadPoll(String source) {
-        return null;
+        return new PollParser().parseString(source);
     }
 
     @Override

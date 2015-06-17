@@ -3,29 +3,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:weightSum="1.0"
     android:id="@+id/id_MainActivity_LL_Root"
     tools:context=".MainActivity"
     android:padding="20dp">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.9"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:id="@+id/scrollView">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
-            android:id="@+id/id_MainActivity_LL_Poll" />
+            android:id="@+id/id_MainActivity_LL_Commands" />
 
     </ScrollView>
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1"
-        android:text="@string/MainActivity_Button_Send"
-        android:id="@+id/id_MainActivity_Button_Send" />
 </LinearLayout>

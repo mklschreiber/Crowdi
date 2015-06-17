@@ -13,9 +13,9 @@ import java.util.List;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensinglibrary.parser.PollParser;
 
-public class WebSource implements ISource{
+public class WebPollSource implements IPollSource {
 
-    private static final String sClassName = WebSource.class.getSimpleName();
+    private static final String sClassName = WebPollSource.class.getSimpleName();
 
     @Override
     public Poll loadPoll(String source) {

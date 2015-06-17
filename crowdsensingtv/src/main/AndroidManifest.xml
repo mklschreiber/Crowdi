@@ -31,13 +31,6 @@
         </receiver>
 
         <activity
-            android:name=".gui.CompletePollActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="landscape">
-
-        </activity>
-
-        <activity
             android:name=".gui.FinishedPollActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape">
@@ -46,6 +39,12 @@
 
         <activity
             android:name=".gui.SinglePollActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity
+            android:name=".gui.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape">
 
