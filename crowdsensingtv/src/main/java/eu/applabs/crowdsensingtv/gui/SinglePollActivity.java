@@ -17,11 +17,12 @@ import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CSActivity;
-import eu.applabs.crowdsensingtv.base.CSTimePickerDialog;
 import eu.applabs.crowdsensingtv.service.RecommendationService;
 
 public class SinglePollActivity extends CSActivity implements ILibraryResultListener,
         View.OnClickListener {
+
+    public static final String EXTRA_URL = "SinglePollActivityExtraUrl";
 
     private static final String sClassName = SinglePollActivity.class.getSimpleName();
 
@@ -38,52 +39,18 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singlepoll);
 
-        startPeriodicNotification();
-        showSpecialNotification();
-
         initializeButtons();
         mProgressBar = (ProgressBar) findViewById(R.id.id_SinglePollActivity_ProgressBar);
 
         String url = checkStartingIntent();
         mLibrary = new Library();
         mLibrary.registerListener(this);
+
         if(url != null && url.compareTo("") != 0) {
             mLibrary.loadPoll(url);
         } else {
-            mLibrary.loadPoll("https://www.applabs.eu/json.txt"); // Web resource
+            Toast.makeText(this, "Error during starting process...", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void startPeriodicNotification() {
-        BootupActivity ba = new BootupActivity();
-        ba.onReceive(this, new Intent().setAction(Intent.ACTION_BOOT_COMPLETED));
-    }
-
-    private void showSpecialNotification() {
-        Intent intent = new Intent(this, RecommendationService.class);
-        Bundle extras = new Bundle();
-        extras.putString(RecommendationService.sExtra_Recommendation_Content, "Special poll");
-        extras.putString(RecommendationService.sExtra_Recommendation_Url, "https://www.applabs.eu/json2.txt");
-        intent.putExtras(extras);
-        startService(intent);
-    }
-
-    private void initializeButtons() {
-        Button b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Left);
-        b.setOnClickListener(this);
-        b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Right);
-        b.setOnClickListener(this);
-    }
-
-    private String checkStartingIntent() {
-        Intent startingIntent = getIntent();
-        Bundle extras = startingIntent.getExtras();
-
-        if(extras != null && extras.containsKey(RecommendationService.sExtra_Recommendation_Url)) {
-            return extras.getString(RecommendationService.sExtra_Recommendation_Url);
-        }
-
-        return "";
     }
 
     @Override
@@ -124,18 +91,51 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         }
     }
 
+    private void initializeButtons() {
+        Button b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Left);
+        b.setOnClickListener(this);
+        b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Right);
+        b.setOnClickListener(this);
+    }
+
+    private String checkStartingIntent() {
+        Intent startingIntent = getIntent();
+        Bundle extras = startingIntent.getExtras();
+
+        if(extras != null && extras.containsKey(EXTRA_URL)) {
+            return extras.getString(EXTRA_URL);
+        }
+
+        return "";
+    }
+
     private void loadNextFragment() {
         mSinglePollFragment.updateFieldValues();
 
         if(mPoll != null && mPoll.getFieldList().size() > (mCurrentField + 1)) {
-            if(mSinglePollFragment.allRequiredFieldsFilled()) {
+            if(mSinglePollFragment.allRequiredFieldsFilled()
+                    && mSinglePollFragment.allInputsAreValid()) {
                 mCurrentField++;
                 loadFragment(mCurrentField, true);
             } else {
                 Field f = mSinglePollFragment.getMissingField();
 
                 if(f != null) {
-                    Toast.makeText(this, f.getTitle() + " input is missing", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,
+                            f.getTitle() + " input is missing",
+                            Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+
+                f = mSinglePollFragment.getInvalidField();
+
+                if(f != null) {
+                    Toast.makeText(this,
+                            f.getTitle() + " input doesn't match pattern " + f.getPattern(),
+                            Toast.LENGTH_SHORT).show();
+
+                    return;
                 }
             }
         } else {

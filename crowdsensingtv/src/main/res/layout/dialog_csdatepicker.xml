@@ -3,35 +3,126 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_gravity="center"
-    android:padding="5dp">
+    android:orientation="vertical"
+    android:layout_gravity="center" >
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:text=""
-        android:id="@+id/id_CSDatePickerDialog_Button_Day" />
+        android:weightSum="1.0"
+        android:orientation="horizontal">
 
-    <Button
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:text="+"
+            android:id="@+id/id_CSDatePickerDialog_Button_DayIncrement" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:text="+"
+            android:id="@+id/id_CSDatePickerDialog_Button_MonthIncrement"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:text="+"
+            android:id="@+id/id_CSDatePickerDialog_Button_YearIncrement"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:text=""
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:text=""
-        android:id="@+id/id_CSDatePickerDialog_Button_Month"/>
+        android:weightSum="1.0"
+        android:orientation="horizontal">
 
-    <Button
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text=""
+            android:id="@+id/id_CSDatePickerDialog_Button_Day" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text=""
+            android:id="@+id/id_CSDatePickerDialog_Button_Month"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text=""
+            android:id="@+id/id_CSDatePickerDialog_Button_Year"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:text="@string/CSDatePickerDialog_Button_Ok"
+            android:id="@+id/id_CSDatePickerDialog_Button_Ok"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:text=""
-        android:id="@+id/id_CSDatePickerDialog_Button_Year"/>
+        android:weightSum="1.0"
+        android:orientation="horizontal">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/CSDatePickerDialog_Button_Ok"
-        android:id="@+id/id_CSDatePickerDialog_Button_Ok"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:text="-"
+            android:id="@+id/id_CSDatePickerDialog_Button_DayDecrement" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:text="-"
+            android:id="@+id/id_CSDatePickerDialog_Button_MonthDecrement"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:text="-"
+            android:id="@+id/id_CSDatePickerDialog_Button_YearDecrement"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:text=""
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 </LinearLayout>

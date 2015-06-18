@@ -15,8 +15,10 @@ import android.widget.RadioButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import eu.applabs.crowdsensinglibrary.data.Field;
+import eu.applabs.crowdsensinglibrary.tool.PatternWatcher;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CSDateElement;
 import eu.applabs.crowdsensingtv.base.CSTimeElement;
@@ -47,6 +49,16 @@ public class SinglePollFragment extends Fragment {
         return false;
     }
 
+    public boolean allInputsAreValid() {
+        Field f = getInvalidField();
+
+        if(f == null) {
+            return true;
+        }
+
+        return false;
+    }
+
     public Field getMissingField() {
         if(mField.getRequired() &&
                 mField.getValue().compareTo("") == 0 &&
@@ -61,6 +73,22 @@ public class SinglePollFragment extends Fragment {
                 }
             }
         }
+        return null;
+    }
+
+    public Field getInvalidField() {
+        if(mField.getPattern().compareTo("") != 0) {
+            if(!Pattern.matches(mField.getPattern(), mField.getValue())) {
+                return mField;
+            } else {
+                for(Field f : mField.getFieldList()) {
+                    if(!Pattern.matches(f.getPattern(), f.getValue())) {
+                        return f;
+                    }
+                }
+            }
+        }
+
         return null;
     }
 

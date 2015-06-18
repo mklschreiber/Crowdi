@@ -11,18 +11,20 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.List;
+
+import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
+import eu.applabs.crowdsensinglibrary.Library;
+import eu.applabs.crowdsensinglibrary.data.Command;
+import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
+import eu.applabs.crowdsensingtv.gui.MainActivity;
 import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
 
-public class RecommendationService extends IntentService {
+public class RecommendationService extends IntentService implements ILibraryResultListener {
 
     private static final String sClassName = RecommendationService.class.getSimpleName();
-
-    public static final int sPeriodic_Recommendation = 42;
-    public static final int sSpecial_Recommendation = 1337;
-
-    public static final String sExtra_Recommendation_Content = sClassName + "ExtraRecommendationContent";
-    public static final String sExtra_Recommendation_Url = sClassName + "ExtraRecommendationUrl";
+    private static final int BASE_ID = 42;
 
     public RecommendationService() {
         super(RecommendationService.class.getSimpleName());
@@ -30,63 +32,53 @@ public class RecommendationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        try {
-            Bundle extras = intent.getExtras();
+        Library library = new Library();
+        library.registerListener(this);
+        library.loadCommands(MainActivity.BASE_URL + "start.txt");
+    }
 
-            Bitmap bitmap;
-            Notification notification;
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    @Override
+    public void onLibraryResult(ExecutionStatus status, Poll poll) {
 
-            if(extras != null && extras.containsKey(sExtra_Recommendation_Content) && extras.containsKey(sExtra_Recommendation_Url)) {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.specialpoll);
-                String content = extras.getString(sExtra_Recommendation_Content);
-                String url = extras.getString(sExtra_Recommendation_Url);
+    }
 
-                notification = new Notification.Builder(getApplicationContext())
-                        .setAutoCancel(true)
-                        .setContentTitle(getString(R.string.RecommendationService_Title_Recommendation))
-                        .setContentText(content)
-                        .setPriority(Notification.PRIORITY_MAX)
-                        .setLargeIcon(bitmap)
-                        .setSmallIcon(R.drawable.banner)
-                        .setStyle(new Notification.BigPictureStyle().bigPicture(bitmap))
-                        .setColor(getApplicationContext().getResources().getColor(R.color.fastlane_background))
-                        .setCategory(Notification.CATEGORY_RECOMMENDATION)
-                        .setContentIntent(buildPendingIntent(url))
-                        .build();
+    @Override
+    public void onLibraryResult(ExecutionStatus status, List<Command> list) {
+        if(status == ExecutionStatus.Success) {
+            try {
+                for(int i = 0; i < list.size(); ++i) {
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.poll);
+                    Notification notification = new Notification.Builder(getApplicationContext())
+                            .setAutoCancel(true)
+                            .setContentTitle(getString(R.string.RecommendationService_Title_Recommendation))
+                            .setContentText(list.get(i).getInfo())
+                            .setPriority(Notification.PRIORITY_HIGH)
+                            .setLargeIcon(bitmap)
+                            .setSmallIcon(R.drawable.banner)
+                            .setStyle(new Notification.BigPictureStyle().bigPicture(bitmap))
+                            .setColor(getApplicationContext().getResources().getColor(R.color.fastlane_background))
+                            .setCategory(Notification.CATEGORY_RECOMMENDATION)
+                            .setContentIntent(buildPendingIntent(MainActivity.BASE_URL + list.get(i).getCommand()))
+                            .build();
 
-                notificationManager.notify(sSpecial_Recommendation, notification);
-            } else {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.poll);
-
-                notification = new Notification.Builder(getApplicationContext())
-                        .setAutoCancel(true)
-                        .setContentTitle(getString(R.string.RecommendationService_Title_Recommendation))
-                        .setContentText(getString(R.string.RecommendationService_Content_Recommendation))
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setLargeIcon(bitmap)
-                        .setSmallIcon(R.drawable.banner)
-                        .setStyle(new Notification.BigPictureStyle().bigPicture(bitmap))
-                        .setColor(getApplicationContext().getResources().getColor(R.color.fastlane_background))
-                        .setCategory(Notification.CATEGORY_RECOMMENDATION)
-                        .setContentIntent(buildPendingIntent(""))
-                        .build();
-
-                notificationManager.notify(sPeriodic_Recommendation, notification);
+                    notificationManager.notify(BASE_ID + i, notification);
+                }
+            } catch (Exception e) {
+                Log.e(sClassName, e.getMessage());
             }
-        } catch(Exception e) {
-            Log.e(sClassName, e.getMessage());
         }
     }
 
     private PendingIntent buildPendingIntent(String url) {
         Intent intent = new Intent(getApplicationContext(), SinglePollActivity.class);
         Bundle extras = new Bundle();
-        extras.putString(sExtra_Recommendation_Url, url);
+        extras.putString(SinglePollActivity.EXTRA_URL, url);
         intent.putExtras(extras);
 
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         return pi;
     }
 }
+

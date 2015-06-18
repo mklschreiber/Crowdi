@@ -15,16 +15,15 @@ import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
-import eu.applabs.crowdsensingtv.service.RecommendationService;
 
 public class MainActivity extends Activity implements ILibraryResultListener, View.OnClickListener {
+
+    public static final String BASE_URL = "https://www.applabs.eu/";
 
     private MainActivity mActivity = null;
 
     private LinearLayout mLinearLayout = null;
     private List<Command> mCommandList = null;
-
-    private String baseUrl = "https://www.applabs.eu/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,9 @@ public class MainActivity extends Activity implements ILibraryResultListener, Vi
 
         Library library = new Library();
         library.registerListener(this);
-        library.loadCommands(baseUrl + "start.txt");
+        library.loadCommands(BASE_URL + "start.txt");
+
+        startPeriodicNotification();
     }
 
     @Override
@@ -81,12 +82,17 @@ public class MainActivity extends Activity implements ILibraryResultListener, Vi
                 if(command.getId() == v.getId()) {
                     Intent intent = new Intent(this, SinglePollActivity.class);
                     Bundle extras = new Bundle();
-                    extras.putString(RecommendationService.sExtra_Recommendation_Url, baseUrl + command.getCommand());
+                    extras.putString(SinglePollActivity.EXTRA_URL, BASE_URL + command.getCommand());
                     intent.putExtras(extras);
 
                     startActivity(intent);
                 }
             }
         }
+    }
+
+    private void startPeriodicNotification() {
+        BootupActivity ba = new BootupActivity();
+        ba.onReceive(this, new Intent().setAction(Intent.ACTION_BOOT_COMPLETED));
     }
 }

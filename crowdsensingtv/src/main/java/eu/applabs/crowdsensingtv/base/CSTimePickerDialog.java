@@ -41,6 +41,10 @@ public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
         mButtonMinute.setText(String.valueOf(mMinute));
 
         findViewById(R.id.id_CSTimePickerDialog_Button_Ok).setOnClickListener(this);
+        findViewById(R.id.id_CSTimePickerDialog_Button_HourIncrement).setOnClickListener(this);
+        findViewById(R.id.id_CSTimePickerDialog_Button_HourDecrement).setOnClickListener(this);
+        findViewById(R.id.id_CSTimePickerDialog_Button_MinuteIncrement).setOnClickListener(this);
+        findViewById(R.id.id_CSTimePickerDialog_Button_MinuteDecrement).setOnClickListener(this);
     }
 
     @Override
@@ -76,6 +80,17 @@ public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
 
                 dismiss();
                 break;
+            case R.id.id_CSTimePickerDialog_Button_HourIncrement:
+                incrementHours();
+                break;
+            case R.id.id_CSTimePickerDialog_Button_HourDecrement:
+                decrementHours();
+                break;
+            case R.id.id_CSTimePickerDialog_Button_MinuteIncrement:
+                incrementMinutes();
+                break;
+            case R.id.id_CSTimePickerDialog_Button_MinuteDecrement:
+                decrementMinutes();
         }
     }
 

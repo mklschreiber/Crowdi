@@ -46,6 +46,12 @@ public class CSDatePickerDialog extends Dialog implements View.OnClickListener {
         mButtonDay.setText(String.valueOf(mDay));
 
         findViewById(R.id.id_CSDatePickerDialog_Button_Ok).setOnClickListener(this);
+        findViewById(R.id.id_CSDatePickerDialog_Button_YearIncrement).setOnClickListener(this);
+        findViewById(R.id.id_CSDatePickerDialog_Button_YearDecrement).setOnClickListener(this);
+        findViewById(R.id.id_CSDatePickerDialog_Button_MonthIncrement).setOnClickListener(this);
+        findViewById(R.id.id_CSDatePickerDialog_Button_MonthDecrement).setOnClickListener(this);
+        findViewById(R.id.id_CSDatePickerDialog_Button_DayIncrement).setOnClickListener(this);
+        findViewById(R.id.id_CSDatePickerDialog_Button_DayDecrement).setOnClickListener(this);
     }
 
     @Override
@@ -82,6 +88,24 @@ public class CSDatePickerDialog extends Dialog implements View.OnClickListener {
                 }
 
                 dismiss();
+                break;
+            case R.id.id_CSDatePickerDialog_Button_YearIncrement:
+                incrementYear();
+                break;
+            case R.id.id_CSDatePickerDialog_Button_YearDecrement:
+                decrementYear();
+                break;
+            case R.id.id_CSDatePickerDialog_Button_MonthIncrement:
+                incrementMonth();
+                break;
+            case R.id.id_CSDatePickerDialog_Button_MonthDecrement:
+                decrementMonth();
+                break;
+            case R.id.id_CSDatePickerDialog_Button_DayIncrement:
+                incrementDay();
+                break;
+            case R.id.id_CSDatePickerDialog_Button_DayDecrement:
+                decrementDay();
                 break;
         }
     }
