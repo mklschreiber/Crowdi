@@ -40,23 +40,27 @@ public class SinglePollFragment extends Fragment {
     }
 
     public boolean allRequiredFieldsFilled() {
-        Field f = getMissingField();
+        return true;
+
+        /*Field f = getMissingField();
 
         if(f == null) {
             return true;
         }
 
-        return false;
+        return false;*/
     }
 
     public boolean allInputsAreValid() {
-        Field f = getInvalidField();
+        return true;
+
+        /*Field f = getInvalidField();
 
         if(f == null) {
             return true;
         }
 
-        return false;
+        return false;*/
     }
 
     public Field getMissingField() {

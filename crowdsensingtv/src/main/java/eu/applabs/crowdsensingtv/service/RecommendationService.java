@@ -34,7 +34,7 @@ public class RecommendationService extends IntentService implements ILibraryResu
     protected void onHandleIntent(Intent intent) {
         Library library = new Library();
         library.registerListener(this);
-        library.loadCommands(MainActivity.BASE_URL + "start.txt");
+        library.loadCommands(MainActivity.BASE_URL + "start");
     }
 
     @Override

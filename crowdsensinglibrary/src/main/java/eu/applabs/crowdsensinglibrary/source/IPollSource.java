@@ -2,9 +2,10 @@ package eu.applabs.crowdsensinglibrary.source;
 
 import java.util.List;
 
+import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 
 public interface IPollSource {
     Poll loadPoll(String source);
-    List<String> sendPoll(String destination, String poll);
+    List<Command> sendPoll(String destination, String poll);
 }

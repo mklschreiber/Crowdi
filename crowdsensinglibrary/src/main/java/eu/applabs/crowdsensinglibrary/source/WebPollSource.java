@@ -10,7 +10,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
+import eu.applabs.crowdsensinglibrary.parser.CommandParser;
 import eu.applabs.crowdsensinglibrary.parser.PollParser;
 
 public class WebPollSource implements IPollSource {
@@ -46,9 +48,7 @@ public class WebPollSource implements IPollSource {
     }
 
     @Override
-    public List<String> sendPoll(String destination, String poll) {
-        List<String> urls = null;
-
+    public List<Command> sendPoll(String destination, String poll) {
         try {
             URL url = new URL(destination);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -76,14 +76,12 @@ public class WebPollSource implements IPollSource {
 
             bufferedReader.close();
 
-            String[] urlsstring = result.split("\n");
-            for(int i = 0; i < urlsstring.length; ++i) {
-                urls.add(urlsstring[i]);
-            }
+            CommandParser parser = new CommandParser();
+            return parser.parseString(result);
         } catch (Exception e) {
             Log.e(sClassName, e.getMessage());
         }
 
-        return urls;
+        return null;
     }
 }

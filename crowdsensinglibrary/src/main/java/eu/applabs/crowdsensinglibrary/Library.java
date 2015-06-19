@@ -175,9 +175,13 @@ public class Library {
             super.run();
 
             if(mIPollSource != null && mDestination != null && mPoll != null) {
-                List<String> uris = mIPollSource.sendPoll(mDestination, mPoll);
+                List<Command> commandList = mIPollSource.sendPoll(mDestination, mPoll);
 
-                // TODO Notify the listener
+                if(commandList != null) {
+                    notifyListener(ILibraryResultListener.ExecutionStatus.Success, commandList);
+                } else {
+                    notifyListener(ILibraryResultListener.ExecutionStatus.Error, commandList);
+                }
             }
         }
     }

@@ -18,7 +18,9 @@ import eu.applabs.crowdsensingtv.R;
 
 public class MainActivity extends Activity implements ILibraryResultListener, View.OnClickListener {
 
-    public static final String BASE_URL = "https://www.applabs.eu/";
+    public static final String BASE_URL = "http://as.applabs.eu:8080/FancyModule/";
+
+    public static final String EXTRA_URL = "MainActivityExtraUrl";
 
     private MainActivity mActivity = null;
 
@@ -35,7 +37,7 @@ public class MainActivity extends Activity implements ILibraryResultListener, Vi
 
         Library library = new Library();
         library.registerListener(this);
-        library.loadCommands(BASE_URL + "start.txt");
+        library.loadCommands(BASE_URL + "start");
 
         startPeriodicNotification();
     }

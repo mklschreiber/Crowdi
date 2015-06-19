@@ -1,5 +1,6 @@
 package eu.applabs.crowdsensingtv.gui;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CSActivity;
-import eu.applabs.crowdsensingtv.service.RecommendationService;
 
 public class SinglePollActivity extends CSActivity implements ILibraryResultListener,
         View.OnClickListener {
@@ -26,9 +26,12 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
     private static final String sClassName = SinglePollActivity.class.getSimpleName();
 
+    private Activity mActivity = null;
+
     private SinglePollFragment mSinglePollFragment = null;
     private ProgressBar mProgressBar = null;
 
+    private String mPollUrl = null;
     private Poll mPoll = null;
     private int mCurrentField = 0;
 
@@ -39,15 +42,17 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singlepoll);
 
+        mActivity = this;
+
         initializeButtons();
         mProgressBar = (ProgressBar) findViewById(R.id.id_SinglePollActivity_ProgressBar);
 
-        String url = checkStartingIntent();
+        mPollUrl = checkStartingIntent();
         mLibrary = new Library();
         mLibrary.registerListener(this);
 
-        if(url != null && url.compareTo("") != 0) {
-            mLibrary.loadPoll(url);
+        if(mPollUrl != null && mPollUrl.compareTo("") != 0) {
+            mLibrary.loadPoll(mPollUrl);
         } else {
             Toast.makeText(this, "Error during starting process...", Toast.LENGTH_SHORT).show();
         }
@@ -75,8 +80,14 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     }
 
     @Override
-    public void onLibraryResult(ExecutionStatus status, List<Command> list) {
-        // Show a dialog to select the next action
+    public void onLibraryResult(final ExecutionStatus status, final List<Command> list) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                FinishedPollDialog dialog = new FinishedPollDialog(mActivity, mActivity, list);
+                dialog.show();
+            }
+        });
     }
 
     @Override
@@ -139,13 +150,7 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
                 }
             }
         } else {
-            // TODO: Send the data
-
-            Intent intent = new Intent(this, FinishedPollActivity.class);
-            startActivity(intent);
-
-            // Clear from stack
-            finish();
+            mLibrary.uploadPoll(mPollUrl, mPoll.toJSON().toString());
         }
     }
 

@@ -3,6 +3,7 @@ package eu.applabs.crowdsensinglibrary.source;
 
 import java.util.List;
 
+import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 
 public class FilePollSource implements IPollSource {
@@ -13,7 +14,7 @@ public class FilePollSource implements IPollSource {
     }
 
     @Override
-    public List<String> sendPoll(String destination, String poll) {
+    public List<Command> sendPoll(String destination, String poll) {
         return null;
     }
 }
