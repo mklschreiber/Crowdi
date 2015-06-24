@@ -1,1 +1,1 @@
-include ':crowdsensinglibrary', ':crowdsensingapp', ':crowdsensingtv'
+include ':crowdsensinglibrary', ':crowdsensingapp', ':crowdsensingtv', ':crowdsensingwear'

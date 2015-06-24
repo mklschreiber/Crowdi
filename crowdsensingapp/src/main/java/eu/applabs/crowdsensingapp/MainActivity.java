@@ -1,5 +1,6 @@
 package eu.applabs.crowdsensingapp;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,10 +20,11 @@ import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
+import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 
-public class MainActivity extends AppCompatActivity implements ILibraryResultListener,
+public class MainActivity extends Activity implements ILibraryResultListener,
         View.OnClickListener {
 
     private Poll mPoll = null;
@@ -96,6 +98,11 @@ public class MainActivity extends AppCompatActivity implements ILibraryResultLis
                 mProgressDialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void onLibraryResult(ExecutionStatus status, List<Command> list) {
+
     }
 
     private View getView(Field field) {
