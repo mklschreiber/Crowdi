@@ -1,27 +1,27 @@
 package eu.applabs.crowdsensingapp.gui;
 
-import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import eu.applabs.crowdsensingapp.R;
+import eu.applabs.crowdsensingapp.data.Constants;
 
-public class MainWearActivity extends Activity {
+public class MainWearActivity extends WearableActivity {
 
     private TextView mTextView;
     private RelativeLayout mBackground;
@@ -32,11 +32,17 @@ public class MainWearActivity extends Activity {
     private Sensor mSensor;
     private long mTimeStamp = 0;
     private int mColorCounter = 0;
+    private String mData;
+    private boolean mAmbientMode = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setAmbientEnabled();
+
+        mData = "0.0";
         mWatchInflatedListener = new WatchInflatedListener();
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
@@ -44,8 +50,33 @@ public class MainWearActivity extends Activity {
     }
 
     @Override
+    public void onEnterAmbient(Bundle ambientDetails) {
+        super.onEnterAmbient(ambientDetails);
+        mAmbientMode = true;
+
+        mBackground.setBackgroundColor(getResources().getColor(R.color.black));
+    }
+
+    @Override
+    public void onExitAmbient() {
+        super.onExitAmbient();
+        mAmbientMode = false;
+
+        updateData(mData);
+    }
+
+    @Override
+    public void onUpdateAmbient() {
+        super.onUpdateAmbient();
+
+        mTextView.setText(mData);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        disconnect();
 
         if(mSensorManager != null && mWatchInflatedListener != null) {
             mSensorManager.unregisterListener(mWatchInflatedListener);
@@ -59,40 +90,56 @@ public class MainWearActivity extends Activity {
         mTextView = null;
     }
 
-    private void setupConnection() {
+    private void connect() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mGoogleApiClient.blockingConnect(5000, TimeUnit.MICROSECONDS);
-
-                NodeApi.GetConnectedNodesResult result =
-                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-
-                mNodeList = result.getNodes();
-                mGoogleApiClient.disconnect();
-            }
-        }).start();
+        if(mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
     }
 
-    private void sendHeartRate() {
-        if(mNodeList != null && mGoogleApiClient != null && mTextView != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    mGoogleApiClient.blockingConnect(5000, TimeUnit.MICROSECONDS);
-                    for(Node node : mNodeList) {
-                        Wearable.MessageApi.sendMessage(mGoogleApiClient,
-                                node.getId(),
-                                mTextView.getText().toString(),
-                                null);
-                    }
-                    mGoogleApiClient.disconnect();
-                }
-            }).start();
+    private void disconnect() {
+        if(mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    private void updateData(String data) {
+        mData = data;
+
+        if(!mAmbientMode) {
+            mTextView.setText(mData);
+
+            switch(mColorCounter) {
+                case 0:
+                    mBackground.setBackgroundColor(getResources().getColor(R.color.blue));
+                    mColorCounter++;
+                    break;
+                case 1:
+                    mBackground.setBackgroundColor(getResources().getColor(R.color.green));
+                    mColorCounter++;
+                    break;
+                case 2:
+                    mBackground.setBackgroundColor(getResources().getColor(R.color.red));
+                    mColorCounter = 0;
+                    break;
+                default:
+                    mColorCounter = 0;
+            }
+
+            sendData(mData);
+        }
+    }
+
+    private void sendData(String data) {
+        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            PutDataMapRequest dataMapRequest = PutDataMapRequest.create(Constants.NOTIFICATION_APP_PATH);
+            dataMapRequest.getDataMap().putDouble(Constants.NOTIFICATION_APP_TIMESTAMP, System.currentTimeMillis());
+            dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_APP_DATA, data);
+            PutDataRequest putDataRequest = dataMapRequest.asPutDataRequest();
+            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataRequest);
         }
     }
 
@@ -108,7 +155,7 @@ public class MainWearActivity extends Activity {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
             mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-            setupConnection();
+            connect();
         }
 
         @Override
@@ -120,30 +167,11 @@ public class MainWearActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTextView.setText(String.valueOf(values[0]));
-
                             long currentTime = System.currentTimeMillis();
 
                             if (currentTime - mTimeStamp > 3000) {
-                                switch(mColorCounter) {
-                                    case 0:
-                                        mBackground.setBackgroundColor(getResources().getColor(R.color.blue));
-                                        mColorCounter++;
-                                        break;
-                                    case 1:
-                                        mBackground.setBackgroundColor(getResources().getColor(R.color.green));
-                                        mColorCounter++;
-                                        break;
-                                    case 2:
-                                        mBackground.setBackgroundColor(getResources().getColor(R.color.red));
-                                        mColorCounter = 0;
-                                        break;
-                                    default:
-                                        mColorCounter = 0;
-                                }
-
+                                updateData(String.valueOf(values[0]));
                                 mTimeStamp = currentTime;
-                                sendHeartRate();
                             }
                         }
                     });

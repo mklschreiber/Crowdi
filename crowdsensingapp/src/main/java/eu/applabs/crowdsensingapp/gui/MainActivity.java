@@ -1,4 +1,4 @@
-package eu.applabs.crowdsensingapp;
+package eu.applabs.crowdsensingapp.gui;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import eu.applabs.crowdsensingapp.R;
 import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;

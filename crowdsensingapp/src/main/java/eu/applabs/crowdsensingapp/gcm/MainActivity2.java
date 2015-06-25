@@ -16,7 +16,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 
-import eu.applabs.crowdsensingapp.MainActivity;
+import eu.applabs.crowdsensingapp.gui.MainActivity;
 import eu.applabs.crowdsensingapp.R;
 
 public class MainActivity2 extends Activity implements View.OnClickListener {

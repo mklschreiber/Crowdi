@@ -7,11 +7,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <permission
-        android:name="android.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
     <uses-permission android:name="android.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,14 +19,13 @@
         android:theme="@style/AppTheme" >
 
         <activity
-            android:name=".MainActivity3"
+            android:name=".gui.MainActivity3"
             android:label="@string/app_name" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <activity
@@ -40,11 +34,15 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".gui.MainActivity"
             android:label="@string/app_name" >
         </activity>
 
-        <service android:name=".service.ListenerService">
+        <service
+            android:name=".service.DataTransferService"
+            android:enabled="true"
+            android:exported="true" >
+
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
@@ -57,12 +55,10 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.javapapers.android" />
+                <category android:name="eu.applabs.crowdsensingapp" />
             </intent-filter>
         </receiver>
 
         <service android:name=".gcm.GCMNotificationIntentService" />
-
     </application>
-
 </manifest>

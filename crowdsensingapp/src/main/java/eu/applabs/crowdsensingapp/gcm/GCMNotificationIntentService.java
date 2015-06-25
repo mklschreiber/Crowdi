@@ -12,7 +12,7 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import eu.applabs.crowdsensingapp.MainActivity;
+import eu.applabs.crowdsensingapp.gui.MainActivity;
 import eu.applabs.crowdsensingapp.R;
 
 public class GCMNotificationIntentService extends IntentService {

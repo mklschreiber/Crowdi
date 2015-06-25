@@ -33,7 +33,7 @@ public class NotificationService extends WearableListenerService {
         if(intent != null) {
             String action = intent.getAction();
 
-            if(action.equals(Constants.ACTION_DISMISS)) {
+            if(action.equals(Constants.ACTION_WEAR_DISMISS)) {
                 dismissNotification();
             }
         }
@@ -44,10 +44,10 @@ public class NotificationService extends WearableListenerService {
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         for(DataEvent dataEvent : dataEvents) {
-            if(dataEvent.getDataItem().getUri().getPath().equals(Constants.NOTIFICATION_PATH)) {
+            if(dataEvent.getDataItem().getUri().getPath().equals(Constants.NOTIFICATION_WEAR_PATH)) {
                 DataMapItem dataMapItem = DataMapItem.fromDataItem(dataEvent.getDataItem());
-                String title = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_TITLE);
-                String content = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_CONTENT);
+                String title = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_WEAR_TITLE);
+                String content = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_WEAR_CONTENT);
 
                 if(title != null && content != null &&
                         title.compareTo("") != 0 && content.compareTo("") != 0) {
@@ -63,7 +63,7 @@ public class NotificationService extends WearableListenerService {
         Intent startIntent = new Intent(this, MainWearActivity.class);
         PendingIntent startPendingIntent = PendingIntent.getActivity(this, 0, startIntent, 0);
 
-        Intent deleteIntent = new Intent(Constants.ACTION_DISMISS);
+        Intent deleteIntent = new Intent(Constants.ACTION_WEAR_DISMISS);
         PendingIntent deletePendingIntent = PendingIntent
                 .getService(this, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -107,7 +107,7 @@ public class NotificationService extends WearableListenerService {
         @Override
         public void onConnected(Bundle bundle) {
             Uri uri = new Uri.Builder().scheme(PutDataRequest.WEAR_URI_SCHEME)
-                    .path(Constants.NOTIFICATION_PATH).build();
+                    .path(Constants.NOTIFICATION_WEAR_PATH).build();
             Wearable.DataApi.deleteDataItems(mGoogleApiClient, uri).setResultCallback(this);
         }
 
