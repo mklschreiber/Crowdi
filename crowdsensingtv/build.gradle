@@ -27,4 +27,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile project(':crowdsensinglibrary')
+    compile 'com.google.android.support:wearable:1.2.0'
+    compile 'com.google.android.gms:play-services-wearable:7.5.0'
 }
