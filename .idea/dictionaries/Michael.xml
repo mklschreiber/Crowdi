@@ -5,8 +5,10 @@
       <w>bootup</w>
       <w>crowdsensingapp</w>
       <w>crowdsensingtv</w>
+      <w>crowdsensingupnplibrary</w>
       <w>deinit</w>
       <w>textarea</w>
+      <w>upnp</w>
     </words>
   </dictionary>
 </component>

@@ -1,5 +1,6 @@
 package eu.applabs.crowdsensingapp.service;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.wearable.DataEvent;
@@ -8,8 +9,12 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import eu.applabs.crowdsensingapp.data.Constants;
+import eu.applabs.crowdsensingapp.gui.MainActivity3;
 
 public class DataTransferService extends WearableListenerService {
+
+    public static String sHeartRate = "0.0";
+
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         for(DataEvent dataEvent : dataEvents) {
@@ -19,8 +24,7 @@ public class DataTransferService extends WearableListenerService {
 
                 if(data != null && data.compareTo("") != 0) {
                     Toast.makeText(this, "Received data: " + data, Toast.LENGTH_SHORT).show();
-                } else {
-                    // Error handling
+                    sHeartRate = data;
                 }
             }
         }

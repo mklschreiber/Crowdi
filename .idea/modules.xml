@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/crowdsensingapp/crowdsensingapp.iml" filepath="$PROJECT_DIR$/crowdsensingapp/crowdsensingapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/crowdsensinglibrary/crowdsensinglibrary.iml" filepath="$PROJECT_DIR$/crowdsensinglibrary/crowdsensinglibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/crowdsensingtv/crowdsensingtv.iml" filepath="$PROJECT_DIR$/crowdsensingtv/crowdsensingtv.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crowdsensingupnplibrary/crowdsensingupnplibrary.iml" filepath="$PROJECT_DIR$/crowdsensingupnplibrary/crowdsensingupnplibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/crowdsensingwear/crowdsensingwear.iml" filepath="$PROJECT_DIR$/crowdsensingwear/crowdsensingwear.iml" />
     </modules>
   </component>

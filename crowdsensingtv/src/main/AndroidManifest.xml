@@ -59,5 +59,13 @@
             android:name=".service.RecommendationService"
             android:enabled="true" />
 
+        <service
+            android:name=".service.CSUpnpService"
+            android:enabled="true"/>
+
+        <service
+            android:name="org.fourthline.cling.android.AndroidUpnpServiceImpl"
+            android:enabled="true"/>
+
     </application>
 </manifest>
