@@ -60,8 +60,8 @@
             android:enabled="true" />
 
         <service
-            android:name=".service.CSUpnpService"
-            android:enabled="true"/>
+            android:name=".service.UpnpService"
+            android:enabled="true" />
 
         <service
             android:name="org.fourthline.cling.android.AndroidUpnpServiceImpl"

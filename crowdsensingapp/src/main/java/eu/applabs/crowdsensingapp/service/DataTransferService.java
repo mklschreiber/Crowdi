@@ -1,6 +1,5 @@
 package eu.applabs.crowdsensingapp.service;
 
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.wearable.DataEvent;
@@ -9,7 +8,6 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import eu.applabs.crowdsensingapp.data.Constants;
-import eu.applabs.crowdsensingapp.gui.MainActivity3;
 
 public class DataTransferService extends WearableListenerService {
 

@@ -15,7 +15,7 @@ import java.beans.PropertyChangeSupport;
         serviceId = @UpnpServiceId("HeartRateService"),
         serviceType = @UpnpServiceType(value = "HeartRateService", version = 1)
 )
-public class HeartRateService {
+public class HeartRateServiceDefinition {
 
     private PropertyChangeSupport mPropertyChangeSupport;
 
@@ -25,7 +25,10 @@ public class HeartRateService {
     @UpnpStateVariable(defaultValue = "0", name = "mStartMeasuring")
     private boolean mStartMeasuring = false;
 
-    public HeartRateService() {
+    @UpnpStateVariable(defaultValue = "0", name = "mStartNotification")
+    private boolean mStartNotification = false;
+
+    public HeartRateServiceDefinition() {
         mPropertyChangeSupport = new PropertyChangeSupport(this);
     }
 
@@ -55,5 +58,14 @@ public class HeartRateService {
         while(mStartMeasuring) { /* Block this thread till the measuring is completed */ }
 
         return mHeartRate;
+    }
+
+    @UpnpAction
+    public void startNotification()
+    {
+        boolean oldValue = mStartNotification;
+        mStartNotification = true;
+
+        mPropertyChangeSupport.firePropertyChange("mStartNotification", oldValue, mStartNotification);
     }
 }
