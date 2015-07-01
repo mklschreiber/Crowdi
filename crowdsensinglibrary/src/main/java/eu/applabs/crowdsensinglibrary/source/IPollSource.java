@@ -6,6 +6,6 @@ import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 
 public interface IPollSource {
-    Poll loadPoll(String source);
-    List<Command> sendPoll(String destination, String poll);
+    Poll loadPoll(String source, String user, String password);
+    List<Command> sendPoll(String destination, String user, String password, String poll);
 }

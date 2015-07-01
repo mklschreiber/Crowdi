@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements ILibraryResultListener,
 
         Library library = new Library();
         library.registerListener(this);
-        library.loadCommands(BASE_URL + "start");
+        library.loadCommands(BASE_URL + "start", "Hans", "Test");
 
         startPeriodicNotification();
 

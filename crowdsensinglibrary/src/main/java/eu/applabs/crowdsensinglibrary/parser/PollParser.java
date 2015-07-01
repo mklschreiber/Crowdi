@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.data.Field;
+import eu.applabs.crowdsensinglibrary.data.Option;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 
 public class PollParser {
@@ -16,21 +17,21 @@ public class PollParser {
 
     public Poll parseString(String string) {
         List<Field> fieldList = parseString(string, null);
-        Poll poll = new Poll("0.0.1");
+        Poll poll = new Poll("0.0.2");
         poll.setFieldList(fieldList);
 
         return poll;
     }
 
-    private List<Field> parseString(String string, JSONArray compositeTypes) {
+    private List<Field> parseString(String string, JSONArray compositeFields) {
         List<Field> poll = null;
 
         try {
             JSONObject object = new JSONObject(string);
             JSONArray fields = object.getJSONArray("fields");
 
-            if(object.has("compositeTypes")) {
-                compositeTypes = object.getJSONArray("compositeTypes");
+            if(object.has("compositeFields")) {
+                compositeFields = object.getJSONArray("compositeFields");
             }
 
             if(fields != null) {
@@ -44,23 +45,23 @@ public class PollParser {
                         field.setName(f.getString("name"));
                     }
 
-                    if(f.has("title")) {
-                        field.setTitle(f.getString("title"));
+                    if(f.has("label")) {
+                        field.setLabel(f.getString("label"));
                     }
 
-                    if(f.has("compositeType")) {
-                        String compositeTypeId = f.getString("compositeType");
+                    if(f.has("compositeField")) {
+                        String compositeField = f.getString("compositeField");
 
-                        for(int ii = 0; ii < compositeTypes.length(); ++ii) {
-                            JSONObject ct = compositeTypes.getJSONObject(ii);
+                        for(int ii = 0; ii < compositeFields.length(); ++ii) {
+                            JSONObject cf = compositeFields.getJSONObject(ii);
 
-                            if(compositeTypeId.compareTo(ct.getString("compositeType")) == 0) {
-                                // Found the compositeType
+                            if(compositeField.compareTo(cf.getString("name")) == 0) {
+                                // Found the compositeField
 
                                 // Recursive call
-                                List<Field> compositeTypeFields = parseString(ct.toString(), compositeTypes);
+                                List<Field> compositeTypeFields = parseString(cf.toString(), compositeFields);
 
-                                field.setCompositeType(compositeTypeId);
+                                field.setCompositeField(compositeField);
                                 for(Field compositeTypeField : compositeTypeFields) {
                                     field.addField(compositeTypeField);
                                 }
@@ -78,6 +79,20 @@ public class PollParser {
 
                     if(f.has("required")) {
                         field.setRequired(f.getBoolean("required"));
+                    }
+
+                    if(f.has("options")) {
+                        JSONArray array = f.getJSONArray("options");
+
+                        for(int ii = 0; ii < array.length(); ++ii) {
+                            JSONObject o = array.getJSONObject(ii);
+
+                            Option option = new Option();
+                            option.setLabel(o.getString("label"));
+                            option.setValue(o.getString("value"));
+
+                            field.addOption(option);
+                        }
                     }
 
                     poll.add(field);

@@ -24,32 +24,37 @@ public class Field {
         url,
         date,
         time,
+        datetime,
         range,
+        select,
+        multiselect,
         checkbox,
         radio
     }
 
     private int mId = ++sUniqueId;
     private String mName = null;
-    private String mTitle = null;
+    private String mLabel = null;
     private Type mType = Type.undefined;
     private List<Field> mFields = null;
-    private String mCompositeType = null;
+    private String mCompositeField = null;
     private String mPattern = null;
     private boolean mRequired = false;
     private String mValue = null;
+    private List<Option> mOptionList = null;
 
     // Constructor
 
     public Field() {
         mName = "";
-        mTitle = "";
+        mLabel = "";
         mType = Type.undefined;
         mFields = new ArrayList<>();
-        mCompositeType = "";
+        mCompositeField = "";
         mPattern = "";
         mRequired = false;
         mValue = "";
+        mOptionList = new ArrayList<>();
     }
 
     // Setter
@@ -58,8 +63,8 @@ public class Field {
         mName = name;
     }
 
-    public void setTitle(String title) {
-        mTitle = title;
+    public void setLabel(String label) {
+        mLabel = label;
     }
 
     public void setType(Type type) {
@@ -85,8 +90,14 @@ public class Field {
             mType = Type.date;
         } else if(type.compareTo("time") == 0) {
             mType = Type.time;
+        } else if(type.compareTo("datetime") == 0) {
+            mType = Type.datetime;
         } else if(type.compareTo("range") == 0) {
             mType = Type.range;
+        } else if(type.compareTo("select") == 0) {
+            mType = Type.select;
+        } else if(type.compareTo("multiselect") == 0) {
+            mType = Type.multiselect;
         } else if(type.compareTo("checkbox") == 0) {
             mType = Type.checkbox;
         } else if(type.compareTo("radio") == 0) {
@@ -104,9 +115,17 @@ public class Field {
         mFields.remove(field);
     }
 
-    public void setCompositeType(String compositeType) {
+    public void addOption(Option option) {
+        mOptionList.add(option);
+    }
+
+    public void removeOption(Option option) {
+        mOptionList.remove(option);
+    }
+
+    public void setCompositeField(String compositeField) {
         mType = Type.undefined;
-        mCompositeType = compositeType;
+        mCompositeField = compositeField;
     }
 
     public void setPattern(String pattern) {
@@ -131,8 +150,8 @@ public class Field {
         return mName;
     }
 
-    public String getTitle() {
-        return mTitle;
+    public String getLabel() {
+        return mLabel;
     }
 
     public Type getType() {
@@ -143,8 +162,12 @@ public class Field {
         return mFields;
     }
 
-    public String getCompositeType() {
-        return mCompositeType;
+    public List<Option> getOptionList() {
+        return mOptionList;
+    }
+
+    public String getCompositeField() {
+        return mCompositeField;
     }
 
     public String getPattern() {
@@ -175,6 +198,16 @@ public class Field {
         return null;
     }
 
+    public Option getOption(int id) {
+        for(Option o : mOptionList) {
+            if(o.getId() == id) {
+                return o;
+            }
+        }
+
+        return null;
+    }
+
     // Misc
 
     private String typeToString(Type type) {
@@ -197,8 +230,14 @@ public class Field {
                 return "date";
             case time:
                 return "time";
+            case datetime:
+                return "datetime";
             case range:
                 return "range";
+            case select:
+                return "select";
+            case multiselect:
+                return "multiselect";
             case checkbox:
                 return "checkbox";
             case radio:
@@ -216,14 +255,14 @@ public class Field {
                 field.put("name", mName);
             }
 
-            if (mTitle.compareTo("") != 0) {
-                field.put("title", mTitle);
+            if (mLabel.compareTo("") != 0) {
+                field.put("label", mLabel);
             }
 
             if (mType != Type.undefined) {
                 field.put("type", typeToString(mType));
-            } else if (mCompositeType.compareTo("") != 0) {
-                field.put("compositeType", mCompositeType);
+            } else if (mCompositeField.compareTo("") != 0) {
+                field.put("compositeField", mCompositeField);
             }
 
             if (mPattern.compareTo("") != 0) {
@@ -249,8 +288,8 @@ public class Field {
         JSONObject compositeType = new JSONObject();
 
         try {
-            if(mCompositeType.compareTo("") != 0) {
-                compositeType.put("compositeType", mCompositeType);
+            if(mCompositeField.compareTo("") != 0) {
+                compositeType.put("compositeType", mCompositeField);
             }
 
             JSONArray fields = new JSONArray();

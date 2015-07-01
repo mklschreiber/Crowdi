@@ -26,7 +26,7 @@ public class Library {
         // Nothing to do...
     }
 
-    public void loadCommands(String source) {
+    public void loadCommands(String source, String user, String password) {
         ICommandSource iCommandSource;
 
         if(source.contains("http")) {
@@ -39,10 +39,10 @@ public class Library {
             iCommandSource = new StringCommandSource();
         }
 
-        new CommandSourceLoadThread(iCommandSource, source).start();
+        new CommandSourceLoadThread(iCommandSource, source, user, password).start();
     }
 
-    public void loadPoll(String source) {
+    public void loadPoll(String source, String user, String password) {
         IPollSource iPollSource;
 
         if(source.contains("http")) {
@@ -55,10 +55,10 @@ public class Library {
             iPollSource = new StringPollSource();
         }
 
-        new PollSourceLoadThread(iPollSource, source).start();
+        new PollSourceLoadThread(iPollSource, source, user, password).start();
     }
 
-    public void uploadPoll(String destination, String poll) {
+    public void uploadPoll(String destination, String user, String password, String poll) {
         IPollSource iPollSource;
 
         if(destination.contains("http")) {
@@ -71,7 +71,7 @@ public class Library {
             iPollSource = new StringPollSource();
         }
 
-        new PollSourceUploadThread(iPollSource, destination, poll).start();
+        new PollSourceUploadThread(iPollSource, destination, user, password, poll).start();
     }
 
     private void notifyListener(ILibraryResultListener.ExecutionStatus executionStatus,
@@ -101,10 +101,14 @@ public class Library {
     private class CommandSourceLoadThread extends Thread {
         private ICommandSource mICommandSource = null;
         private String mSource = null;
+        private String mUser = null;
+        private String mPassword = null;
 
-        public CommandSourceLoadThread(ICommandSource iCommandSource, String source) {
+        public CommandSourceLoadThread(ICommandSource iCommandSource, String source, String user, String password) {
             mICommandSource = iCommandSource;
             mSource = source;
+            mUser = user;
+            mPassword = password;
         }
 
         @Override
@@ -112,7 +116,7 @@ public class Library {
             super.run();
 
             if(mICommandSource != null && mSource != null) {
-                List<Command> list = mICommandSource.loadCommands(mSource);
+                List<Command> list = mICommandSource.loadCommands(mSource, mUser, mPassword);
 
                 if(list != null) {
                     notifyListener(ILibraryResultListener.ExecutionStatus.Success,
@@ -131,10 +135,14 @@ public class Library {
 
         private IPollSource mIPollSource = null;
         private String mSource = null;
+        private String mUser = null;
+        private String mPassword = null;
 
-        public PollSourceLoadThread(IPollSource iPollSource, String source) {
+        public PollSourceLoadThread(IPollSource iPollSource, String source, String user, String password) {
             mIPollSource = iPollSource;
             mSource = source;
+            mUser = user;
+            mPassword = password;
         }
 
         @Override
@@ -142,18 +150,18 @@ public class Library {
             super.run();
 
             if(mIPollSource != null && mSource != null) {
-                Poll poll = mIPollSource.loadPoll(mSource);
+                Poll poll = mIPollSource.loadPoll(mSource, mUser, mPassword);
 
                 if(poll != null) {
                     notifyListener(ILibraryResultListener.ExecutionStatus.Success,
                             poll);
                 } else {
                     notifyListener(ILibraryResultListener.ExecutionStatus.Error,
-                            new Poll("0.0.1"));
+                            new Poll("0.0.2"));
                 }
             } else {
                 notifyListener(ILibraryResultListener.ExecutionStatus.Error,
-                        new Poll("0.0.1"));
+                        new Poll("0.0.2"));
             }
         }
     }
@@ -162,11 +170,15 @@ public class Library {
 
         private IPollSource mIPollSource = null;
         private String mDestination = null;
+        private String mUser = null;
+        private String mPassword = null;
         private String mPoll = null;
 
-        public PollSourceUploadThread(IPollSource iPollSource, String destination, String poll) {
+        public PollSourceUploadThread(IPollSource iPollSource, String destination, String user, String password, String poll) {
             mIPollSource = iPollSource;
             mDestination = destination;
+            mUser = user;
+            mPassword = password;
             mPoll = poll;
         }
 
@@ -175,7 +187,7 @@ public class Library {
             super.run();
 
             if(mIPollSource != null && mDestination != null && mPoll != null) {
-                List<Command> commandList = mIPollSource.sendPoll(mDestination, mPoll);
+                List<Command> commandList = mIPollSource.sendPoll(mDestination, mUser, mPassword, mPoll);
 
                 if(commandList != null) {
                     notifyListener(ILibraryResultListener.ExecutionStatus.Success, commandList);

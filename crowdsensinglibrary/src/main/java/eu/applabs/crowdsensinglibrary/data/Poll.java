@@ -48,8 +48,8 @@ public class Poll {
             for(Field f : mFieldList) {
                 fields.put(f.toJSON());
 
-                if(f.getCompositeType().compareTo("") != 0 && !addedCompositeTypes.contains(f.getCompositeType())) {
-                    addedCompositeTypes.add(f.getCompositeType()); // Mark as already added
+                if(f.getCompositeField().compareTo("") != 0 && !addedCompositeTypes.contains(f.getCompositeField())) {
+                    addedCompositeTypes.add(f.getCompositeField()); // Mark as already added
                     compositeTypes.put(f.toJSONCompositeType());
                 }
             }

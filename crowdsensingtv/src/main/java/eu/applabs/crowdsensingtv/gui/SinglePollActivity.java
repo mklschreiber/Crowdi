@@ -52,7 +52,7 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         mLibrary.registerListener(this);
 
         if(mPollUrl != null && mPollUrl.compareTo("") != 0) {
-            mLibrary.loadPoll(mPollUrl);
+            mLibrary.loadPoll(mPollUrl, "Hans", "Test");
         } else {
             Toast.makeText(this, "Error during starting process...", Toast.LENGTH_SHORT).show();
         }
@@ -133,7 +133,7 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
                 if(f != null) {
                     Toast.makeText(this,
-                            f.getTitle() + " input is missing",
+                            f.getLabel() + " input is missing",
                             Toast.LENGTH_SHORT).show();
 
                     return;
@@ -143,14 +143,14 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
                 if(f != null) {
                     Toast.makeText(this,
-                            f.getTitle() + " input doesn't match pattern " + f.getPattern(),
+                            f.getLabel() + " input doesn't match pattern " + f.getPattern(),
                             Toast.LENGTH_SHORT).show();
 
                     return;
                 }
             }
         } else {
-            mLibrary.uploadPoll(mPollUrl, mPoll.toJSON().toString());
+            mLibrary.uploadPoll(mPollUrl, "Hans", "Test", mPoll.toJSON().toString());
         }
     }
 

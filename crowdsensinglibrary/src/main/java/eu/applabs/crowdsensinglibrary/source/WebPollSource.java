@@ -1,5 +1,6 @@
 package eu.applabs.crowdsensinglibrary.source;
 
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -8,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.data.Command;
@@ -20,11 +22,16 @@ public class WebPollSource implements IPollSource {
     private static final String sClassName = WebPollSource.class.getSimpleName();
 
     @Override
-    public Poll loadPoll(String source) {
+    public Poll loadPoll(String source, String user, String password) {
         try {
             URL url = new URL(source);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
+
+            if(user.compareTo("") != 0 && password.compareTo("") != 0) {
+                String encoded = Base64.encodeToString((user + ":" + password).getBytes("UTF-8"), Base64.NO_WRAP);
+                httpURLConnection.setRequestProperty("Authorization", "Basic " +  encoded);
+            }
 
             BufferedReader bufferedReader = new BufferedReader(
                     new InputStreamReader(httpURLConnection.getInputStream()));
@@ -48,11 +55,16 @@ public class WebPollSource implements IPollSource {
     }
 
     @Override
-    public List<Command> sendPoll(String destination, String poll) {
+    public List<Command> sendPoll(String destination, String user, String password, String poll) {
         try {
             URL url = new URL(destination);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
+
+            if(user.compareTo("") != 0 && password.compareTo("") != 0) {
+                String encoded = Base64.encodeToString((user + ":" + password).getBytes("UTF-8"), Base64.NO_WRAP);
+                httpURLConnection.setRequestProperty("Authorization", "Basic " +  encoded);
+            }
 
             // Upload
 

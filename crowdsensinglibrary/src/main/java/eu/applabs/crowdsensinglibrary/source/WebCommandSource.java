@@ -1,5 +1,6 @@
 package eu.applabs.crowdsensinglibrary.source;
 
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -16,11 +17,16 @@ public class WebCommandSource implements ICommandSource {
     private static final String sClassName = WebCommandSource.class.getSimpleName();
 
     @Override
-    public List<Command> loadCommands(String source) {
+    public List<Command> loadCommands(String source, String user, String password) {
         try {
             URL url = new URL(source);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
+
+            if(user.compareTo("") != 0 && password.compareTo("") != 0) {
+                String encoded = Base64.encodeToString((user + ":" + password).getBytes("UTF-8"), Base64.NO_WRAP);
+                httpURLConnection.setRequestProperty("Authorization", "Basic " +  encoded);
+            }
 
             BufferedReader bufferedReader = new BufferedReader(
                     new InputStreamReader(httpURLConnection.getInputStream()));

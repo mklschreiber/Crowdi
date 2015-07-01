@@ -12,12 +12,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import eu.applabs.crowdsensinglibrary.data.Field;
+import eu.applabs.crowdsensinglibrary.data.Option;
 import eu.applabs.crowdsensinglibrary.tool.PatternWatcher;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CSDateElement;
@@ -66,13 +68,13 @@ public class SinglePollFragment extends Fragment {
     public Field getMissingField() {
         if(mField.getRequired() &&
                 mField.getValue().compareTo("") == 0 &&
-                mField.getCompositeType().compareTo("") == 0) {
+                mField.getCompositeField().compareTo("") == 0) {
             return mField;
         } else {
             for(Field f : mField.getFieldList()) {
                 if(f.getRequired() &&
                         f.getValue().compareTo("") == 0 &&
-                        f.getCompositeType().compareTo("") == 0) {
+                        f.getCompositeField().compareTo("") == 0) {
                     return f;
                 }
             }
@@ -165,14 +167,14 @@ public class SinglePollFragment extends Fragment {
         switch(field.getType()) {
             case text:
                 et = new EditText(getActivity());
-                et.setHint(field.getTitle());
+                et.setHint(field.getLabel());
                 et.setText(field.getValue());
                 et.setId(field.getId());
                 view = et;
                 break;
             case textarea:
                 et = new EditText(getActivity());
-                et.setHint(field.getTitle());
+                et.setHint(field.getLabel());
                 et.setText(field.getValue());
                 et.setId(field.getId());
                 et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -180,7 +182,7 @@ public class SinglePollFragment extends Fragment {
                 break;
             case password:
                 et = new EditText(getActivity());
-                et.setHint(field.getTitle());
+                et.setHint(field.getLabel());
                 et.setText(field.getValue());
                 et.setId(field.getId());
                 et.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -188,7 +190,7 @@ public class SinglePollFragment extends Fragment {
                 break;
             case number:
                 et = new EditText(getActivity());
-                et.setHint(field.getTitle());
+                et.setHint(field.getLabel());
                 et.setText(field.getValue());
                 et.setId(field.getId());
                 et.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -196,14 +198,14 @@ public class SinglePollFragment extends Fragment {
                 break;
             case email:
                 et = new EditText(getActivity());
-                et.setHint(field.getTitle());
+                et.setHint(field.getLabel());
                 et.setId(field.getId());
                 et.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 view = et;
                 break;
             case tel:
                 et = new EditText(getActivity());
-                et.setHint(field.getTitle());
+                et.setHint(field.getLabel());
                 et.setText(field.getValue());
                 et.setId(field.getId());
                 et.setInputType(InputType.TYPE_CLASS_PHONE);
@@ -211,7 +213,7 @@ public class SinglePollFragment extends Fragment {
                 break;
             case url:
                 et = new EditText(getActivity());
-                et.setHint(field.getTitle());
+                et.setHint(field.getLabel());
                 et.setText(field.getValue());
                 et.setId(field.getId());
                 et.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
@@ -219,7 +221,7 @@ public class SinglePollFragment extends Fragment {
                 break;
             case date:
                 CSDateElement de = new CSDateElement(getActivity());
-                de.setHint(field.getTitle());
+                de.setHint(field.getLabel());
                 de.setText(field.getValue());
                 de.setId(field.getId());
                 de.displayCurrentDate();
@@ -227,29 +229,67 @@ public class SinglePollFragment extends Fragment {
                 break;
             case time:
                 CSTimeElement te = new CSTimeElement(getActivity());
-                te.setHint(field.getTitle());
+                te.setHint(field.getLabel());
                 te.setText(field.getValue());
                 te.setId(field.getId());
                 te.displayCurrentTime();
                 view = te;
                 break;
+            case datetime:
+                et = new EditText(getActivity()); // TODO Parse it correct
+                et.setHint(field.getLabel());
+                et.setText(field.getValue());
+                et.setId(field.getId());
+                view = et;
+                break;
             case range:
+                break;
+            case select:
+                RadioGroup rg = new RadioGroup(getActivity());
+                rg.setOrientation(RadioGroup.VERTICAL);
+                for(Option o : field.getOptionList()) {
+                    RadioButton rb = new RadioButton(getActivity());
+                    rb.setHint(o.getLabel());
+                    rb.setText(o.getLabel());
+                    rb.setId(o.getId());
+                    rg.addView(rb);
+                }
+                view = rg;
+                break;
+            case multiselect:
+                LinearLayout ll = new LinearLayout(getActivity());
+                ll.setOrientation(LinearLayout.VERTICAL);
+
+                for(Option o : field.getOptionList()) {
+                    CheckBox cb = new CheckBox(getActivity());
+                    cb.setHint(o.getLabel());
+                    cb.setText(o.getLabel());
+                    cb.setId(o.getId());
+                    ll.addView(cb);
+                }
+                view = ll;
                 break;
             case checkbox:
                 CheckBox cb = new CheckBox(getActivity());
-                cb.setHint(field.getTitle());
+                cb.setHint(field.getLabel());
                 cb.setId(field.getId());
                 view = cb;
                 break;
             case radio:
-                RadioButton rb = new RadioButton(getActivity());
-                rb.setHint(field.getTitle());
-                rb.setId(field.getId());
-                view = rb;
+                RadioGroup rgg = new RadioGroup(getActivity());
+                rgg.setOrientation(RadioGroup.VERTICAL);
+                for(Option o : field.getOptionList()) {
+                    RadioButton rb = new RadioButton(getActivity());
+                    rb.setHint(o.getLabel());
+                    rb.setText(o.getLabel());
+                    rb.setId(o.getId());
+                    rgg.addView(rb);
+                }
+                view = rgg;
                 break;
         }
 
-        if(field.getCompositeType().compareTo("") != 0) {
+        if(field.getCompositeField().compareTo("") != 0) {
             LinearLayout ll = new LinearLayout(getActivity());
             ll.setOrientation(LinearLayout.VERTICAL);
 
@@ -263,9 +303,8 @@ public class SinglePollFragment extends Fragment {
                     v = createViewForField(f, false);
                 }
 
-                mViewList.add(v);
-
                 if(v != null) {
+                    mViewList.add(v);
                     ll.addView(v);
                 }
             }
@@ -273,12 +312,15 @@ public class SinglePollFragment extends Fragment {
             view = ll;
         }
 
-        if(firstField) {
-            view.requestFocus();
-            view.setNextFocusUpId(R.id.id_SinglePollActivity_Button_Right);
+        if(view != null) {
+            if (firstField) {
+                view.requestFocus();
+                view.setNextFocusUpId(R.id.id_SinglePollActivity_Button_Right);
+            }
+
+            mViewList.add(view);
         }
 
-        mViewList.add(view);
         return view;
     }
 }

@@ -11,12 +11,12 @@ public class StringPollSource implements IPollSource {
     private static final String sClassName = StringPollSource.class.getSimpleName();
 
     @Override
-    public Poll loadPoll(String source) {
+    public Poll loadPoll(String source, String user, String password) {
         return new PollParser().parseString(source);
     }
 
     @Override
-    public List<Command> sendPoll(String destination, String poll) {
+    public List<Command> sendPoll(String destination, String user, String password, String poll) {
         return null;
     }
 }
