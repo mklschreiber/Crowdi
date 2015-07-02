@@ -19,7 +19,7 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.List;
 
 import eu.applabs.crowdsensingapp.R;
-import eu.applabs.crowdsensingapp.data.Constants;
+import eu.applabs.crowdsensingwearlibrary.data.Constants;
 
 public class MainWearActivity extends WearableActivity {
 
@@ -136,8 +136,8 @@ public class MainWearActivity extends WearableActivity {
     private void sendData(String data) {
         if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             PutDataMapRequest dataMapRequest = PutDataMapRequest.create(Constants.NOTIFICATION_APP_PATH);
-            dataMapRequest.getDataMap().putDouble(Constants.NOTIFICATION_APP_TIMESTAMP, System.currentTimeMillis());
             dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_APP_DATA, data);
+            dataMapRequest.getDataMap().putLong(Constants.NOTIFICATION_APP_TIMESTAMP, System.currentTimeMillis());
             PutDataRequest putDataRequest = dataMapRequest.asPutDataRequest();
             Wearable.DataApi.putDataItem(mGoogleApiClient, putDataRequest);
         }

@@ -32,13 +32,20 @@
             android:name=".service.NotificationService"
             android:enabled="true"
             android:exported="true" >
+
             <intent-filter>
                 <action
                     android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
+
             <intent-filter>
                 <action
                     android:name="eu.applabs.crowdsensingapp.DISMISS" />
+            </intent-filter>
+
+            <intent-filter>
+                <action
+                    android:name="eu.applabs.crowdsensingapp.ACTION" />
             </intent-filter>
         </service>
 

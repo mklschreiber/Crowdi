@@ -3,20 +3,25 @@ package eu.applabs.crowdsensingapp.gui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
+import java.io.ByteArrayOutputStream;
+
 import eu.applabs.crowdsensingapp.R;
-import eu.applabs.crowdsensingapp.data.Constants;
+import eu.applabs.crowdsensingwearlibrary.data.Constants;
+import eu.applabs.crowdsensingapp.service.DataTransferService;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceSenderConnection;
 
@@ -73,7 +78,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hear
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.button:
-                sendNotification("Messung starten", "Herzfrequenzmessung starten");
+                showNotification("Title", "Content", "Auf TV starten", DataTransferService.EXTRA_START_ON_TV);
                 break;
             case R.id.button2:
                 mStartPollServiceSenderConnection.startPoll();
@@ -87,12 +92,25 @@ public class MainActivity extends Activity implements View.OnClickListener, Hear
                 .build();
     }
 
-    private void sendNotification(String title, String content) {
+    private void showNotification(String title, String content) {
+        showNotification(title, content, null, null);
+    }
+
+    private void showNotification(String title, String content, String action_label, String action) {
         if(mGoogleApiClient.isConnected()) {
             PutDataMapRequest dataMapRequest = PutDataMapRequest.create(Constants.NOTIFICATION_WEAR_PATH);
-            dataMapRequest.getDataMap().putDouble(Constants.NOTIFICATION_WEAR_TIMESTAMP, System.currentTimeMillis());
             dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_WEAR_TITLE, title);
             dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_WEAR_CONTENT, content);
+            dataMapRequest.getDataMap().putLong(Constants.NOTIFICATION_WEAR_TIMESTAMP, System.currentTimeMillis());
+
+            if(action_label != null) {
+                dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_WEAR_ACTION_LABEL, action_label);
+            }
+
+            if(action != null) {
+                dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_WEAR_ACTION, action);
+            }
+
             PutDataRequest putDataRequest = dataMapRequest.asPutDataRequest();
             Wearable.DataApi.putDataItem(mGoogleApiClient, putDataRequest);
         }
@@ -100,11 +118,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Hear
 
     @Override
     public void onStartNotification() {
-        sendNotification("Auf TV starten", "...");
+        showNotification("Title", "Content", "Auf TV starten", DataTransferService.EXTRA_START_ON_TV);
     }
 
     @Override
     public void onStartMeasuring() {
-        sendNotification("Messung starten", "...");
+        showNotification("Messung starten", "...");
     }
 }

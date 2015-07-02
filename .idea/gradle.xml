@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/crowdsensingtv" />
             <option value="$PROJECT_DIR$/crowdsensingupnplibrary" />
             <option value="$PROJECT_DIR$/crowdsensingwear" />
+            <option value="$PROJECT_DIR$/crowdsensingwearlibrary" />
           </set>
         </option>
       </GradleProjectSettings>

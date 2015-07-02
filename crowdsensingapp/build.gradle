@@ -33,18 +33,15 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     // Poll stuff
     compile project(':crowdsensinglibrary')
-
     // Upnp stuff
     compile project(':crowdsensingupnplibrary')
-
     // Wear stuff
     wearApp project(':crowdsensingwear')
     compile 'com.google.android.support:wearable:1.2.0'
     compile 'com.google.android.gms:play-services-wearable:7.5.0'
-
     // Misc
     compile 'com.android.support:appcompat-v7:22.1.1'
+    compile project(':crowdsensingwearlibrary')
 }
