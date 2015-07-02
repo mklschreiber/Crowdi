@@ -14,7 +14,6 @@ import android.os.Vibrator;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
@@ -23,8 +22,6 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
-
-import java.io.InputStream;
 
 import eu.applabs.crowdsensingapp.R;
 import eu.applabs.crowdsensingwearlibrary.data.Constants;
@@ -35,6 +32,7 @@ public class NotificationService extends WearableListenerService {
     private static final String sClassName = NotificationService.class.getSimpleName();
 
     public static final String EXTRA_ACTION = sClassName + "ExtraAction";
+    public static final String EXTRA_ACTION_URL = sClassName + "ExtraActionUrl";
 
     private int mNotificationId = 001;
     private GoogleApiClient mGoogleApiClient;
@@ -70,7 +68,8 @@ public class NotificationService extends WearableListenerService {
                 dismissNotification();
             } else if(action.equals(Constants.ACTION_WEAR)) {
                 String a = intent.getExtras().getString(EXTRA_ACTION);
-                sendAction(a);
+                String u = intent.getExtras().getString(EXTRA_ACTION_URL);
+                sendAction(a, u);
             }
         }
 
@@ -87,17 +86,19 @@ public class NotificationService extends WearableListenerService {
                 String content = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_WEAR_CONTENT);
                 String action = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_WEAR_ACTION);
                 String action_label = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_WEAR_ACTION_LABEL);
+                String url = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_WEAR_ACTION_URL);
 
                 if(action == null) {
                     action = "";
                     action_label = "";
+                    url = "";
                 }
 
                 if(title != null
                         && content != null
                         && title.compareTo("") != 0
                         && content.compareTo("") != 0) {
-                    showNotification(title, content, action_label, action);
+                    showNotification(title, content, action_label, action, url);
                 } else {
                     dismissNotification();
                 }
@@ -105,17 +106,18 @@ public class NotificationService extends WearableListenerService {
         }
     }
 
-    private void sendAction(String action) {
+    private void sendAction(String action, String url) {
         if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             PutDataMapRequest dataMapRequest = PutDataMapRequest.create(Constants.NOTIFICATION_APP_PATH);
             dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_APP_ACTION, action);
+            dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_APP_URL, url);
             dataMapRequest.getDataMap().putLong(Constants.NOTIFICATION_APP_TIMESTAMP, System.currentTimeMillis());
             PutDataRequest putDataRequest = dataMapRequest.asPutDataRequest();
             Wearable.DataApi.putDataItem(mGoogleApiClient, putDataRequest);
         }
     }
 
-    private void showNotification(String title, String content, String action_label, String action) {
+    private void showNotification(String title, String content, String action_label, String action, String url) {
         Intent activityIntent = new Intent(this, MainWearActivity.class);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0, activityIntent, 0);
 
@@ -134,8 +136,12 @@ public class NotificationService extends WearableListenerService {
                 && action_label != null && action_label.compareTo("") != 0) {
 
             Intent serviceIntent = new Intent(Constants.ACTION_WEAR);
-            serviceIntent.putExtra(EXTRA_ACTION, action);
-            PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, serviceIntent, 0);
+            Bundle extras = new Bundle();
+            extras.putString(EXTRA_ACTION, action);
+            extras.putString(EXTRA_ACTION_URL, url);
+            serviceIntent.putExtras(extras);
+            PendingIntent servicePendingIntent = PendingIntent
+                    .getService(this, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             builder.addAction(R.drawable.open_tv, action_label, servicePendingIntent);
         }

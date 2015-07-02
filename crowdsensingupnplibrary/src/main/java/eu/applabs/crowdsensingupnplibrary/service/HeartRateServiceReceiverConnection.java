@@ -22,7 +22,7 @@ import eu.applabs.crowdsensingupnplibrary.data.HeartRateServiceDefinition;
 public class HeartRateServiceReceiverConnection implements ServiceConnection, PropertyChangeListener {
 
     public interface IHeartRateServiceReceiverConnectionListener {
-        void onStartNotification();
+        void onStartNotification(String title, String content, String url);
         void onStartMeasuring();
     }
 
@@ -79,8 +79,12 @@ public class HeartRateServiceReceiverConnection implements ServiceConnection, Pr
     public void propertyChange(PropertyChangeEvent event) {
         if(event != null) {
             if(event.getPropertyName().compareTo("mStartNotification") == 0) {
+                String notificationTitle = mHeartRateService.getManager().getImplementation().getNotificationTitle();
+                String notificationContent = mHeartRateService.getManager().getImplementation().getNotificationContent();
+                String notificationUrl = mHeartRateService.getManager().getImplementation().getNotificationUrl();
+
                 for(IHeartRateServiceReceiverConnectionListener listener : mIHeartRateServiceReceiverConnectionListenerList) {
-                    listener.onStartNotification();
+                    listener.onStartNotification(notificationTitle, notificationContent, notificationUrl);
                 }
             } else if (event.getPropertyName().compareTo("mStartMeasuring") == 0) {
                 for(IHeartRateServiceReceiverConnectionListener listener : mIHeartRateServiceReceiverConnectionListenerList) {

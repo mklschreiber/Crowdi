@@ -21,11 +21,9 @@ import eu.applabs.crowdsensingtv.R;
 
 import eu.applabs.crowdsensingtv.service.UpnpService;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
-import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceReceiverConnection;
 
 public class MainActivity extends Activity implements ILibraryResultListener,
-        View.OnClickListener, HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener,
-        StartPollServiceReceiverConnection.IStartPollServiceReceiverConnectionListener{
+        View.OnClickListener, HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener {
 
     public static final String BASE_URL = "http://as.applabs.eu:8080/FancyModule/";
 
@@ -74,13 +72,8 @@ public class MainActivity extends Activity implements ILibraryResultListener,
 
     @Override
     public void onDeviceAdded() {
-        mHeartRateServiceSenderConnection.startNotification();
+        mHeartRateServiceSenderConnection.startNotification("Pizza", "Pizza bestellen", "http://as.applabs.eu:8080/FancyModule/pizza");
         mHeartRateServiceSenderConnection.getHeartRate();
-    }
-
-    @Override
-    public void onStartPoll() {
-        Toast.makeText(getApplicationContext(), "Start Poll triggered", Toast.LENGTH_SHORT).show();
     }
 
     @Override

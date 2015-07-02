@@ -28,6 +28,15 @@ public class HeartRateServiceDefinition {
     @UpnpStateVariable(defaultValue = "0", name = "mStartNotification")
     private boolean mStartNotification = false;
 
+    @UpnpStateVariable(defaultValue = "", name = "mNotificationTitle")
+    private String mNotificationTitle = "";
+
+    @UpnpStateVariable(defaultValue = "", name = "mNotificationContent")
+    private String mNotificationContent = "";
+
+    @UpnpStateVariable(defaultValue = "", name = "mNotificationUrl")
+    private String mNotificationUrl = "";
+
     public HeartRateServiceDefinition() {
         mPropertyChangeSupport = new PropertyChangeSupport(this);
     }
@@ -47,6 +56,18 @@ public class HeartRateServiceDefinition {
         mStartMeasuring = false;
     }
 
+    public String getNotificationTitle() {
+        return mNotificationTitle;
+    }
+
+    public String getNotificationContent() {
+        return mNotificationContent;
+    }
+
+    public String getNotificationUrl() {
+        return mNotificationUrl;
+    }
+
     @UpnpAction(out = @UpnpOutputArgument(name = "HeartRate", stateVariable = "mHeartRate"))
     public String getHeartRate()
     {
@@ -61,8 +82,22 @@ public class HeartRateServiceDefinition {
     }
 
     @UpnpAction
-    public void startNotification()
+    public void startNotification(@UpnpInputArgument(name = "NotificationTitle", stateVariable = "mNotificationTitle") String notificationTitle,
+                                  @UpnpInputArgument(name = "NotificationContent", stateVariable = "mNotificationContent") String notificationContent,
+                                  @UpnpInputArgument(name = "NotificationUrl", stateVariable = "mNotificationUrl") String notificationUrl)
     {
+        if(notificationTitle != null) {
+            mNotificationTitle = notificationTitle;
+        }
+
+        if(notificationContent != null) {
+            mNotificationContent = notificationContent;
+        }
+
+        if(notificationUrl != null) {
+            mNotificationUrl = notificationUrl;
+        }
+
         boolean oldValue = mStartNotification;
         mStartNotification = true;
 

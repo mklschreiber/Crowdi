@@ -1,6 +1,7 @@
 package eu.applabs.crowdsensingupnplibrary.data;
 
 import org.fourthline.cling.binding.annotations.UpnpAction;
+import org.fourthline.cling.binding.annotations.UpnpInputArgument;
 import org.fourthline.cling.binding.annotations.UpnpService;
 import org.fourthline.cling.binding.annotations.UpnpServiceId;
 import org.fourthline.cling.binding.annotations.UpnpServiceType;
@@ -17,11 +18,18 @@ public class StartPollServiceDefinition {
 
     private PropertyChangeSupport mPropertyChangeSupport;
 
+    @UpnpStateVariable(defaultValue = "", name = "mPollUrl")
+    private String mPollUrl = "";
+
     @UpnpStateVariable(defaultValue = "0", name = "mStartPoll")
     private boolean mStartPoll = false;
 
     public StartPollServiceDefinition() {
         mPropertyChangeSupport = new PropertyChangeSupport(this);
+    }
+
+    public String getPollUrl() {
+        return mPollUrl;
     }
 
     public void registerListener(PropertyChangeListener listener) {
@@ -33,8 +41,12 @@ public class StartPollServiceDefinition {
     }
 
     @UpnpAction
-    public void startPoll()
+    public void startPoll(@UpnpInputArgument(name = "PollUrl", stateVariable = "mPollUrl") String pollUrl)
     {
+        if(pollUrl != null) {
+            mPollUrl = pollUrl;
+        }
+
         boolean oldValue = mStartPoll;
         mStartPoll = true;
 

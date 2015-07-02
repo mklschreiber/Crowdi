@@ -50,14 +50,15 @@ public class DataTransferService extends WearableListenerService {
                 String data = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_APP_DATA);
 
                 String action = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_APP_ACTION);
+                String url = dataMapItem.getDataMap().getString(Constants.NOTIFICATION_APP_URL);
 
                 if(data != null && data.compareTo("") != 0) {
                     Toast.makeText(this, "Received data: " + data, Toast.LENGTH_SHORT).show();
                     sHeartRate = data;
                 }
 
-                if(action != null && action.compareTo(EXTRA_START_ON_TV) == 0) {
-                    mStartPollServiceSenderConnection.startPoll();
+                if(action != null && url != null && action.compareTo(EXTRA_START_ON_TV) == 0) {
+                    mStartPollServiceSenderConnection.startPoll(url);
                 }
             }
         }

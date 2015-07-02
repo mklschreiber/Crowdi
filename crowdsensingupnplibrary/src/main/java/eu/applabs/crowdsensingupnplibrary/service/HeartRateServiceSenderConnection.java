@@ -3,8 +3,10 @@ package eu.applabs.crowdsensingupnplibrary.service;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 import org.fourthline.cling.android.AndroidUpnpService;
+import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.controlpoint.ActionCallback;
 import org.fourthline.cling.model.action.ActionArgumentValue;
 import org.fourthline.cling.model.action.ActionInvocation;
@@ -21,6 +23,8 @@ import java.util.List;
 
 public class HeartRateServiceSenderConnection extends DefaultRegistryListener implements ServiceConnection {
 
+    private static final String sClassName = HeartRateServiceSenderConnection.class.getSimpleName();
+
     public interface IHeartRateServiceSenderConnectionListener
     {
         void onDeviceAdded();
@@ -29,6 +33,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
 
     private AndroidUpnpService mAndroidUpnpService = null;
     private List<IHeartRateServiceSenderConnectionListener> mICSUpnpServiceConnectionListenerList = null;
+    private PeriodicSearchThread mPeriodicSearchThread = null;
 
     public HeartRateServiceSenderConnection() {
         mICSUpnpServiceConnectionListenerList = new ArrayList<>();
@@ -42,7 +47,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
         mICSUpnpServiceConnectionListenerList.remove(listener);
     }
 
-    public void startNotification() {
+    public void startNotification(String title, String content, String url) {
         if(mAndroidUpnpService != null) {
             for (Device device : mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices()) {
                 Service pollNotificationService =
@@ -50,7 +55,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
 
                 if (pollNotificationService != null) {
                     StartNotificationActionInvocation action =
-                            new StartNotificationActionInvocation(pollNotificationService);
+                            new StartNotificationActionInvocation(pollNotificationService, title, content, url);
 
                     if (action != null) {
                         mAndroidUpnpService.getControlPoint().execute(
@@ -126,6 +131,9 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
 
         mAndroidUpnpService.getRegistry().addListener(this);
         mAndroidUpnpService.getControlPoint().search();
+
+        mPeriodicSearchThread = new PeriodicSearchThread(mAndroidUpnpService);
+        mPeriodicSearchThread.start();
     }
 
     @Override
@@ -134,6 +142,11 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
             mAndroidUpnpService.getRegistry().removeListener(this);
         }
 
+        if(mPeriodicSearchThread != null) {
+            mPeriodicSearchThread.stopThread();
+        }
+
+        mPeriodicSearchThread = null;
         mAndroidUpnpService = null;
     }
 
@@ -147,14 +160,56 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
     }
 
     private class StartNotificationActionInvocation extends ActionInvocation {
-        StartNotificationActionInvocation(Service service) {
+        StartNotificationActionInvocation(Service service, String title, String content, String url) {
             super(service.getAction("StartNotification"));
+
+            try {
+                setInput("NotificationTitle", title);
+                setInput("NotificationContent", content);
+                setInput("NotificationUrl", url);
+            } catch(Exception e) {
+                Log.e(sClassName, e.getMessage());
+            }
         }
     }
 
     private class GetHeartRateActionInvocation extends ActionInvocation {
         GetHeartRateActionInvocation(Service service) {
             super(service.getAction("GetHeartRate"));
+        }
+    }
+
+    private class PeriodicSearchThread extends Thread {
+        private AndroidUpnpService mAndroidUpnpService = null;
+        private boolean mRunning = false;
+
+        public PeriodicSearchThread(AndroidUpnpService service) {
+            mAndroidUpnpService = service;
+        }
+
+        public void stopThread() {
+            try {
+                mRunning = false;
+
+                this.interrupt();
+            } catch (Exception e) {
+                Log.e(sClassName, e.getMessage());
+            }
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            try {
+                mRunning = true;
+
+                while (mRunning) {
+                    mAndroidUpnpService.getControlPoint().search();
+                    Thread.sleep(3000);
+                }
+            } catch (Exception e) {
+                Log.e(sClassName, e.getMessage());
+            }
         }
     }
 }

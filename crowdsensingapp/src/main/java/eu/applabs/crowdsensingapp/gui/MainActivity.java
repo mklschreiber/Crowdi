@@ -3,21 +3,16 @@ package eu.applabs.crowdsensingapp.gui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
-
-import java.io.ByteArrayOutputStream;
 
 import eu.applabs.crowdsensingapp.R;
 import eu.applabs.crowdsensingwearlibrary.data.Constants;
@@ -78,10 +73,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Hear
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.button:
-                showNotification("Title", "Content", "Auf TV starten", DataTransferService.EXTRA_START_ON_TV);
+                showNotification("Pizza", "Pizza wählen", "Auf TV starten", DataTransferService.EXTRA_START_ON_TV, "http://as.applabs.eu:8080/FancyModule/pizza");
                 break;
             case R.id.button2:
-                mStartPollServiceSenderConnection.startPoll();
+                mStartPollServiceSenderConnection.startPoll("http://as.applabs.eu:8080/FancyModule/pizza");
                 break;
         }
     }
@@ -93,10 +88,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Hear
     }
 
     private void showNotification(String title, String content) {
-        showNotification(title, content, null, null);
+        showNotification(title, content, null, null, null);
     }
 
-    private void showNotification(String title, String content, String action_label, String action) {
+    private void showNotification(String title, String content, String action_label, String action, String url) {
         if(mGoogleApiClient.isConnected()) {
             PutDataMapRequest dataMapRequest = PutDataMapRequest.create(Constants.NOTIFICATION_WEAR_PATH);
             dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_WEAR_TITLE, title);
@@ -111,14 +106,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Hear
                 dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_WEAR_ACTION, action);
             }
 
+            if(url != null) {
+                dataMapRequest.getDataMap().putString(Constants.NOTIFICATION_WEAR_ACTION_URL, url);
+            }
+
             PutDataRequest putDataRequest = dataMapRequest.asPutDataRequest();
             Wearable.DataApi.putDataItem(mGoogleApiClient, putDataRequest);
         }
     }
 
     @Override
-    public void onStartNotification() {
-        showNotification("Title", "Content", "Auf TV starten", DataTransferService.EXTRA_START_ON_TV);
+    public void onStartNotification(String title, String content, String url) {
+        showNotification(title, content, "Auf TV starten", DataTransferService.EXTRA_START_ON_TV, url);
     }
 
     @Override

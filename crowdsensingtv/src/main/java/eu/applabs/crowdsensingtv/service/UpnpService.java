@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
 import eu.applabs.crowdsensingtv.gui.MainActivity;
+import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
 import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceReceiverConnection;
 
 public class UpnpService extends Service implements StartPollServiceReceiverConnection.IStartPollServiceReceiverConnectionListener {
@@ -41,8 +42,9 @@ public class UpnpService extends Service implements StartPollServiceReceiverConn
     }
 
     @Override
-    public void onStartPoll() {
-        Intent intent = new Intent(this, MainActivity.class);
+    public void onStartPoll(String url) {
+        Intent intent = new Intent(this, SinglePollActivity.class);
+        intent.putExtra(SinglePollActivity.EXTRA_URL, url);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

@@ -3,6 +3,7 @@ package eu.applabs.crowdsensingupnplibrary.service;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.controlpoint.ActionCallback;
@@ -15,9 +16,11 @@ import org.fourthline.cling.model.types.UDAServiceId;
 
 public class StartPollServiceSenderConnection implements ServiceConnection {
 
+    private static final String sClassName = StartPollServiceSenderConnection.class.getSimpleName();
+
     private AndroidUpnpService mAndroidUpnpService = null;
 
-    public void startPoll() {
+    public void startPoll(String url) {
         if(mAndroidUpnpService != null) {
             for (Device device : mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices()) {
                 Service pollNotificationService =
@@ -25,7 +28,7 @@ public class StartPollServiceSenderConnection implements ServiceConnection {
 
                 if (pollNotificationService != null) {
                     StartPollActionInvocation action =
-                            new StartPollActionInvocation(pollNotificationService);
+                            new StartPollActionInvocation(pollNotificationService, url);
 
                     if (action != null) {
                         mAndroidUpnpService.getControlPoint().execute(
@@ -61,8 +64,13 @@ public class StartPollServiceSenderConnection implements ServiceConnection {
     }
 
     private class StartPollActionInvocation extends ActionInvocation {
-        StartPollActionInvocation(Service service) {
+        StartPollActionInvocation(Service service, String url) {
             super(service.getAction("StartPoll"));
+            try {
+                setInput("PollUrl", url);
+            } catch(Exception e) {
+                Log.e(sClassName, e.getMessage());
+            }
         }
     }
 }

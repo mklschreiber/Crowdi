@@ -22,7 +22,7 @@ import eu.applabs.crowdsensingupnplibrary.data.StartPollServiceDefinition;
 public class StartPollServiceReceiverConnection implements ServiceConnection, PropertyChangeListener {
 
     public interface IStartPollServiceReceiverConnectionListener {
-        void onStartPoll();
+        void onStartPoll(String url);
     }
 
     private UDN mUDN = new UDN(UUID.randomUUID());
@@ -72,8 +72,10 @@ public class StartPollServiceReceiverConnection implements ServiceConnection, Pr
     public void propertyChange(PropertyChangeEvent event) {
         if(event != null) {
             if(event.getPropertyName().compareTo("mStartPoll") == 0) {
+                String pollUrl = mStartPollService.getManager().getImplementation().getPollUrl();
+
                 for(IStartPollServiceReceiverConnectionListener listener : mIHeartRateServiceReceiverConnectionListenerList) {
-                    listener.onStartPoll();
+                    listener.onStartPoll(pollUrl);
                 }
             }
         }
