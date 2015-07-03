@@ -1,9 +1,16 @@
 apply plugin: 'com.android.library'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'uni'
+            keyPassword 'android'
+            storeFile file('C:/Program Files (x86)/Entwicklungsumgebung/Uni.jks')
+            storePassword 'android'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
@@ -14,10 +21,17 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    // Wear stuff
+    compile 'com.google.android.support:wearable:1.2.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
 }

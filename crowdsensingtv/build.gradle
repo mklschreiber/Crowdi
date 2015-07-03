@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'uni'
+            keyPassword 'android'
+            storeFile file('C:/Program Files (x86)/Entwicklungsumgebung/Uni.jks')
+            storePassword 'android'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "eu.applabs.crowdsensingtv"
         minSdkVersion 21
@@ -11,14 +18,16 @@ android {
         versionCode 1
         versionName "1.0"
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
-
     packagingOptions {
         exclude 'META-INF/beans.xml'
     }
@@ -34,16 +43,15 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     // Poll stuff
     compile project(':crowdsensinglibrary')
-
     // Upnp stuff
     compile project(':crowdsensingupnplibrary')
-
+    // Fitness stuff
+    compile project(':crowdsensingfitnesslibrary')
     // TV stuff
-    compile 'com.android.support:recyclerview-v7:22.1.1'
-    compile 'com.android.support:leanback-v17:22.1.1'
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:leanback-v17:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.squareup.picasso:picasso:2.3.2'
 }

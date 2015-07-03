@@ -71,8 +71,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/leanback-v17/22.1.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.1.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/leanback-v17/22.2.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jacoco" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaResources" />
@@ -86,15 +86,14 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
-      <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="seamless-util-1.1.0" level="project" />
-    <orderEntry type="library" exported="" name="leanback-v17-22.1.1" level="project" />
-    <orderEntry type="library" exported="" name="cling-core-2.0.1" level="project" />
+    <orderEntry type="library" exported="" name="leanback-v17-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="jetty-client-8.1.12.v20130726" level="project" />
-    <orderEntry type="library" exported="" name="recyclerview-v7-22.1.1" level="project" />
+    <orderEntry type="library" exported="" name="cling-core-2.0.1" level="project" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="jetty-util-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="jetty-servlet-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="javax.servlet-3.0.0.v201112011016" level="project" />
@@ -102,11 +101,11 @@
     <orderEntry type="library" exported="" name="slf4j-jdk14-1.7.5" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
-    <orderEntry type="library" exported="" name="cling-support-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.3.2" level="project" />
-    <orderEntry type="library" exported="" name="jetty-server-8.1.12.v20130726" level="project" />
-    <orderEntry type="library" exported="" name="seamless-http-1.1.0" level="project" />
+    <orderEntry type="library" exported="" name="cling-support-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="jetty-io-8.1.12.v20130726" level="project" />
+    <orderEntry type="library" exported="" name="seamless-http-1.1.0" level="project" />
+    <orderEntry type="library" exported="" name="jetty-server-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="seamless-swing-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="seamless-xml-1.1.0" level="project" />
@@ -114,6 +113,7 @@
     <orderEntry type="library" exported="" name="slf4j-api-1.7.5" level="project" />
     <orderEntry type="library" exported="" name="jetty-continuation-8.1.12.v20130726" level="project" />
     <orderEntry type="module" module-name="crowdsensingupnplibrary" exported="" />
+    <orderEntry type="module" module-name="crowdsensingfitnesslibrary" exported="" />
     <orderEntry type="module" module-name="crowdsensinglibrary" exported="" />
   </component>
 </module>

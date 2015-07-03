@@ -2,9 +2,16 @@ apply plugin: 'com.android.application'
 
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'uni'
+            keyPassword 'android'
+            storeFile file('C:/Program Files (x86)/Entwicklungsumgebung/Uni.jks')
+            storePassword 'uni'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "eu.applabs.crowdsensingapp"
         minSdkVersion 22
@@ -16,14 +23,17 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.google.android.support:wearable:1.2.0'
-    compile 'com.google.android.gms:play-services-wearable:7.5.0'
-    provided 'com.google.android.wearable:wearable:1.0.0'
+    // Wear stuff
     compile project(':crowdsensingwearlibrary')
+    provided 'com.google.android.wearable:wearable:1.0.0'
 }
