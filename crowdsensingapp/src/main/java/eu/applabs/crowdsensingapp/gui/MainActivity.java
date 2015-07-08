@@ -9,15 +9,26 @@ import android.widget.Toast;
 
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import eu.applabs.crowdsensingapp.R;
 import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
+import eu.applabs.crowdsensingfitnesslibrary.data.ActivityCountBucket;
+import eu.applabs.crowdsensingfitnesslibrary.data.ActivityTimeBucket;
+import eu.applabs.crowdsensingfitnesslibrary.data.Person;
+import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
+import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
 import eu.applabs.crowdsensingwearlibrary.gui.WearConnectionActivity;
 import eu.applabs.crowdsensingwearlibrary.service.DataTransferService;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceSenderConnection;
 
 public class MainActivity extends WearConnectionActivity implements View.OnClickListener,
-        HeartRateServiceReceiverConnection.IHeartRateServiceReceiverConnectionListener {
+        HeartRateServiceReceiverConnection.IHeartRateServiceReceiverConnectionListener,
+        FitnessLibrary.IFitnessLibraryListener {
 
     private HeartRateServiceReceiverConnection mHeartRateServiceReceiverConnection;
     private StartPollServiceSenderConnection mStartPollServiceSenderConnection;
@@ -42,7 +53,8 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         setContentView(R.layout.activity_main);
 
         mFitnessLibrary = new FitnessLibrary(this);
-        mFitnessLibrary.connect();
+        mFitnessLibrary.registerListener(this);
+        mFitnessLibrary.connect(Portal.PortalType.Google);
 
         mHeartRateServiceReceiverConnection = new HeartRateServiceReceiverConnection();
         mStartPollServiceSenderConnection = new StartPollServiceSenderConnection();
@@ -51,6 +63,18 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         b.setOnClickListener(this);
 
         b = (Button) findViewById(R.id.button2);
+        b.setOnClickListener(this);
+
+        b = (Button) findViewById(R.id.button3);
+        b.setOnClickListener(this);
+
+        b = (Button) findViewById(R.id.button4);
+        b.setOnClickListener(this);
+
+        b = (Button) findViewById(R.id.button5);
+        b.setOnClickListener(this);
+
+        b = (Button) findViewById(R.id.button6);
         b.setOnClickListener(this);
     }
 
@@ -85,13 +109,20 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         unbindService(mStartPollServiceSenderConnection);
 
         if(mFitnessLibrary != null) {
-            mFitnessLibrary.disconnect();
+            mFitnessLibrary.disconnect(Portal.PortalType.Google);
             mFitnessLibrary = null;
         }
     }
 
     @Override
     public void onClick(View v) {
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+        long endTime = cal.getTimeInMillis();
+        cal.add(Calendar.WEEK_OF_YEAR, -1);
+        long startTime = cal.getTimeInMillis();
+
         switch(v.getId()) {
             case R.id.button:
                 showNotification("Pizza", "Pizza wählen", "Auf TV starten",
@@ -99,6 +130,36 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
                 break;
             case R.id.button2:
                 mStartPollServiceSenderConnection.startPoll("http://as.applabs.eu:8080/FancyModule/pizza");
+                break;
+            case R.id.button3:
+                mFitnessLibrary.getPerson(Portal.PortalType.Google);
+                break;
+            case R.id.button4:
+                mFitnessLibrary.getSteps(Portal.PortalType.Google,
+                        startTime,
+                        endTime,
+                        TimeUnit.MILLISECONDS,
+                        1,
+                        TimeUnit.DAYS
+                        );
+                break;
+            case R.id.button5:
+                mFitnessLibrary.getActivityCount(Portal.PortalType.Google,
+                        startTime,
+                        endTime,
+                        TimeUnit.MILLISECONDS,
+                        1,
+                        TimeUnit.DAYS
+                );
+                break;
+            case R.id.button6:
+                mFitnessLibrary.getActivityTime(Portal.PortalType.Google,
+                        startTime,
+                        endTime,
+                        TimeUnit.MILLISECONDS,
+                        1,
+                        TimeUnit.DAYS
+                );
                 break;
         }
     }
@@ -111,5 +172,25 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     @Override
     public void onStartMeasuring() {
         showNotification("Messung starten", "...");
+    }
+
+    @Override
+    public void onPersonReceived(Person person) {
+
+    }
+
+    @Override
+    public void onStepsReceived(List<StepBucket> list) {
+
+    }
+
+    @Override
+    public void onActivityTimeReceived(List<ActivityTimeBucket> list) {
+
+    }
+
+    @Override
+    public void onActivityCountReceived(List<ActivityCountBucket> list) {
+
     }
 }

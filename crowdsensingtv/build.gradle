@@ -43,15 +43,15 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:leanback-v17:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.squareup.picasso:picasso:2.3.2'
+
     // Poll stuff
     compile project(':crowdsensinglibrary')
     // Upnp stuff
     compile project(':crowdsensingupnplibrary')
     // Fitness stuff
     compile project(':crowdsensingfitnesslibrary')
-    // TV stuff
-    compile 'com.android.support:recyclerview-v7:22.2.0'
-    compile 'com.android.support:leanback-v17:22.2.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.squareup.picasso:picasso:2.3.2'
 }

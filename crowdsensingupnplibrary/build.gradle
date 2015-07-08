@@ -38,7 +38,7 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.2.0'
+
     // Cling
     compile 'org.fourthline.cling:cling-core:2.0.1'
     compile 'org.fourthline.cling:cling-support:2.0.1'

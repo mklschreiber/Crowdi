@@ -33,6 +33,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
     // Wear stuff
     compile project(':crowdsensingwearlibrary')
     provided 'com.google.android.wearable:wearable:1.0.0'

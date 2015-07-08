@@ -43,6 +43,9 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:multidex:1.0.0'
+
     // Poll stuff
     compile project(':crowdsensinglibrary')
     // Upnp stuff
@@ -52,7 +55,4 @@ dependencies {
     // Wear stuff
     compile project(':crowdsensingwearlibrary')
     wearApp project(':crowdsensingwear')
-    // Misc
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:multidex:1.0.0'
 }
