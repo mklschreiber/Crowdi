@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +32,7 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         HeartRateServiceReceiverConnection.IHeartRateServiceReceiverConnectionListener,
         FitnessLibrary.IFitnessLibraryListener, CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener {
 
+    private MainActivity mActivity = null;
     private HeartRateServiceReceiverConnection mHeartRateServiceReceiverConnection;
     private StartPollServiceSenderConnection mStartPollServiceSenderConnection;
 
@@ -51,14 +54,11 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mActivity = this;
 
         mFitnessLibrary = new FitnessLibrary(this);
         mFitnessLibrary.registerListener(this);
         mFitnessLibrary.connect(Portal.PortalType.Google);
-
-        CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(this, "Zeit", "Misc");
-        dialog.registerListener(this);
-        dialog.show();
 
         mHeartRateServiceReceiverConnection = new HeartRateServiceReceiverConnection();
         mStartPollServiceSenderConnection = new StartPollServiceSenderConnection();
@@ -172,13 +172,54 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     }
 
     @Override
-    public void onStepsReceived(List<StepBucket> list) {
+    public void onStepsReceived(final List<StepBucket> list) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String> valueList = new ArrayList<>();
+                ArrayList<String> valueLabelList = new ArrayList<>();
 
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+                for(StepBucket bucket : list) {
+                    valueList.add(String.valueOf(bucket.getStepCount()));
+                    String startDate = sdf.format(bucket.getStepStartDate());
+                    String endDate = sdf.format(bucket.getStepEndDate());
+
+                    valueLabelList.add("Steps\n\n" + startDate + "\n - \n" + endDate);
+                }
+
+                CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
+                dialog.registerListener(mActivity);
+                dialog.show();
+            }
+        });
     }
 
     @Override
-    public void onActivitiesReceived(List<ActivityBucket> list) {
+    public void onActivitiesReceived(final List<ActivityBucket> list) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String> valueList = new ArrayList<>();
+                ArrayList<String> valueLabelList = new ArrayList<>();
 
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+                for(ActivityBucket bucket : list) {
+                    valueList.add(String.valueOf(bucket.getActivityCount()));
+                    String activity = eu.applabs.crowdsensingfitnesslibrary.data.Activity.convertToString(bucket.getActivityType());
+                    String startDate = sdf.format(bucket.getActivityStartDate());
+                    String endDate = sdf.format(bucket.getActivityEndDate());
+
+                    valueLabelList.add(activity + "\n\n" + startDate + "\n - \n" + endDate);
+                }
+
+                CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
+                dialog.registerListener(mActivity);
+                dialog.show();
+            }
+        });
     }
 
     @Override

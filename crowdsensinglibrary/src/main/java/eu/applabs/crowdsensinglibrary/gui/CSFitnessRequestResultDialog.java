@@ -25,20 +25,28 @@ public class CSFitnessRequestResultDialog extends Dialog implements View.OnClick
     private CSFitnessRequestResultDialog mCSFitnessRequestResultDialog = null;
     private String mLabelVerticalAxis = null;
     private String mLabelHorizontalAxis = null;
+    private List<String> mValues = null;
+    private List<String> mValueLabels = null;
     private LinearLayout mLinearLayout = null;
     private boolean mButtonsGenerated = false;
+
+    private int mMaximum = 0;
 
     private List<ICSFitnessRequestResultDialogListener> mICSFitnessRequestResultDialogListenerList = null;
 
     public CSFitnessRequestResultDialog(Context context,
                                         String labelVerticalAxis,
-                                        String labelHorizontalAxis) {
+                                        String labelHorizontalAxis,
+                                        List<String> values,
+                                        List<String> valueLabels) {
         super(context);
 
         mContext = context;
         mCSFitnessRequestResultDialog = this;
         mLabelVerticalAxis = labelVerticalAxis;
         mLabelHorizontalAxis = labelHorizontalAxis;
+        mValues = values;
+        mValueLabels = valueLabels;
         mICSFitnessRequestResultDialogListenerList = new ArrayList<>();
     }
 
@@ -69,18 +77,69 @@ public class CSFitnessRequestResultDialog extends Dialog implements View.OnClick
                         if(!mButtonsGenerated) {
                             mButtonsGenerated = true;
 
-                            for (int i = 1; i < 10; ++i) {
-                                Button button = new Button(mContext);
-                                button.setText("Button" + String.valueOf(i));
-                                button.setHeight(mLinearLayout.getHeight() / i);
-                                button.setOnClickListener(mCSFitnessRequestResultDialog);
+                            for (int i = 0; i < mValues.size(); ++i) {
+                                LinearLayout ll = new LinearLayout(mContext);
+                                ll.setOrientation(LinearLayout.VERTICAL);
 
-                                mLinearLayout.addView(button);
+                                Button button = new Button(mContext);
+                                button.setOnClickListener(mCSFitnessRequestResultDialog);
+                                button.setText(mValues.get(i));
+
+                                int height = getHeight(mValues.get(i), mValues, mLinearLayout.getHeight() - 100);
+
+                                if(height > 0) {
+                                    button.setHeight(height);
+                                }
+
+                                if(i == 0) {
+                                    button.requestFocus();
+                                }
+
+                                TextView tv = new TextView(mContext);
+                                tv.setText(mValueLabels.get(i));
+                                tv.setFocusable(false);
+
+                                ll.addView(button);
+                                ll.addView(tv);
+
+                                mLinearLayout.addView(ll);
                             }
                         }
                     }
                 }
         );
+    }
+
+    private int getHeight(String value, List<String> values, int parentHeight) {
+        int height = 0;
+        int valuesMax = 0;
+
+        // Calculate the maximum
+        for(String s : values) {
+            try {
+                int temp = Integer.valueOf(s);
+
+                if(temp > valuesMax) {
+                    valuesMax = temp;
+                }
+            } catch (Exception e) {
+                float temp = Float.valueOf(s);
+
+                if(temp > valuesMax) {
+                    valuesMax = (int) temp;
+                }
+            }
+        }
+
+        try {
+            int temp = Integer.valueOf(value);
+            height = temp * parentHeight / valuesMax;
+        } catch (Exception e) {
+            float temp = Float.valueOf(value);
+            height = ((int) temp) * parentHeight / valuesMax;
+        }
+
+        return height;
     }
 
     @Override

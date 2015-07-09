@@ -11,19 +11,22 @@ import android.widget.Toast;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.model.action.ActionArgumentValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
+import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
 import eu.applabs.crowdsensingtv.R;
 
 import eu.applabs.crowdsensingtv.service.UpnpService;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
 public class MainActivity extends Activity implements ILibraryResultListener,
-        View.OnClickListener, HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener {
+        View.OnClickListener, HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener,
+        CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener{
 
     public static final String BASE_URL = "http://as.applabs.eu:8080/FancyModule/";
 
@@ -135,5 +138,10 @@ public class MainActivity extends Activity implements ILibraryResultListener,
     private void startPeriodicNotification() {
         BootupActivity ba = new BootupActivity();
         ba.onReceive(this, new Intent().setAction(Intent.ACTION_BOOT_COMPLETED));
+    }
+
+    @Override
+    public void onValueSelected(String value) {
+        Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
     }
 }

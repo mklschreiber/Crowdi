@@ -115,4 +115,235 @@ public class Activity {
         REM_Sleep,
         Awake
     }
+
+    public static String convertToString(Type type) {
+        switch(type) {
+            case In_Vehicle:
+                return "In vehicle";
+            case Biking:
+                return "Biking";
+            case On_Foot:
+                return "On foot";
+            case Still:
+                return "Still";
+            case Unknown:
+                return "Unknown";
+            case Tilting:
+                return "Tilting";
+            case Walking:
+                return "Walking";
+            case Running:
+                return "Running";
+            case Aerobic:
+                return "Aerobic";
+            case Badminton:
+                return "Badminton";
+            case Baseball:
+                return "Baseball";
+            case Basketball:
+                return "Basketball";
+            case Biathlon:
+                return "Biathlon";
+            case Handbiking:
+                return "Handbiking";
+            case Mountain_Biking:
+                return "Mountain biking";
+            case Road_Biking:
+                return "Road biking";
+            case Spinning:
+                return "Spinning";
+            case Stationary_Biking:
+                return "Stationary biking";
+            case Utility_Biking:
+                return "Utility biking";
+            case Boxing:
+                return "Boxing";
+            case Calisthenics:
+                return "Calisthenics";
+            case Circuit_Training:
+                return "Circuit training";
+            case Cricket:
+                return "Cricket";
+            case Dancing:
+                return "Dancing";
+            case Elliptical:
+                return "Elliptical";
+            case Fencing:
+                return "Fencing";
+            case American_Football:
+                return "American football";
+            case Australian_Football:
+                return "Australian football";
+            case Soccer_Football:
+                return "Soccer football";
+            case Frisbee:
+                return "Frisbee";
+            case Gardening:
+                return "Gardening";
+            case Golf:
+                return "Golf";
+            case Gymnastics:
+                return "Gymnastic";
+            case Handball:
+                return "Handball";
+            case Hiking:
+                return "Hiking";
+            case Hockey:
+                return "Hockey";
+            case Horseback_Riding:
+                return "Horseback Riding";
+            case Housework:
+                return "Housework";
+            case Jumping_Rope:
+                return "Jumping rope";
+            case Kayaking:
+                return "Kayaking";
+            case Kettlebell_Training:
+                return "Kettleball training";
+            case Kickboxing:
+                return "Kickboxing";
+            case Kitesurfing:
+                return "Kitesurfing";
+            case Material_Arts:
+                return "Material arts";
+            case Meditation:
+                return "Meditation";
+            case Mixed_Material_Arts:
+                return "Mixed material arts";
+            case P90X_Exercises:
+                return "P90X exercises";
+            case Paragliding:
+                return "Paragliding";
+            case Pilates:
+                return "Pilates";
+            case Polo:
+                return "Polo";
+            case Racquetball:
+                return "Racquetball";
+            case Rock_Climbing:
+                return "Rock climbing";
+            case Rowing:
+                return "Rowing";
+            case Rowing_Machine:
+                return "Rowing machine";
+            case Rugby:
+                return "Rugby";
+            case Jogging:
+                return "Jogging";
+            case Running_On_Sand:
+                return "Running on sand";
+            case Running_Treadmill:
+                return "Running (Treadmill)";
+            case Sailing:
+                return "Sailing";
+            case Scuba_Diving:
+                return "Scuba diving";
+            case Skateboarding:
+                return "Sakteboarding";
+            case Skating:
+                return "Skating";
+            case Cross_Skating:
+                return "Cross skating";
+            case Inline_Skating:
+                return "Inline skating";
+            case Skiing:
+                return "Skiing";
+            case Back_Country_Skiing:
+                return "Back country skiing";
+            case Cross_Country_Skiing:
+                return "Cross country skiing";
+            case Downhill_Skiing:
+                return "Downhill skiing";
+            case Kite_Skiing:
+                return "Kite skiing";
+            case Roller_Skiing:
+                return "Roller skiing";
+            case Sledding:
+                return "Sledding";
+            case Sleeping:
+                return "Sleeping";
+            case Snowboarding:
+                return "Snowboarding";
+            case Snowmobile:
+                return "Snowmobile";
+            case Snowshoeing:
+                return "Snowshoeing";
+            case Squash:
+                return "Squash";
+            case Stair_Climbing:
+                return "Stair climbing";
+            case Stair_Climbing_Machine:
+                return "Stair climbing machine";
+            case Stand_Up_Paddleboarding:
+                return "Stand up paddleboarding";
+            case Strength_Training:
+                return "Strength training";
+            case Surfing:
+                return "Surfing";
+            case Swimming:
+                return "Swimming";
+            case Swimming_Open_Water:
+                return "Swimming open water";
+            case Swimming_Swimming_Pool:
+                return "Swimming swimming pool";
+            case Table_Tennis:
+                return "Table tennis";
+            case Team_Sports:
+                return "Team sports";
+            case Tennis:
+                return "Tennis";
+            case Treadmill:
+                return "Treadmill";
+            case Volleyball:
+                return "Volleyball";
+            case Volleyball_Beach:
+                return "Volleyball beach";
+            case Volleyball_Indoor:
+                return "Volleyball indoor";
+            case Wakeboarding:
+                return "Wakeboarding";
+            case Walking_Fitness:
+                return "Walking fitness";
+            case Nording_Walking:
+                return "Nording walking";
+            case Walking_Treadmill:
+                return "Walking (Treadmill)";
+            case Waterpolo:
+                return "Waterpolo";
+            case Weightlifting:
+                return "Weightlifiting";
+            case Wheelchair:
+                return "Wheelchair";
+            case Windsurfing:
+                return "Windsurfing";
+            case Yoga:
+                return "Yoga";
+            case Zumba:
+                return "Zumba";
+            case Diving:
+                return "Diving";
+            case Ergometer:
+                return "Ergometer";
+            case Ice_Skating:
+                return "Ice skating";
+            case Indoor_Skating:
+                return "Indoor skating";
+            case Curling:
+                return "Curling";
+            case PLACEHOLDER_NOT_DEFINED:
+                return "";
+            case Other:
+                return "Other";
+            case Light_Sleep:
+                return "Ligth sleep";
+            case Deep_Sleep:
+                return "Deep sleep";
+            case REM_Sleep:
+                return "REM sleep";
+            case Awake:
+                return "Awake";
+            default:
+                return "";
+        }
+    }
 }

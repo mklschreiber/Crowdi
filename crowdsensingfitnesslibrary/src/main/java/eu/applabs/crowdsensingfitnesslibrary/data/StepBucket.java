@@ -5,25 +5,35 @@ import java.util.Date;
 
 public class StepBucket {
     private int mStepCount = 0;
-    private Date mStepDate = null;
+    private Date mStepStartDate = null;
+    private Date mStepEndDate = null;
 
     public StepBucket() {
-        mStepDate = Calendar.getInstance().getTime();
+        mStepStartDate = Calendar.getInstance().getTime();
+        mStepEndDate = Calendar.getInstance().getTime();
     }
 
     public void setStepCount(int stepCount) {
         mStepCount = stepCount;
     }
 
-    public void setStepDate(Date stepDate) {
-        mStepDate = stepDate;
+    public void setStepStartDate(Date stepStartDate) {
+        mStepStartDate = stepStartDate;
+    }
+
+    public void setStepEndDate(Date stepEndDate) {
+        mStepEndDate = stepEndDate;
     }
 
     public int getStepCount() {
         return mStepCount;
     }
 
-    public Date getStepDate() {
-        return mStepDate;
+    public Date getStepStartDate() {
+        return mStepStartDate;
+    }
+
+    public Date getStepEndDate() {
+        return mStepEndDate;
     }
 }

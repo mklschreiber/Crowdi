@@ -66,6 +66,46 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
         }
     }
 
+    public List<StepBucket> converToStepBucketList(List<Bucket> list) {
+        List<StepBucket> returnList = new ArrayList<>();
+
+        try {
+            if(list != null) {
+                for(Bucket bucket : list) {
+                    List<DataSet> dataSets = bucket.getDataSets();
+
+                    if(dataSets != null) {
+                        for(DataSet dataSet : dataSets) {
+                            for(DataPoint dp : dataSet.getDataPoints()) {
+                                StepBucket stepBucket = new StepBucket();
+
+                                Field field = getField(dp.getDataType().getFields(), "steps");
+
+                                if(field != null) {
+                                    stepBucket.setStepCount(dp.getValue(field).asInt());
+                                }
+
+                                Calendar c = Calendar.getInstance();
+
+                                c.setTimeInMillis(dp.getStartTime(TimeUnit.MILLISECONDS));
+                                stepBucket.setStepStartDate(c.getTime());
+
+                                c.setTimeInMillis(dp.getEndTime(TimeUnit.MILLISECONDS));
+                                stepBucket.setStepEndDate(c.getTime());
+
+                                returnList.add(stepBucket);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Something went wrong
+        }
+
+        return returnList;
+    }
+
     public List<ActivityBucket> convertToActivityBucketList(List<Bucket> list) {
         List<ActivityBucket> returnList = new ArrayList<>();
 
@@ -280,7 +320,7 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                     notifyPersonReceived(new Person());
                     break;
                 case Step:
-                    notifyStepsReceived(new ArrayList<StepBucket>());
+                    notifyStepsReceived(converToStepBucketList(list));
                     break;
             }
 
