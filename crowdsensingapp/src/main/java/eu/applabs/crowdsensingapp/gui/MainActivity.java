@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
 
 import eu.applabs.crowdsensingapp.R;
 import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
-import eu.applabs.crowdsensingfitnesslibrary.data.ActivityCountBucket;
-import eu.applabs.crowdsensingfitnesslibrary.data.ActivityTimeBucket;
+import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
+import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
 import eu.applabs.crowdsensingwearlibrary.gui.WearConnectionActivity;
 import eu.applabs.crowdsensingwearlibrary.service.DataTransferService;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceReceiverConnection;
@@ -28,7 +28,7 @@ import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceSenderConnecti
 
 public class MainActivity extends WearConnectionActivity implements View.OnClickListener,
         HeartRateServiceReceiverConnection.IHeartRateServiceReceiverConnectionListener,
-        FitnessLibrary.IFitnessLibraryListener {
+        FitnessLibrary.IFitnessLibraryListener, CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener {
 
     private HeartRateServiceReceiverConnection mHeartRateServiceReceiverConnection;
     private StartPollServiceSenderConnection mStartPollServiceSenderConnection;
@@ -56,6 +56,10 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         mFitnessLibrary.registerListener(this);
         mFitnessLibrary.connect(Portal.PortalType.Google);
 
+        CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(this, "Zeit", "Misc");
+        dialog.registerListener(this);
+        dialog.show();
+
         mHeartRateServiceReceiverConnection = new HeartRateServiceReceiverConnection();
         mStartPollServiceSenderConnection = new StartPollServiceSenderConnection();
 
@@ -72,9 +76,6 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         b.setOnClickListener(this);
 
         b = (Button) findViewById(R.id.button5);
-        b.setOnClickListener(this);
-
-        b = (Button) findViewById(R.id.button6);
         b.setOnClickListener(this);
     }
 
@@ -144,16 +145,7 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
                         );
                 break;
             case R.id.button5:
-                mFitnessLibrary.getActivityCount(Portal.PortalType.Google,
-                        startTime,
-                        endTime,
-                        TimeUnit.MILLISECONDS,
-                        1,
-                        TimeUnit.DAYS
-                );
-                break;
-            case R.id.button6:
-                mFitnessLibrary.getActivityTime(Portal.PortalType.Google,
+                mFitnessLibrary.getActivities(Portal.PortalType.Google,
                         startTime,
                         endTime,
                         TimeUnit.MILLISECONDS,
@@ -185,12 +177,12 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     }
 
     @Override
-    public void onActivityTimeReceived(List<ActivityTimeBucket> list) {
+    public void onActivitiesReceived(List<ActivityBucket> list) {
 
     }
 
     @Override
-    public void onActivityCountReceived(List<ActivityCountBucket> list) {
-
+    public void onValueSelected(String value) {
+        Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
     }
 }

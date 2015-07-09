@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import eu.applabs.crowdsensingfitnesslibrary.data.ActivityCountBucket;
-import eu.applabs.crowdsensingfitnesslibrary.data.ActivityTimeBucket;
+import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 
@@ -23,8 +22,7 @@ public abstract class Portal {
         Undefined,
         Person,
         Step,
-        ActivityCount,
-        ActivityTime
+        Activity
     }
 
     private List<IPortalListener> mIPortalListenerList = null;
@@ -32,8 +30,7 @@ public abstract class Portal {
     public interface IPortalListener {
         void onPersonReceived(Person person);
         void onStepsReceived(List<StepBucket> list);
-        void onActivityTimeReceived(List<ActivityTimeBucket> list);
-        void onActivityCountReceived(List<ActivityCountBucket> list);
+        void onActivitiesReceived(List<ActivityBucket> list);
     }
 
     public Portal() {
@@ -60,15 +57,9 @@ public abstract class Portal {
         }
     }
 
-    public void notifyActivityTimeReceived(List<ActivityTimeBucket> list) {
+    public void notifyActivitiesReceived(List<ActivityBucket> list) {
         for(IPortalListener listener : mIPortalListenerList) {
-            listener.onActivityTimeReceived(list);
-        }
-    }
-
-    public void notifyActivityCountReceived(List<ActivityCountBucket> list) {
-        for(IPortalListener listener : mIPortalListenerList) {
-            listener.onActivityCountReceived(list);
+            listener.onActivitiesReceived(list);
         }
     }
 
@@ -83,14 +74,9 @@ public abstract class Portal {
                                   TimeUnit rangeUnit,
                                   int duration,
                                   TimeUnit durationUnit);
-    public abstract void getActivityCount(long startTime,
-                                          long endTime,
-                                          TimeUnit rangeUnit,
-                                          int duration,
-                                          TimeUnit durationUnit);
-    public abstract void getActivityTime(long startTime,
-                                         long endTime,
-                                         TimeUnit rangeUnit,
-                                         int duration,
-                                         TimeUnit durationUnit);
+    public abstract void getActivities(long startTime,
+                                       long endTime,
+                                       TimeUnit rangeUnit,
+                                       int duration,
+                                       TimeUnit durationUnit);
 }

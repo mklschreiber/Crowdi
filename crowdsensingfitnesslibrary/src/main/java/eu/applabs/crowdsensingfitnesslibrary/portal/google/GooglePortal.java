@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import eu.applabs.crowdsensingfitnesslibrary.data.ActivityCountBucket;
-import eu.applabs.crowdsensingfitnesslibrary.data.ActivityTimeBucket;
+import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
@@ -67,8 +66,8 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
         }
     }
 
-    public List<ActivityCountBucket> convertToActivityCountBucket(List<Bucket> list) {
-        List<ActivityCountBucket> returnList = new ArrayList<>();
+    public List<ActivityBucket> convertToActivityBucketList(List<Bucket> list) {
+        List<ActivityBucket> returnList = new ArrayList<>();
 
         try {
             if (list != null) {
@@ -78,24 +77,36 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                     if (dataSets != null) {
                         for (DataSet dataSet : dataSets) {
                             for (DataPoint dp : dataSet.getDataPoints()) {
-                                ActivityCountBucket activityCountBucket = new ActivityCountBucket();
+                                ActivityBucket activityBucket = new ActivityBucket();
 
-                                Field field = getField(dp.getDataType().getFields(), "num_sequents");
+                                Field field = getField(dp.getDataType().getFields(), "num_segments");
 
                                 if (field != null) {
-                                    activityCountBucket.setActivityCount(dp.getValue(field).asInt());
+                                    activityBucket.setActivityCount(dp.getValue(field).asInt());
                                 }
 
                                 field = getField(dp.getDataType().getFields(), "activity");
 
                                 if (field != null) {
-                                    activityCountBucket.setActivityType(
+                                    activityBucket.setActivityType(
                                             eu.applabs.crowdsensingfitnesslibrary.data.Activity.Type.values()[dp.getValue(field).asInt()]);
                                 }
 
+                                field = getField(dp.getDataType().getFields(), "duration");
+
+                                if (field != null) {
+                                    activityBucket.setActivityDuration(dp.getValue(field).asInt());
+                                }
+
                                 Calendar c = Calendar.getInstance();
+
                                 c.setTimeInMillis(dp.getStartTime(TimeUnit.MILLISECONDS));
-                                activityCountBucket.setActivityDate(c.getTime());
+                                activityBucket.setActivityStartDate(c.getTime());
+
+                                c.setTimeInMillis(dp.getEndTime(TimeUnit.MILLISECONDS));
+                                activityBucket.setActivityEndDate(c.getTime());
+
+                                returnList.add(activityBucket);
                             }
                         }
                     }
@@ -198,7 +209,7 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
     }
 
     @Override
-    public void getActivityCount(long startTime,
+    public void getActivities(long startTime,
                                  long endTime,
                                  TimeUnit rangeUnit,
                                  int duration,
@@ -212,27 +223,7 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                     .build();
 
             int requestId = mRequestId++;
-            mRequestMap.put(requestId, RequestType.ActivityCount);
-            new ReadFitnessThread(mGoogleApiClient, requestId, request, this).start();
-        }
-    }
-
-    @Override
-    public void getActivityTime(long startTime,
-                                long endTime,
-                                TimeUnit rangeUnit,
-                                int duration,
-                                TimeUnit durationUnit) {
-
-        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            DataReadRequest request = new DataReadRequest.Builder()
-                    .aggregate(DataType.TYPE_ACTIVITY_SEGMENT, DataType.AGGREGATE_ACTIVITY_SUMMARY)
-                    .bucketByTime(duration, durationUnit)
-                    .setTimeRange(startTime, endTime, rangeUnit)
-                    .build();
-
-            int requestId = mRequestId++;
-            mRequestMap.put(requestId, RequestType.ActivityCount);
+            mRequestMap.put(requestId, RequestType.Activity);
             new ReadFitnessThread(mGoogleApiClient, requestId, request, this).start();
         }
     }
@@ -282,13 +273,8 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
             switch(type) {
                 case Undefined:
                     break;
-                case ActivityTime:
-
-                    notifyActivityTimeReceived(new ArrayList<ActivityTimeBucket>());
-                    break;
-                case ActivityCount:
-                    List<ActivityCountBucket> resultList = convertToActivityCountBucket(list);
-                    notifyActivityCountReceived(resultList);
+                case Activity:
+                    notifyActivitiesReceived(convertToActivityBucketList(list));
                     break;
                 case Person:
                     notifyPersonReceived(new Person());
@@ -310,11 +296,8 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
             switch(type) {
                 case Undefined:
                     break;
-                case ActivityTime:
-                    notifyActivityTimeReceived(new ArrayList<ActivityTimeBucket>());
-                    break;
-                case ActivityCount:
-                    notifyActivityCountReceived(new ArrayList<ActivityCountBucket>());
+                case Activity:
+                    notifyActivitiesReceived(new ArrayList<ActivityBucket>());
                     break;
                 case Person:
                     notifyPersonReceived(new Person());

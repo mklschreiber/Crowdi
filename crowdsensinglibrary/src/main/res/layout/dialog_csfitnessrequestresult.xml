@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <custom:eu.applabs.crowdsensinglibrary.gui.VerticalTextView
+        android:id="@+id/id_CSFitnessRequestResultDialog_VerticalAxis"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        />
+
+    <View
+        android:id="@+id/id_CSFitnessRequestResultDialog_VerticalAxisLine"
+        android:layout_toRightOf="@id/id_CSFitnessRequestResultDialog_VerticalAxis"
+        android:layout_width="1dp"
+        android:layout_height="fill_parent"
+        android:background="#FF000000" />
+
+    <TextView
+        android:id="@+id/id_CSFitnessRequestResultDialog_HorizontalAxis"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        />
+
+    <View
+        android:id="@+id/id_CSFitnessRequestResultDialog_HorizontalAxisLine"
+        android:layout_above="@id/id_CSFitnessRequestResultDialog_HorizontalAxis"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#FF000000" />
+
+    <HorizontalScrollView
+        android:layout_toRightOf="@id/id_CSFitnessRequestResultDialog_VerticalAxisLine"
+        android:layout_above="@id/id_CSFitnessRequestResultDialog_HorizontalAxisLine"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:id="@+id/id_CSFitnessRequestResultDialog_LinearLayout"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:baselineAligned="false"
+            android:layout_gravity="bottom">
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</RelativeLayout>

@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import eu.applabs.crowdsensingfitnesslibrary.data.ActivityCountBucket;
-import eu.applabs.crowdsensingfitnesslibrary.data.ActivityTimeBucket;
+import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
@@ -18,8 +17,7 @@ public class FitnessLibrary implements Portal.IPortalListener{
     public interface IFitnessLibraryListener {
         void onPersonReceived(Person person);
         void onStepsReceived(List<StepBucket> list);
-        void onActivityTimeReceived(List<ActivityTimeBucket> list);
-        void onActivityCountReceived(List<ActivityCountBucket> list);
+        void onActivitiesReceived(List<ActivityBucket> list);
     }
 
     private static final String sClassName = FitnessLibrary.class.getSimpleName();
@@ -40,6 +38,7 @@ public class FitnessLibrary implements Portal.IPortalListener{
         Portal portal = findPortal(type);
 
         if(portal != null) {
+            portal.registerListener(this);
             portal.login(mActivity);
         }
     }
@@ -48,6 +47,7 @@ public class FitnessLibrary implements Portal.IPortalListener{
         Portal portal = findPortal(type);
 
         if(portal != null) {
+            portal.unregisterListener(this);
             portal.logout();
         }
     }
@@ -89,7 +89,7 @@ public class FitnessLibrary implements Portal.IPortalListener{
         }
     }
 
-    public void getActivityCount(Portal.PortalType type,
+    public void getActivities(Portal.PortalType type,
                                  long startTime,
                                  long endTime,
                                  TimeUnit rangeUnit,
@@ -98,20 +98,7 @@ public class FitnessLibrary implements Portal.IPortalListener{
         Portal portal = findPortal(type);
 
         if(portal != null) {
-            portal.getActivityCount(startTime, endTime, rangeUnit, duration, durationUnit);
-        }
-    }
-
-    public void getActivityTime(Portal.PortalType type,
-                                long startTime,
-                                long endTime,
-                                TimeUnit rangeUnit,
-                                int duration,
-                                TimeUnit durationUnit) {
-        Portal portal = findPortal(type);
-
-        if(portal != null) {
-            portal.getActivityTime(startTime, endTime, rangeUnit, duration, durationUnit);
+            portal.getActivities(startTime, endTime, rangeUnit, duration, durationUnit);
         }
     }
 
@@ -140,16 +127,9 @@ public class FitnessLibrary implements Portal.IPortalListener{
     }
 
     @Override
-    public void onActivityTimeReceived(List<ActivityTimeBucket> list) {
+    public void onActivitiesReceived(List<ActivityBucket> list) {
         for(IFitnessLibraryListener listener : mIFitnessLibraryListenerList) {
-            listener.onActivityTimeReceived(list);
-        }
-    }
-
-    @Override
-    public void onActivityCountReceived(List<ActivityCountBucket> list) {
-        for(IFitnessLibraryListener listener : mIFitnessLibraryListenerList) {
-            listener.onActivityCountReceived(list);
+            listener.onActivitiesReceived(list);
         }
     }
 }

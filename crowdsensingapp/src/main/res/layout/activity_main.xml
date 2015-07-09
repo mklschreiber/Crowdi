@@ -34,15 +34,8 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Get activity count"
+        android:text="Get activities"
         android:id="@+id/button5"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Get activity time"
-        android:id="@+id/button6"
         android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
