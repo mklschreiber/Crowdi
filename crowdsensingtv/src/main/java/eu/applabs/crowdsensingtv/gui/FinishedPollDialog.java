@@ -54,7 +54,7 @@ public class FinishedPollDialog extends Dialog implements View.OnClickListener {
                 if(command.getId() == v.getId()) {
                     Intent intent = new Intent(mActivity, SinglePollActivity.class);
                     Bundle extras = new Bundle();
-                    extras.putString(SinglePollActivity.EXTRA_URL, MainActivity.BASE_URL + command.getCommand());
+                    extras.putString(SinglePollActivity.EXTRA_URL, TVMainActivity.BASE_URL + command.getCommand());
                     intent.putExtras(extras);
 
                     mContext.startActivity(intent);

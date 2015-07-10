@@ -56,7 +56,8 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         setContentView(R.layout.activity_main);
         mActivity = this;
 
-        mFitnessLibrary = new FitnessLibrary(this);
+        mFitnessLibrary = FitnessLibrary.getInstance();
+        mFitnessLibrary.init(this);
         mFitnessLibrary.registerListener(this);
         mFitnessLibrary.connect(Portal.PortalType.Google);
 
@@ -220,6 +221,11 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
                 dialog.show();
             }
         });
+    }
+
+    @Override
+    public void onPortalConnectionStateChanged() {
+        // Nothing to do...
     }
 
     @Override

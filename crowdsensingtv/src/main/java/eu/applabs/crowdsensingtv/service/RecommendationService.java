@@ -18,23 +18,28 @@ import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
-import eu.applabs.crowdsensingtv.gui.MainActivity;
 import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
+import eu.applabs.crowdsensingtv.gui.TVMainActivity;
 
 public class RecommendationService extends IntentService implements ILibraryResultListener {
 
     private static final String sClassName = RecommendationService.class.getSimpleName();
     private static final int BASE_ID = 42;
 
+    private Library mLibrary = null;
+
     public RecommendationService() {
         super(RecommendationService.class.getSimpleName());
+
+        mLibrary = Library.getInstance();
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Library library = new Library();
-        library.registerListener(this);
-        library.loadCommands(MainActivity.BASE_URL + "start", "Hans", "Test");
+        if(mLibrary != null && mLibrary.accountAvailable()) {
+            mLibrary.registerListener(this);
+            mLibrary.loadCommands(TVMainActivity.BASE_URL + "start");
+        }
     }
 
     @Override
@@ -57,9 +62,9 @@ public class RecommendationService extends IntentService implements ILibraryResu
                             .setLargeIcon(bitmap)
                             .setSmallIcon(R.drawable.banner)
                             .setStyle(new Notification.BigPictureStyle().bigPicture(bitmap))
-                            .setColor(getApplicationContext().getResources().getColor(R.color.fastlane_background))
+                            .setColor(getApplicationContext().getResources().getColor(R.color.primary))
                             .setCategory(Notification.CATEGORY_RECOMMENDATION)
-                            .setContentIntent(buildPendingIntent(MainActivity.BASE_URL + list.get(i).getCommand()))
+                            .setContentIntent(buildPendingIntent(TVMainActivity.BASE_URL + list.get(i).getCommand()))
                             .build();
 
                     notificationManager.notify(BASE_ID + i, notification);

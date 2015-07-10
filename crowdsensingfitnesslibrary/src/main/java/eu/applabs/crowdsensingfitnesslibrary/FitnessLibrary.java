@@ -10,7 +10,9 @@ import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
+import eu.applabs.crowdsensingfitnesslibrary.portal.apple.ApplePortal;
 import eu.applabs.crowdsensingfitnesslibrary.portal.google.GooglePortal;
+import eu.applabs.crowdsensingfitnesslibrary.portal.microsoft.MicrosoftPortal;
 
 public class FitnessLibrary implements Portal.IPortalListener{
 
@@ -18,28 +20,60 @@ public class FitnessLibrary implements Portal.IPortalListener{
         void onPersonReceived(Person person);
         void onStepsReceived(List<StepBucket> list);
         void onActivitiesReceived(List<ActivityBucket> list);
+        void onPortalConnectionStateChanged();
     }
 
     private static final String sClassName = FitnessLibrary.class.getSimpleName();
+
+    private static FitnessLibrary mInstance = null;
+    private boolean mInitialized = false;
 
     private Activity mActivity = null;
     private List<Portal> mPortalList = null;
     private List<IFitnessLibraryListener> mIFitnessLibraryListenerList = null;
 
-    public FitnessLibrary(Activity activity) {
-        mActivity = activity;
-        mPortalList = new ArrayList<>();
-        mIFitnessLibraryListenerList = new ArrayList<>();
+    private FitnessLibrary() { }
 
-        mPortalList.add(new GooglePortal());
+    public static FitnessLibrary getInstance() {
+        if(FitnessLibrary.mInstance == null) {
+            FitnessLibrary.mInstance = new FitnessLibrary();
+            FitnessLibrary.mInstance.mPortalList = new ArrayList<>();
+            FitnessLibrary.mInstance.mIFitnessLibraryListenerList = new ArrayList<>();
+        }
+
+        return FitnessLibrary.mInstance;
+    }
+
+    public void init(Activity activity) {
+        if(!mInitialized) {
+            mActivity = activity;
+
+            mPortalList.add(new GooglePortal());
+            mPortalList.add(new ApplePortal());
+            mPortalList.add(new MicrosoftPortal());
+        }
     }
 
     public void connect(Portal.PortalType type) {
+        connect(type, mActivity);
+    }
+
+    public boolean isConnected(Portal.PortalType type) {
+        Portal portal = findPortal(type);
+
+        if(portal != null) {
+            return portal.isConnected();
+        }
+
+        return false;
+    }
+
+    public void connect(Portal.PortalType type, Activity activity) {
         Portal portal = findPortal(type);
 
         if(portal != null) {
             portal.registerListener(this);
-            portal.login(mActivity);
+            portal.login(activity);
         }
     }
 
@@ -130,6 +164,13 @@ public class FitnessLibrary implements Portal.IPortalListener{
     public void onActivitiesReceived(List<ActivityBucket> list) {
         for(IFitnessLibraryListener listener : mIFitnessLibraryListenerList) {
             listener.onActivitiesReceived(list);
+        }
+    }
+
+    @Override
+    public void onPortalConnectionStateChanged() {
+        for(IFitnessLibraryListener listener : mIFitnessLibraryListenerList) {
+            listener.onPortalConnectionStateChanged();
         }
     }
 }

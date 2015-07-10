@@ -1,4 +1,4 @@
-package eu.applabs.crowdsensingtv.gui;
+/*package eu.applabs.crowdsensingtv.gui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.widget.Toast;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.model.action.ActionArgumentValue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
@@ -19,14 +18,18 @@ import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
+import eu.applabs.crowdsensinglibrary.gui.LoginDialog;
+import eu.applabs.crowdsensinglibrary.settings.LibrarySettingsManager;
 import eu.applabs.crowdsensingtv.R;
 
 import eu.applabs.crowdsensingtv.service.UpnpService;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
 public class MainActivity extends Activity implements ILibraryResultListener,
-        View.OnClickListener, HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener,
-        CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener{
+        View.OnClickListener,
+        HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener,
+        CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener,
+        LoginDialog.ILoginDialogListener{
 
     public static final String BASE_URL = "http://as.applabs.eu:8080/FancyModule/";
 
@@ -37,6 +40,8 @@ public class MainActivity extends Activity implements ILibraryResultListener,
 
     private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
 
+    private LibrarySettingsManager mLibraryLibrarySettingsManager = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +50,16 @@ public class MainActivity extends Activity implements ILibraryResultListener,
         mActivity = this;
         mLinearLayout = (LinearLayout) findViewById(R.id.id_MainActivity_LL_Commands);
 
-        Library library = new Library();
-        library.registerListener(this);
-        library.loadCommands(BASE_URL + "start", "Hans", "Test");
-
-        startPeriodicNotification();
-
+        mLibraryLibrarySettingsManager = new LibrarySettingsManager(this);
         mHeartRateServiceSenderConnection = new HeartRateServiceSenderConnection();
+
+        if(!mLibraryLibrarySettingsManager.loginAvailable()) {
+            LoginDialog dialog = new LoginDialog(this);
+            dialog.registerListener(this);
+            dialog.show();
+        } else {
+            onLoginSaved();
+        }
     }
 
     @Override
@@ -144,4 +152,30 @@ public class MainActivity extends Activity implements ILibraryResultListener,
     public void onValueSelected(String value) {
         Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
     }
+
+    // ILoginDialogListener
+
+    @Override
+    public void onLoginCanceled() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onLoginSaved() {
+        if(mLibraryLibrarySettingsManager != null && mLibraryLibrarySettingsManager.loginAvailable()) {
+            Library library = new Library();
+            library.registerListener(this);
+            library.loadCommands(BASE_URL + "start",
+                    mLibraryLibrarySettingsManager.getUserName(),
+                    mLibraryLibrarySettingsManager.getPassword());
+
+            startPeriodicNotification();
+        }
+    }
 }
+*/

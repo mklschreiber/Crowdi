@@ -15,7 +15,9 @@ public abstract class Portal {
 
     public enum PortalType {
         Undefined,
-        Google
+        Google,
+        Apple,
+        Microsoft
     }
 
     public enum RequestType {
@@ -31,6 +33,7 @@ public abstract class Portal {
         void onPersonReceived(Person person);
         void onStepsReceived(List<StepBucket> list);
         void onActivitiesReceived(List<ActivityBucket> list);
+        void onPortalConnectionStateChanged();
     }
 
     public Portal() {
@@ -63,9 +66,16 @@ public abstract class Portal {
         }
     }
 
+    public void notifyPortalConnectionStateChanged() {
+        for(IPortalListener listener : mIPortalListenerList) {
+            listener.onPortalConnectionStateChanged();
+        }
+    }
+
     public abstract PortalType getPortalType();
     public abstract void login(Activity activity);
     public abstract void logout();
+    public abstract boolean isConnected();
     public abstract boolean checkActivityResult(int requestCode, int resultCode, Intent data);
 
     public abstract void getPerson();

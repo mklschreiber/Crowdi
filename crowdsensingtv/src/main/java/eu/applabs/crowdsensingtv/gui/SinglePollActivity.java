@@ -48,11 +48,16 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         mProgressBar = (ProgressBar) findViewById(R.id.id_SinglePollActivity_ProgressBar);
 
         mPollUrl = checkStartingIntent();
-        mLibrary = new Library();
+        mLibrary = Library.getInstance();
         mLibrary.registerListener(this);
 
-        if(mPollUrl != null && mPollUrl.compareTo("") != 0) {
-            mLibrary.loadPoll(mPollUrl, "Hans", "Test");
+        if(mPollUrl != null
+                && mPollUrl.compareTo("") != 0
+                && mLibrary != null
+                && mLibrary.accountAvailable()) {
+
+            mLibrary.loadPoll(mPollUrl);
+
         } else {
             Toast.makeText(this, "Error during starting process...", Toast.LENGTH_SHORT).show();
         }
@@ -150,7 +155,9 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
                 }
             }
         } else {
-            mLibrary.uploadPoll(mPollUrl, "Hans", "Test", mPoll.toJSON().toString());
+            if(mLibrary != null && mLibrary.accountAvailable()) {
+                mLibrary.uploadPoll(mPollUrl, mPoll.toJSON().toString());
+            }
         }
     }
 

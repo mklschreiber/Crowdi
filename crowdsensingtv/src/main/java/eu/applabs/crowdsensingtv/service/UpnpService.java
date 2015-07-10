@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
-import eu.applabs.crowdsensingtv.gui.MainActivity;
 import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
 import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceReceiverConnection;
 

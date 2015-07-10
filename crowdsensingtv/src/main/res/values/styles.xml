@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@style/Theme.Leanback"></style>
+    <style name="AppTheme" parent="@style/Theme.Leanback">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
+        <item name="android:divider">@color/divider</item>
+        <item name="android:textColor">@color/text_and_icons</item>
+        <item name="android:icon">@color/text_and_icons</item>
+    </style>
 </resources>

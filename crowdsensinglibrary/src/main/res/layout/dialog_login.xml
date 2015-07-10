@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/id_LoginDialog_TextView_UserName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="@string/LoginDialog_TextView_UserName"/>
+
+    <EditText
+        android:id="@+id/id_LoginDialog_EditText_UserName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_LoginDialog_TextView_UserName"/>
+
+    <TextView
+        android:id="@+id/id_LoginDialog_TextView_Password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_LoginDialog_EditText_UserName"
+        android:text="@string/LoginDialog_TextView_Password"/>
+
+    <EditText
+        android:id="@+id/id_LoginDialog_EditText_Password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_LoginDialog_TextView_Password"
+        android:inputType="textPassword"
+        android:ems="10"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:weightSum="1.0">
+
+        <Button
+            android:id="@+id/id_LoginDialog_Button_Cancel"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:text="@string/LoginDialog_Button_Cancel"/>
+
+        <Button
+            android:id="@+id/id_LoginDialog_Button_Ok"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:text="@string/LoginDialog_Button_Ok"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

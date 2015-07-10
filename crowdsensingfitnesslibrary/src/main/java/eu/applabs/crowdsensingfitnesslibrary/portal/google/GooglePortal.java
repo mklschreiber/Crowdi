@@ -44,6 +44,8 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
     private boolean mAuthInProgress = false;
     private GoogleApiClient mGoogleApiClient = null;
 
+    private boolean mConnected = false;
+
     private Map<Integer, RequestType> mRequestMap = null;
 
     public void logDataSet(List<DataSet> list) {
@@ -199,7 +201,15 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
         if(mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
             mGoogleApiClient = null;
+            mConnected = false;
         }
+
+        notifyPortalConnectionStateChanged();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return mConnected;
     }
 
     @Override
@@ -272,7 +282,8 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
 
     @Override
     public void onConnected(Bundle bundle) {
-
+        mConnected = true;
+        notifyPortalConnectionStateChanged();
     }
 
     @Override

@@ -1,17 +1,11 @@
 <resources>
-    <color name="background_gradient_start">#000000</color>
-    <color name="background_gradient_end">#DDDDDD</color>
-    <color name="fastlane_background">#0096a6</color>
-    <color name="search_opaque">#ffaa3f</color>
-    <color name="detail_background">#0096a6</color>
-    <color name="soft_opaque">#30000000</color>
-    <color name="img_soft_opaque">#30FF0000</color>
-    <color name="img_full_opaque">#00000000</color>
-    <color name="black_opaque">#AA000000</color>
-    <color name="black">#59000000</color>
-    <color name="white">#FFFFFF</color>
-    <color name="orange_transparent">#AAFADCA7</color>
-    <color name="orange">#FADCA7</color>
-    <color name="yellow">#EEFF41</color>
-    <color name="default_background">#3d3d3d</color>
+    <color name="primary_light" type="color">#C5CAE9</color>
+    <color name="primary_dark" type="color">#303F9F</color>
+    <color name="primary" type="color">#3F51B5</color>
+    <color name="accent" type="color">#03A9F4</color>
+    <color name="background" type="color">#F9F9F9</color>
+    <color name="text_and_icons" type="color">#FFFFFF</color>
+    <color name="primary_text" type="color">#212121</color>
+    <color name="secondary_text" type="color">#727272</color>
+    <color name="divider" type="color">#B6B6B6</color>
 </resources>

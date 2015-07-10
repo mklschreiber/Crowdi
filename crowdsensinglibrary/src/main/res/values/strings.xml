@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">CrowdSensingLibrary</string>
+
+    <string name="LoginDialog_TextView_UserName">Username</string>
+    <string name="LoginDialog_TextView_Password">Password</string>
+    <string name="LoginDialog_Button_Cancel">Cancel</string>
+    <string name="LoginDialog_Button_Ok">Ok</string>
+    <string name="LoginDialog_Toast_Invalid">Please enter a username and a password!</string>
 </resources>
