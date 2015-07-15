@@ -13,6 +13,7 @@ import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
 import eu.applabs.crowdsensingfitnesslibrary.portal.apple.ApplePortal;
 import eu.applabs.crowdsensingfitnesslibrary.portal.google.GooglePortal;
 import eu.applabs.crowdsensingfitnesslibrary.portal.microsoft.MicrosoftPortal;
+import eu.applabs.crowdsensingfitnesslibrary.settings.SettingsManager;
 
 public class FitnessLibrary implements Portal.IPortalListener{
 
@@ -29,6 +30,7 @@ public class FitnessLibrary implements Portal.IPortalListener{
     private boolean mInitialized = false;
 
     private Activity mActivity = null;
+    private SettingsManager mSettingsManager = null;
     private List<Portal> mPortalList = null;
     private List<IFitnessLibraryListener> mIFitnessLibraryListenerList = null;
 
@@ -47,10 +49,17 @@ public class FitnessLibrary implements Portal.IPortalListener{
     public void init(Activity activity) {
         if(!mInitialized) {
             mActivity = activity;
+            mSettingsManager = new SettingsManager(mActivity);
 
             mPortalList.add(new GooglePortal());
             mPortalList.add(new ApplePortal());
             mPortalList.add(new MicrosoftPortal());
+
+            List<Portal.PortalType> list = mSettingsManager.getConnectedServices();
+
+            for(Portal.PortalType type : list) {
+                connect(type);
+            }
         }
     }
 

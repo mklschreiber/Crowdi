@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -163,13 +164,25 @@ public class SinglePollFragment extends Fragment {
     private View createViewForField(Field field, boolean firstField) {
         View view = null;
         EditText et = null;
+        LinearLayout ll = null;
 
         switch(field.getType()) {
             case text:
+                //ll = new LinearLayout(getActivity());
+                //ll.setOrientation(LinearLayout.HORIZONTAL);
+
                 et = new EditText(getActivity());
                 et.setHint(field.getLabel());
                 et.setText(field.getValue());
                 et.setId(field.getId());
+
+                //ll.addView(et);
+
+                //if(field.getLabel().contains("Fancy")) {
+                //    Button b = new Button(getActivity());
+                //    ll.addView(b);
+                //}
+
                 view = et;
                 break;
             case textarea:
@@ -257,7 +270,7 @@ public class SinglePollFragment extends Fragment {
                 view = rg;
                 break;
             case multiselect:
-                LinearLayout ll = new LinearLayout(getActivity());
+                ll = new LinearLayout(getActivity());
                 ll.setOrientation(LinearLayout.VERTICAL);
 
                 for(Option o : field.getOptionList()) {
@@ -290,7 +303,7 @@ public class SinglePollFragment extends Fragment {
         }
 
         if(field.getCompositeField().compareTo("") != 0) {
-            LinearLayout ll = new LinearLayout(getActivity());
+            ll = new LinearLayout(getActivity());
             ll.setOrientation(LinearLayout.VERTICAL);
 
             for(int i = 0; i < field.getFieldList().size(); ++i) {

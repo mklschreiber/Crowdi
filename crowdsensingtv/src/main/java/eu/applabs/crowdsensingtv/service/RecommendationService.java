@@ -38,39 +38,43 @@ public class RecommendationService extends IntentService implements ILibraryResu
     protected void onHandleIntent(Intent intent) {
         if(mLibrary != null && mLibrary.accountAvailable()) {
             mLibrary.registerListener(this);
-            mLibrary.loadCommands(TVMainActivity.BASE_URL + "start");
+            mLibrary.loadCommands(TVMainActivity.BASE_URL + "start", sClassName);
         }
     }
 
     @Override
-    public void onLibraryResult(ExecutionStatus status, Poll poll) {
+    public void onLibraryResult(ExecutionStatus status, Poll poll, String className) {
+        if(className.compareTo(sClassName) == 0) {
 
+        }
     }
 
     @Override
-    public void onLibraryResult(ExecutionStatus status, List<Command> list) {
-        if(status == ExecutionStatus.Success) {
-            try {
-                for(int i = 0; i < list.size(); ++i) {
-                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.poll);
-                    Notification notification = new Notification.Builder(getApplicationContext())
-                            .setAutoCancel(true)
-                            .setContentTitle(getString(R.string.RecommendationService_Title_Recommendation))
-                            .setContentText(list.get(i).getInfo())
-                            .setPriority(Notification.PRIORITY_HIGH)
-                            .setLargeIcon(bitmap)
-                            .setSmallIcon(R.drawable.banner)
-                            .setStyle(new Notification.BigPictureStyle().bigPicture(bitmap))
-                            .setColor(getApplicationContext().getResources().getColor(R.color.primary))
-                            .setCategory(Notification.CATEGORY_RECOMMENDATION)
-                            .setContentIntent(buildPendingIntent(TVMainActivity.BASE_URL + list.get(i).getCommand()))
-                            .build();
+    public void onLibraryResult(ExecutionStatus status, List<Command> list, String className) {
+        if(className.compareTo(sClassName) == 0) {
+            if (status == ExecutionStatus.Success) {
+                try {
+                    for (int i = 0; i < list.size(); ++i) {
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.poll);
+                        Notification notification = new Notification.Builder(getApplicationContext())
+                                .setAutoCancel(true)
+                                .setContentTitle(getString(R.string.RecommendationService_Title_Recommendation))
+                                .setContentText(list.get(i).getInfo())
+                                .setPriority(Notification.PRIORITY_HIGH)
+                                .setLargeIcon(bitmap)
+                                .setSmallIcon(R.drawable.icon_flat)
+                                .setStyle(new Notification.BigPictureStyle().bigPicture(bitmap))
+                                .setColor(getApplicationContext().getResources().getColor(R.color.primary))
+                                .setCategory(Notification.CATEGORY_RECOMMENDATION)
+                                .setContentIntent(buildPendingIntent(TVMainActivity.BASE_URL + list.get(i).getCommand()))
+                                .build();
 
-                    notificationManager.notify(BASE_ID + i, notification);
+                        notificationManager.notify(BASE_ID + i, notification);
+                    }
+                } catch (Exception e) {
+                    Log.e(sClassName, e.getMessage());
                 }
-            } catch (Exception e) {
-                Log.e(sClassName, e.getMessage());
             }
         }
     }

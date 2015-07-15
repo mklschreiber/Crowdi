@@ -18,6 +18,8 @@ import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.widget.Toast;
 
+import org.fourthline.cling.model.action.ActionArgumentValue;
+
 import java.util.List;
 
 import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
@@ -25,7 +27,10 @@ import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
+import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
+import eu.applabs.crowdsensinglibrary.data.Command;
+import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensinglibrary.gui.LoginDialog;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.data.FitnessAccount;
@@ -33,8 +38,13 @@ import eu.applabs.crowdsensingtv.data.LibraryAccount;
 import eu.applabs.crowdsensingtv.presenter.FitnessAccountPresenter;
 import eu.applabs.crowdsensingtv.presenter.LibraryAccountPresenter;
 
-public class ManageAccountsActivity extends Activity implements OnItemViewClickedListener,
-        LoginDialog.ILoginDialogListener, FitnessLibrary.IFitnessLibraryListener {
+public class ManageAccountsActivity extends Activity implements
+        OnItemViewClickedListener,
+        LoginDialog.ILoginDialogListener,
+        FitnessLibrary.IFitnessLibraryListener,
+        ILibraryResultListener {
+
+    private static final String sClassName = ManageAccountsActivity.class.getSimpleName();
 
     private FragmentManager mFragmentManager = null;
     private BrowseFragment mBrowseFragment = null;
@@ -43,12 +53,15 @@ public class ManageAccountsActivity extends Activity implements OnItemViewClicke
     private Library mLibrary = null;
     private FitnessLibrary mFitnessLibrary = null;
 
+    private ManageAccountsActivity mActivity = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manageaccounts);
 
         mLibrary = Library.getInstance();
+        mLibrary.registerListener(this);
         mFitnessLibrary = FitnessLibrary.getInstance();
         mFitnessLibrary.registerListener(this);
 
@@ -57,17 +70,31 @@ public class ManageAccountsActivity extends Activity implements OnItemViewClicke
 
         mBrowseFragment.setHeadersState(BrowseFragment.HEADERS_ENABLED);
         mBrowseFragment.setTitle("CrowdSensingTV");
-        mBrowseFragment.setBadgeDrawable(getDrawable(R.drawable.unilogoandlabel));
+        mBrowseFragment.setBadgeDrawable(getDrawable(R.drawable.browse_logo));
         mBrowseFragment.setOnItemViewClickedListener(this);
 
         BackgroundManager backgroundManager = BackgroundManager.getInstance(this);
         backgroundManager.attach(this.getWindow());
-        backgroundManager.setDrawable(getResources().getDrawable(R.drawable.poll, null));
+        backgroundManager.setDrawable(getResources().getDrawable(R.drawable.background, null));
 
         mArrayObjectAdapter = new ArrayObjectAdapter(new ListRowPresenter());
         mBrowseFragment.setAdapter(mArrayObjectAdapter);
 
         updateUI();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mActivity = this;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        mActivity = null;
     }
 
     @Override
@@ -208,7 +235,7 @@ public class ManageAccountsActivity extends Activity implements OnItemViewClicke
 
     @Override
     public void onLoginSaved() {
-
+        mLibrary.loadCommands(TVMainActivity.BASE_URL + "start", sClassName);
     }
 
     @Override
@@ -229,5 +256,30 @@ public class ManageAccountsActivity extends Activity implements OnItemViewClicke
     @Override
     public void onPortalConnectionStateChanged() {
         updateUI();
+    }
+
+    @Override
+    public void onLibraryResult(final ExecutionStatus status, final Poll poll, final String className) {
+
+    }
+
+    @Override
+    public void onLibraryResult(final ExecutionStatus status, final List<Command> list, final String className) {
+        if(className.compareTo(sClassName) == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (status != ExecutionStatus.Success) {
+                        Toast.makeText(mActivity, "Login incorrect!", Toast.LENGTH_SHORT).show();
+                        mLibrary.logout();
+
+                        // Login
+                        LoginDialog dialog = new LoginDialog(mActivity);
+                        dialog.registerListener(mActivity);
+                        dialog.show();
+                    }
+                }
+            });
+        }
     }
 }

@@ -126,7 +126,7 @@ public class NotificationService extends WearableListenerService {
                 .getService(this, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.icon)
                 .setContentTitle(title)
                 .setContentText(content)
                 .setDeleteIntent(deletePendingIntent)

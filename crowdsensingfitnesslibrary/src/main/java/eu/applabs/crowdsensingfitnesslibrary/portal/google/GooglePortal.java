@@ -31,6 +31,7 @@ import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
+import eu.applabs.crowdsensingfitnesslibrary.settings.SettingsManager;
 
 public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ReadFitnessThread.IReadFitnessThreadListener {
@@ -43,6 +44,7 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
     private Activity mActivity = null;
     private boolean mAuthInProgress = false;
     private GoogleApiClient mGoogleApiClient = null;
+    private SettingsManager mSettingsManager = null;
 
     private boolean mConnected = false;
 
@@ -180,6 +182,7 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
     public void login(Activity activity) {
         mActivity = activity;
         mRequestMap = new HashMap<>();
+        mSettingsManager = new SettingsManager(activity);
 
         mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                 .addApi(Fitness.HISTORY_API)
@@ -202,6 +205,14 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
             mGoogleApiClient.disconnect();
             mGoogleApiClient = null;
             mConnected = false;
+        }
+
+        if(mSettingsManager != null) {
+            List<PortalType> list = mSettingsManager.getConnectedServices();
+            if(list.contains(PortalType.Google)) {
+                list.remove(PortalType.Google);
+                mSettingsManager.setConnectedServices(list);
+            }
         }
 
         notifyPortalConnectionStateChanged();
@@ -283,12 +294,22 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
     @Override
     public void onConnected(Bundle bundle) {
         mConnected = true;
+
+        if(mSettingsManager != null) {
+            List<PortalType> list = mSettingsManager.getConnectedServices();
+            if(!list.contains(PortalType.Google)) {
+                list.add(PortalType.Google);
+                mSettingsManager.setConnectedServices(list);
+            }
+        }
+
         notifyPortalConnectionStateChanged();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        int x = 0;
+        x++;
     }
 
     // GoogleApiClient.OnConnectionFailedListener

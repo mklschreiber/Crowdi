@@ -38,6 +38,8 @@ public class TVMainActivity extends Activity implements
         ILibraryResultListener,
         HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener {
 
+    private static final String sClassName = TVMainActivity.class.getSimpleName();
+
     public static final String BASE_URL = "http://as.applabs.eu:8080/FancyModule/";
 
     private FragmentManager mFragmentManager = null;
@@ -61,12 +63,12 @@ public class TVMainActivity extends Activity implements
 
         mBrowseFragment.setHeadersState(BrowseFragment.HEADERS_ENABLED);
         mBrowseFragment.setTitle("CrowdSensingTV");
-        mBrowseFragment.setBadgeDrawable(getDrawable(R.drawable.unilogoandlabel));
+        mBrowseFragment.setBadgeDrawable(getDrawable(R.drawable.browse_logo));
         mBrowseFragment.setOnItemViewClickedListener(this);
 
         BackgroundManager backgroundManager = BackgroundManager.getInstance(this);
         backgroundManager.attach(this.getWindow());
-        backgroundManager.setDrawable(getResources().getDrawable(R.drawable.poll, null));
+        backgroundManager.setDrawable(getResources().getDrawable(R.drawable.background, null));
 
         mArrayObjectAdapter = new ArrayObjectAdapter(new ListRowPresenter());
         mBrowseFragment.setAdapter(mArrayObjectAdapter);
@@ -102,7 +104,7 @@ public class TVMainActivity extends Activity implements
 
         if(mLibrary != null && mLibrary.accountAvailable()) {
             mLibrary.registerListener(this);
-            mLibrary.loadCommands(BASE_URL + "start");
+            mLibrary.loadCommands(BASE_URL + "start", sClassName);
 
             startPeriodicNotification();
         } else {
@@ -138,6 +140,15 @@ public class TVMainActivity extends Activity implements
             if(intent != null) {
                 startActivity(intent);
             }
+        } else if (item instanceof Command) {
+            Command command = (Command) item;
+
+            Intent intent = new Intent(this, SinglePollActivity.class);
+            Bundle extras = new Bundle();
+            extras.putString(SinglePollActivity.EXTRA_URL, BASE_URL + command.getCommand());
+            intent.putExtras(extras);
+
+            startActivity(intent);
         }
     }
 
@@ -164,7 +175,7 @@ public class TVMainActivity extends Activity implements
 
                 Action action = new Action(getApplicationContext());
                 action.setTitle("Manage accounts");
-                action.setIcon(getApplicationContext().getDrawable(R.drawable.poll));
+                action.setIcon(getApplicationContext().getDrawable(R.drawable.settings_manageaccounts));
                 action.setIntent(new Intent(getApplicationContext(), ManageAccountsActivity.class));
 
                 settingsAdapter.add(action);
@@ -176,16 +187,20 @@ public class TVMainActivity extends Activity implements
     }
 
     @Override
-    public void onLibraryResult(ExecutionStatus status, Poll poll) {
+    public void onLibraryResult(ExecutionStatus status, Poll poll, String className) {
+        if(className.compareTo(sClassName) == 0) {
 
+        }
     }
 
     @Override
-    public void onLibraryResult(ExecutionStatus status, List<Command> list) {
-        if(status == ExecutionStatus.Success) {
-            mCommandList = list;
+    public void onLibraryResult(ExecutionStatus status, List<Command> list, String className) {
+        if(className.compareTo(sClassName) == 0) {
+            if (status == ExecutionStatus.Success) {
+                mCommandList = list;
 
-            updateUI();
+                updateUI();
+            }
         }
     }
 

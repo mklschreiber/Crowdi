@@ -11,8 +11,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.R;
+import eu.applabs.crowdsensinglibrary.data.Command;
+import eu.applabs.crowdsensinglibrary.data.Poll;
 
 public class LoginDialog extends Dialog implements View.OnClickListener {
 
@@ -47,6 +50,8 @@ public class LoginDialog extends Dialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_login);
+
+        setTitle("Login");
 
         Button b = (Button) findViewById(R.id.id_LoginDialog_Button_Ok);
         b.setOnClickListener(this);

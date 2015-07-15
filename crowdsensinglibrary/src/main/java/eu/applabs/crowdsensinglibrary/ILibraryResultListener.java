@@ -12,6 +12,6 @@ public interface ILibraryResultListener {
         Error
     }
 
-    public void onLibraryResult(final ExecutionStatus status, final Poll poll);
-    public void onLibraryResult(final ExecutionStatus status, final List<Command> list);
+    public void onLibraryResult(final ExecutionStatus status, final Poll poll, final String className);
+    public void onLibraryResult(final ExecutionStatus status, final List<Command> list, final String className);
 }

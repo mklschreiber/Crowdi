@@ -3,7 +3,9 @@ package eu.applabs.crowdsensingapp.gui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -53,7 +55,10 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+
         setContentView(R.layout.activity_main);
+
         mActivity = this;
 
         mFitnessLibrary = FitnessLibrary.getInstance();

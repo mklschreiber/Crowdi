@@ -7,7 +7,7 @@ android {
             keyAlias 'uni'
             keyPassword 'android'
             storeFile file('C:/Program Files (x86)/Entwicklungsumgebung/Uni.jks')
-            storePassword 'uni'
+            storePassword 'android'
         }
     }
     compileSdkVersion 22
@@ -33,7 +33,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     // Wear stuff
     compile project(':crowdsensingwearlibrary')
     provided 'com.google.android.wearable:wearable:1.0.0'

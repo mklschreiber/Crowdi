@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v17.leanback.app.BackgroundManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -29,6 +30,8 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     private Activity mActivity = null;
 
     private SinglePollFragment mSinglePollFragment = null;
+    private Button mButtonPrev = null;
+    private Button mButtonNext = null;
     private ProgressBar mProgressBar = null;
 
     private String mPollUrl = null;
@@ -42,25 +45,43 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singlepoll);
 
-        mActivity = this;
-
         initializeButtons();
         mProgressBar = (ProgressBar) findViewById(R.id.id_SinglePollActivity_ProgressBar);
 
         mPollUrl = checkStartingIntent();
         mLibrary = Library.getInstance();
-        mLibrary.registerListener(this);
 
         if(mPollUrl != null
                 && mPollUrl.compareTo("") != 0
                 && mLibrary != null
                 && mLibrary.accountAvailable()) {
 
-            mLibrary.loadPoll(mPollUrl);
-
+            mLibrary.loadPoll(mPollUrl, sClassName);
+            changeButtonEnableStatus(true);
         } else {
             Toast.makeText(this, "Error during starting process...", Toast.LENGTH_SHORT).show();
+            changeButtonEnableStatus(false);
         }
+
+        BackgroundManager backgroundManager = BackgroundManager.getInstance(this);
+        backgroundManager.attach(this.getWindow());
+        backgroundManager.setDrawable(getResources().getDrawable(R.drawable.background, null));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mLibrary.registerListener(this);
+        mActivity = this;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        mLibrary.unregisterListener(this);
+        mActivity = null;
     }
 
     @Override
@@ -73,26 +94,30 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     }
 
     @Override
-    public void onLibraryResult(final ExecutionStatus status, final Poll poll) {
-        mPoll = poll;
+    public void onLibraryResult(final ExecutionStatus status, final Poll poll, final String className) {
+        if(className.compareTo(sClassName) == 0) {
+            mPoll = poll;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadFragment(0, true);
-            }
-        });
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    loadFragment(0, true);
+                }
+            });
+        }
     }
 
     @Override
-    public void onLibraryResult(final ExecutionStatus status, final List<Command> list) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                FinishedPollDialog dialog = new FinishedPollDialog(mActivity, mActivity, list);
-                dialog.show();
-            }
-        });
+    public void onLibraryResult(final ExecutionStatus status, final List<Command> list, final String className) {
+        if(className.compareTo(sClassName) == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    FinishedPollDialog dialog = new FinishedPollDialog(mActivity, mActivity, list);
+                    dialog.show();
+                }
+            });
+        }
     }
 
     @Override
@@ -108,10 +133,17 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     }
 
     private void initializeButtons() {
-        Button b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Left);
-        b.setOnClickListener(this);
-        b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Right);
-        b.setOnClickListener(this);
+        mButtonPrev = (Button) findViewById(R.id.id_SinglePollActivity_Button_Left);
+        mButtonPrev.setOnClickListener(this);
+        mButtonNext = (Button) findViewById(R.id.id_SinglePollActivity_Button_Right);
+        mButtonNext.setOnClickListener(this);
+    }
+
+    private void changeButtonEnableStatus(boolean status) {
+        if(mButtonPrev != null && mButtonNext != null) {
+            mButtonPrev.setEnabled(status);
+            mButtonNext.setEnabled(status);
+        }
     }
 
     private String checkStartingIntent() {
@@ -126,6 +158,10 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     }
 
     private void loadNextFragment() {
+        if(mSinglePollFragment == null) {
+            return;
+        }
+
         mSinglePollFragment.updateFieldValues();
 
         if(mPoll != null && mPoll.getFieldList().size() > (mCurrentField + 1)) {
@@ -156,12 +192,16 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
             }
         } else {
             if(mLibrary != null && mLibrary.accountAvailable()) {
-                mLibrary.uploadPoll(mPollUrl, mPoll.toJSON().toString());
+                mLibrary.uploadPoll(mPollUrl, mPoll.toJSON().toString(), sClassName);
             }
         }
     }
 
     private void loadPrevFragment() {
+        if(mSinglePollFragment == null) {
+            return;
+        }
+
         mSinglePollFragment.updateFieldValues();
 
         if(mPoll != null && mCurrentField > 0) {
