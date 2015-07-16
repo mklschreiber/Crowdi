@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -19,11 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
+import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Option;
-import eu.applabs.crowdsensinglibrary.tool.PatternWatcher;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CSDateElement;
+import eu.applabs.crowdsensingtv.base.CSEditTextGroup;
 import eu.applabs.crowdsensingtv.base.CSTimeElement;
 
 public class SinglePollFragment extends Fragment {
@@ -33,6 +34,9 @@ public class SinglePollFragment extends Fragment {
     private LinearLayout mLinearLayout = null;
     private List<View> mViewList = null;
     private Field mField = null;
+
+    private FitnessLibrary mFitnessLibrary = null;
+    List<Portal.PortalType> mConnectedPortalsList;
 
     public SinglePollFragment() {
         mViewList = new ArrayList<>();
@@ -144,6 +148,8 @@ public class SinglePollFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_singlepoll, container, false);
         mLinearLayout = (LinearLayout) v.findViewById(R.id.id_SinglePollFragment_LinearLayout);
+        mFitnessLibrary = FitnessLibrary.getInstance();
+        mConnectedPortalsList = mFitnessLibrary.getConnectedPortals();
 
         if(mField != null) {
             View fv = createViewForField(mField, true);
@@ -168,22 +174,12 @@ public class SinglePollFragment extends Fragment {
 
         switch(field.getType()) {
             case text:
-                //ll = new LinearLayout(getActivity());
-                //ll.setOrientation(LinearLayout.HORIZONTAL);
 
-                et = new EditText(getActivity());
-                et.setHint(field.getLabel());
-                et.setText(field.getValue());
-                et.setId(field.getId());
+                CSEditTextGroup csetg = new CSEditTextGroup(getActivity(), field);
+                csetg.setOrientation(LinearLayout.HORIZONTAL);
+                mViewList.add(csetg.getEditText()); // Add the child
 
-                //ll.addView(et);
-
-                //if(field.getLabel().contains("Fancy")) {
-                //    Button b = new Button(getActivity());
-                //    ll.addView(b);
-                //}
-
-                view = et;
+                view = csetg;
                 break;
             case textarea:
                 et = new EditText(getActivity());

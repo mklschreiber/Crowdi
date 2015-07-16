@@ -239,17 +239,17 @@ public class ManageAccountsActivity extends Activity implements
     }
 
     @Override
-    public void onPersonReceived(Person person) {
+    public void onPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, Person person) {
         // Not needed
     }
 
     @Override
-    public void onStepsReceived(List<StepBucket> list) {
+    public void onStepsReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, List<StepBucket> list) {
         // Not needed
     }
 
     @Override
-    public void onActivitiesReceived(List<ActivityBucket> list) {
+    public void onActivitiesReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, List<ActivityBucket> list) {
         // Not needed
     }
 
@@ -259,17 +259,17 @@ public class ManageAccountsActivity extends Activity implements
     }
 
     @Override
-    public void onLibraryResult(final ExecutionStatus status, final Poll poll, final String className) {
+    public void onLibraryResult(final ILibraryResultListener.ExecutionStatus status, final Poll poll, final String className) {
 
     }
 
     @Override
-    public void onLibraryResult(final ExecutionStatus status, final List<Command> list, final String className) {
+    public void onLibraryResult(final ILibraryResultListener.ExecutionStatus status, final List<Command> list, final String className) {
         if(className.compareTo(sClassName) == 0) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (status != ExecutionStatus.Success) {
+                    if (status != ILibraryResultListener.ExecutionStatus.Success) {
                         Toast.makeText(mActivity, "Login incorrect!", Toast.LENGTH_SHORT).show();
                         mLibrary.logout();
 

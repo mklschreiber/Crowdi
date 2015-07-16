@@ -136,7 +136,9 @@ public class CSFitnessRequestResultDialog extends Dialog implements View.OnClick
             height = temp * parentHeight / valuesMax;
         } catch (Exception e) {
             float temp = Float.valueOf(value);
-            height = ((int) temp) * parentHeight / valuesMax;
+            if(valuesMax != 0) {
+                height = ((int) temp) * parentHeight / valuesMax;
+            }
         }
 
         return height;

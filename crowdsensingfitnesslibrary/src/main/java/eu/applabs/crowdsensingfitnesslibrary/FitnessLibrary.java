@@ -18,9 +18,16 @@ import eu.applabs.crowdsensingfitnesslibrary.settings.SettingsManager;
 public class FitnessLibrary implements Portal.IPortalListener{
 
     public interface IFitnessLibraryListener {
-        void onPersonReceived(Person person);
-        void onStepsReceived(List<StepBucket> list);
-        void onActivitiesReceived(List<ActivityBucket> list);
+        public enum ExecutionStatus {
+            Undefined,
+            Success,
+            Error
+        }
+
+        void onPersonReceived(ExecutionStatus status, int requestId, Person person);
+        void onStepsReceived(ExecutionStatus status, int requestId, List<StepBucket> list);
+        void onActivitiesReceived(ExecutionStatus status, int requestId, List<ActivityBucket> list);
+
         void onPortalConnectionStateChanged();
     }
 
@@ -77,6 +84,24 @@ public class FitnessLibrary implements Portal.IPortalListener{
         return false;
     }
 
+    public List<Portal.PortalType> getConnectedPortals() {
+        List<Portal.PortalType> list = new ArrayList<>();
+
+        if(isConnected(Portal.PortalType.Google)) {
+            list.add(Portal.PortalType.Google);
+        }
+
+        if(isConnected(Portal.PortalType.Apple)) {
+            list.add(Portal.PortalType.Apple);
+        }
+
+        if(isConnected(Portal.PortalType.Microsoft)) {
+            list.add(Portal.PortalType.Microsoft);
+        }
+
+        return list;
+    }
+
     public void connect(Portal.PortalType type, Activity activity) {
         Portal portal = findPortal(type);
 
@@ -124,11 +149,12 @@ public class FitnessLibrary implements Portal.IPortalListener{
                          long endTime,
                          TimeUnit rangeUnit,
                          int duration,
-                         TimeUnit durationUnit) {
+                         TimeUnit durationUnit,
+                         int requestId) {
         Portal portal = findPortal(type);
 
         if(portal != null) {
-            portal.getSteps(startTime, endTime, rangeUnit, duration, durationUnit);
+            portal.getSteps(startTime, endTime, rangeUnit, duration, durationUnit, requestId);
         }
     }
 
@@ -137,11 +163,12 @@ public class FitnessLibrary implements Portal.IPortalListener{
                                  long endTime,
                                  TimeUnit rangeUnit,
                                  int duration,
-                                 TimeUnit durationUnit) {
+                                 TimeUnit durationUnit,
+                                 int requestId) {
         Portal portal = findPortal(type);
 
         if(portal != null) {
-            portal.getActivities(startTime, endTime, rangeUnit, duration, durationUnit);
+            portal.getActivities(startTime, endTime, rangeUnit, duration, durationUnit, requestId);
         }
     }
 
@@ -156,23 +183,23 @@ public class FitnessLibrary implements Portal.IPortalListener{
     }
 
     @Override
-    public void onPersonReceived(Person person) {
+    public void onPersonReceived(IFitnessLibraryListener.ExecutionStatus status, int requestId, Person person) {
         for(IFitnessLibraryListener listener : mIFitnessLibraryListenerList) {
-            listener.onPersonReceived(person);
+            listener.onPersonReceived(status, requestId, person);
         }
     }
 
     @Override
-    public void onStepsReceived(List<StepBucket> list) {
+    public void onStepsReceived(IFitnessLibraryListener.ExecutionStatus status, int requestId, List<StepBucket> list) {
         for(IFitnessLibraryListener listener : mIFitnessLibraryListenerList) {
-            listener.onStepsReceived(list);
+            listener.onStepsReceived(status, requestId, list);
         }
     }
 
     @Override
-    public void onActivitiesReceived(List<ActivityBucket> list) {
+    public void onActivitiesReceived(IFitnessLibraryListener.ExecutionStatus status, int requestId, List<ActivityBucket> list) {
         for(IFitnessLibraryListener listener : mIFitnessLibraryListenerList) {
-            listener.onActivitiesReceived(list);
+            listener.onActivitiesReceived(status, requestId, list);
         }
     }
 

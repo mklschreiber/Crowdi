@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import eu.applabs.crowdsensingapp.R;
@@ -37,6 +38,8 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     private MainActivity mActivity = null;
     private HeartRateServiceReceiverConnection mHeartRateServiceReceiverConnection;
     private StartPollServiceSenderConnection mStartPollServiceSenderConnection;
+
+    private int mRequestId = 0;
 
     private FitnessLibrary mFitnessLibrary = null;
 
@@ -130,6 +133,8 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         cal.add(Calendar.WEEK_OF_YEAR, -1);
         long startTime = cal.getTimeInMillis();
 
+        mRequestId = (int) (Math.random() * 1000);
+
         switch(v.getId()) {
             case R.id.button:
                 showNotification("Pizza", "Pizza wählen", "Auf TV starten",
@@ -147,7 +152,8 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
                         endTime,
                         TimeUnit.MILLISECONDS,
                         1,
-                        TimeUnit.DAYS
+                        TimeUnit.DAYS,
+                        mRequestId
                         );
                 break;
             case R.id.button5:
@@ -156,7 +162,8 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
                         endTime,
                         TimeUnit.MILLISECONDS,
                         1,
-                        TimeUnit.DAYS
+                        TimeUnit.DAYS,
+                        mRequestId
                 );
                 break;
         }
@@ -173,59 +180,63 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     }
 
     @Override
-    public void onPersonReceived(Person person) {
+    public void onPersonReceived(ExecutionStatus status, int requestId, Person person) {
 
     }
 
     @Override
-    public void onStepsReceived(final List<StepBucket> list) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<String> valueList = new ArrayList<>();
-                ArrayList<String> valueLabelList = new ArrayList<>();
+    public void onStepsReceived(ExecutionStatus status, int requestId, final List<StepBucket> list) {
+        if(status == ExecutionStatus.Success && requestId == mRequestId) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ArrayList<String> valueList = new ArrayList<>();
+                    ArrayList<String> valueLabelList = new ArrayList<>();
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-                for(StepBucket bucket : list) {
-                    valueList.add(String.valueOf(bucket.getStepCount()));
-                    String startDate = sdf.format(bucket.getStepStartDate());
-                    String endDate = sdf.format(bucket.getStepEndDate());
+                    for (StepBucket bucket : list) {
+                        valueList.add(String.valueOf(bucket.getStepCount()));
+                        String startDate = sdf.format(bucket.getStepStartDate());
+                        String endDate = sdf.format(bucket.getStepEndDate());
 
-                    valueLabelList.add("Steps\n\n" + startDate + "\n - \n" + endDate);
+                        valueLabelList.add("Steps\n\n" + startDate + "\n - \n" + endDate);
+                    }
+
+                    CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
+                    dialog.registerListener(mActivity);
+                    dialog.show();
                 }
-
-                CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
-                dialog.registerListener(mActivity);
-                dialog.show();
-            }
-        });
+            });
+        }
     }
 
     @Override
-    public void onActivitiesReceived(final List<ActivityBucket> list) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<String> valueList = new ArrayList<>();
-                ArrayList<String> valueLabelList = new ArrayList<>();
+    public void onActivitiesReceived(ExecutionStatus status, int requestId, final List<ActivityBucket> list) {
+        if(status == ExecutionStatus.Success && requestId == mRequestId) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ArrayList<String> valueList = new ArrayList<>();
+                    ArrayList<String> valueLabelList = new ArrayList<>();
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-                for(ActivityBucket bucket : list) {
-                    valueList.add(String.valueOf(bucket.getActivityCount()));
-                    String activity = eu.applabs.crowdsensingfitnesslibrary.data.Activity.convertToString(bucket.getActivityType());
-                    String startDate = sdf.format(bucket.getActivityStartDate());
-                    String endDate = sdf.format(bucket.getActivityEndDate());
+                    for (ActivityBucket bucket : list) {
+                        valueList.add(String.valueOf(bucket.getActivityCount()));
+                        String activity = eu.applabs.crowdsensingfitnesslibrary.data.Activity.convertToString(bucket.getActivityType());
+                        String startDate = sdf.format(bucket.getActivityStartDate());
+                        String endDate = sdf.format(bucket.getActivityEndDate());
 
-                    valueLabelList.add(activity + "\n\n" + startDate + "\n - \n" + endDate);
+                        valueLabelList.add(activity + "\n\n" + startDate + "\n - \n" + endDate);
+                    }
+
+                    CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
+                    dialog.registerListener(mActivity);
+                    dialog.show();
                 }
-
-                CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
-                dialog.registerListener(mActivity);
-                dialog.show();
-            }
-        });
+            });
+        }
     }
 
     @Override

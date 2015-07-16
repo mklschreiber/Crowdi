@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
 import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
@@ -40,7 +41,7 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
 
     private static final int sRequestOAuth = 1;
 
-    private int mRequestId = 0;
+    //private int mRequestId = 0;
     private Activity mActivity = null;
     private boolean mAuthInProgress = false;
     private GoogleApiClient mGoogleApiClient = null;
@@ -70,7 +71,7 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
         }
     }
 
-    public List<StepBucket> converToStepBucketList(List<Bucket> list) {
+    public List<StepBucket> convertToStepBucketList(List<Bucket> list) {
         List<StepBucket> returnList = new ArrayList<>();
 
         try {
@@ -247,6 +248,8 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
         if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
 
         }
+
+        notifyPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, 0, new Person());
     }
 
     @Override
@@ -254,7 +257,8 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                          long endTime,
                          TimeUnit rangeUnit,
                          int duration,
-                         TimeUnit durationUnit) {
+                         TimeUnit durationUnit,
+                         int requestId) {
 
         if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             DataReadRequest request = new DataReadRequest.Builder()
@@ -263,10 +267,13 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                     .setTimeRange(startTime, endTime, rangeUnit)
                     .build();
 
-            int requestId = mRequestId++;
+            //int requestId = mRequestId++;
             mRequestMap.put(requestId, RequestType.Step);
             new ReadFitnessThread(mGoogleApiClient, requestId, request, this).start();
+            return;
         }
+
+        notifyStepsReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, requestId, new ArrayList<StepBucket>());
     }
 
     @Override
@@ -274,7 +281,8 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                                  long endTime,
                                  TimeUnit rangeUnit,
                                  int duration,
-                                 TimeUnit durationUnit) {
+                                 TimeUnit durationUnit,
+                                 int requestId) {
 
         if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             DataReadRequest request = new DataReadRequest.Builder()
@@ -283,10 +291,13 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                     .setTimeRange(startTime, endTime, rangeUnit)
                     .build();
 
-            int requestId = mRequestId++;
+            //int requestId = mRequestId++;
             mRequestMap.put(requestId, RequestType.Activity);
             new ReadFitnessThread(mGoogleApiClient, requestId, request, this).start();
+            return;
         }
+
+        notifyActivitiesReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, requestId, new ArrayList<ActivityBucket>());
     }
 
     // GoogleApiClient.ConnectionCallbacks
@@ -346,13 +357,13 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                 case Undefined:
                     break;
                 case Activity:
-                    notifyActivitiesReceived(convertToActivityBucketList(list));
+                    notifyActivitiesReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Success, requestId, convertToActivityBucketList(list));
                     break;
                 case Person:
-                    notifyPersonReceived(new Person());
+                    notifyPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Success, requestId, new Person());
                     break;
                 case Step:
-                    notifyStepsReceived(converToStepBucketList(list));
+                    notifyStepsReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Success, requestId, convertToStepBucketList(list));
                     break;
             }
 
@@ -369,13 +380,13 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
                 case Undefined:
                     break;
                 case Activity:
-                    notifyActivitiesReceived(new ArrayList<ActivityBucket>());
+                    notifyActivitiesReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, requestId, new ArrayList<ActivityBucket>());
                     break;
                 case Person:
-                    notifyPersonReceived(new Person());
+                    notifyPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, requestId, new Person());
                     break;
                 case Step:
-                    notifyStepsReceived(new ArrayList<StepBucket>());
+                    notifyStepsReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, requestId, new ArrayList<StepBucket>());
                     break;
             }
 

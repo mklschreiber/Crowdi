@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
 import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
@@ -30,9 +31,9 @@ public abstract class Portal {
     private List<IPortalListener> mIPortalListenerList = null;
 
     public interface IPortalListener {
-        void onPersonReceived(Person person);
-        void onStepsReceived(List<StepBucket> list);
-        void onActivitiesReceived(List<ActivityBucket> list);
+        void onPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, Person person);
+        void onStepsReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, List<StepBucket> list);
+        void onActivitiesReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, List<ActivityBucket> list);
         void onPortalConnectionStateChanged();
     }
 
@@ -48,21 +49,21 @@ public abstract class Portal {
         mIPortalListenerList.remove(listener);
     }
 
-    public void notifyPersonReceived(Person person) {
+    public void notifyPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, Person person) {
         for(IPortalListener listener : mIPortalListenerList) {
-            listener.onPersonReceived(person);
+            listener.onPersonReceived(status, requestId, person);
         }
     }
 
-    public void notifyStepsReceived(List<StepBucket> list) {
+    public void notifyStepsReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, List<StepBucket> list) {
         for(IPortalListener listener : mIPortalListenerList) {
-            listener.onStepsReceived(list);
+            listener.onStepsReceived(status, requestId, list);
         }
     }
 
-    public void notifyActivitiesReceived(List<ActivityBucket> list) {
+    public void notifyActivitiesReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus status, int requestId, List<ActivityBucket> list) {
         for(IPortalListener listener : mIPortalListenerList) {
-            listener.onActivitiesReceived(list);
+            listener.onActivitiesReceived(status, requestId, list);
         }
     }
 
@@ -83,10 +84,12 @@ public abstract class Portal {
                                   long endTime,
                                   TimeUnit rangeUnit,
                                   int duration,
-                                  TimeUnit durationUnit);
+                                  TimeUnit durationUnit,
+                                  int requestId);
     public abstract void getActivities(long startTime,
                                        long endTime,
                                        TimeUnit rangeUnit,
                                        int duration,
-                                       TimeUnit durationUnit);
+                                       TimeUnit durationUnit,
+                                       int requestId);
 }
