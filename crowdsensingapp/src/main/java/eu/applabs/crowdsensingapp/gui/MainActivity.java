@@ -26,6 +26,8 @@ import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
 import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceSenderConnection;
 import eu.applabs.crowdsensingwearlibrary.gui.WearConnectionActivity;
 import eu.applabs.crowdsensingwearlibrary.service.DataTransferService;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceReceiverConnection;
@@ -38,6 +40,7 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     private MainActivity mActivity = null;
     private HeartRateServiceReceiverConnection mHeartRateServiceReceiverConnection;
     private StartPollServiceSenderConnection mStartPollServiceSenderConnection;
+    private HeartRateDataServiceSenderConnection mHeartRateDataServiceSenderConnection;
 
     private int mRequestId = 0;
 
@@ -46,6 +49,10 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     @Override
     public void onDataReceived(String data) {
         Toast.makeText(this, "Received data: " + data, Toast.LENGTH_SHORT).show();
+
+        if(mHeartRateDataServiceSenderConnection != null) {
+            mHeartRateDataServiceSenderConnection.setHeartRate(data);
+        }
     }
 
     @Override
@@ -69,6 +76,7 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         mFitnessLibrary.registerListener(this);
         mFitnessLibrary.connect(Portal.PortalType.Google);
 
+        mHeartRateDataServiceSenderConnection = new HeartRateDataServiceSenderConnection();
         mHeartRateServiceReceiverConnection = new HeartRateServiceReceiverConnection();
         mStartPollServiceSenderConnection = new StartPollServiceSenderConnection();
 
@@ -107,6 +115,10 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         bindService(new Intent(this, AndroidUpnpServiceImpl.class),
                 mStartPollServiceSenderConnection,
                 Context.BIND_AUTO_CREATE);
+
+        bindService(new Intent(this, AndroidUpnpServiceImpl.class),
+                mHeartRateDataServiceSenderConnection,
+                Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -117,6 +129,8 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         unbindService(mHeartRateServiceReceiverConnection);
 
         unbindService(mStartPollServiceSenderConnection);
+
+        unbindService(mHeartRateDataServiceSenderConnection);
 
         if(mFitnessLibrary != null) {
             mFitnessLibrary.disconnect(Portal.PortalType.Google);

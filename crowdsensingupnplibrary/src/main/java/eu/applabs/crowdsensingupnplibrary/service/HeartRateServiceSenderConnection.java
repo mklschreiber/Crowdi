@@ -47,6 +47,16 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
         mICSUpnpServiceConnectionListenerList.remove(listener);
     }
 
+    public boolean devicesAvailable() {
+        if(mAndroidUpnpService != null) {
+            if(mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices().size() > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void startNotification(String title, String content, String url) {
         if(mAndroidUpnpService != null) {
             for (Device device : mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices()) {

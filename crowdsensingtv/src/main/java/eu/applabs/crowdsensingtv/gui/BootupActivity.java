@@ -18,7 +18,6 @@ public class BootupActivity extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(sClassName, "BootupActivity called");
-        Toast.makeText(context, "BootupActivity called", Toast.LENGTH_SHORT).show();
 
         if (intent.getAction().endsWith(Intent.ACTION_BOOT_COMPLETED)) {
             scheduleRecommendationUpdate(context);
@@ -29,22 +28,13 @@ public class BootupActivity extends BroadcastReceiver {
         Log.d(sClassName, "Scheduling recommendations update");
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        /*Intent recommendationIntent = new Intent(context, RecommendationService.class);
+
+        Intent recommendationIntent = new Intent(context, RecommendationService.class);
         PendingIntent alarmIntent = PendingIntent.getService(context, 0, recommendationIntent, 0);
 
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 sInitialDelay,
                 AlarmManager.INTERVAL_HALF_HOUR,
-                alarmIntent);*/
-
-        // New
-
-        Intent recommendationIntent2 = new Intent(context, RecommendationService.class);
-        PendingIntent alarmIntent2 = PendingIntent.getService(context, 0, recommendationIntent2, 0);
-
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                sInitialDelay,
-                AlarmManager.INTERVAL_HALF_HOUR,
-                alarmIntent2);
+                alarmIntent);
     }
 }

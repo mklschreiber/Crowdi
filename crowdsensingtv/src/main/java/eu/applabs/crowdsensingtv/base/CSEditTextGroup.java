@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import org.fourthline.cling.model.action.ActionArgumentValue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,25 +23,34 @@ import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
 public class CSEditTextGroup extends LinearLayout implements View.OnClickListener,
         FitnessLibrary.IFitnessLibraryListener,
-        CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener{
+        CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener,
+        HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener,
+        CSHeartRateDialog.ICSHeartRateDialogListener {
 
     public enum QuestionType {
         Undefined,
         Steps,
-        Activity
+        Activity,
+        Heart_Rate
     }
 
     private static final int sGoogleId = 0;
     private static final int sAppleId = 1;
     private static final int sMicrosoftId = 2;
 
+    private static final int sHeartRateId = 3;
+
     private CSEditTextGroup mCSEditTextGroup = null;
 
     private Activity mActivity = null;
     private Field mField = null;
+    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
+    private HeartRateDataServiceReceiverConnection mHeartRateDataServiceReceiverConnection = null;
     private FitnessLibrary mFitnessLibrary = null;
     private List<Portal.PortalType> mConnectedPortalList = null;
 
@@ -47,19 +58,22 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
 
     private int mRequestId = -1;
 
-    public CSEditTextGroup(Activity activity, Field field) {
+    public CSEditTextGroup(Activity activity, Field field,
+                           HeartRateServiceSenderConnection heartRateServiceSenderConnection,
+                           HeartRateDataServiceReceiverConnection heartRateDataServiceReceiverConnection) {
         super(activity);
 
         mCSEditTextGroup = this;
+        mActivity = activity;
+        mField = field;
+        mHeartRateServiceSenderConnection = heartRateServiceSenderConnection;
+        mHeartRateDataServiceReceiverConnection = heartRateDataServiceReceiverConnection;
 
         setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        setWeightSum(8);
-
-        mActivity = activity;
-        mField = field;
+        setWeightSum(9);
 
         mFitnessLibrary = FitnessLibrary.getInstance();
         mConnectedPortalList = mFitnessLibrary.getConnectedPortals();
@@ -77,9 +91,6 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
 
         if(checkQuestionType(field.getLabel()) != QuestionType.Undefined) {
             if (mConnectedPortalList.contains(Portal.PortalType.Google)) {
-                //ImageButton imageButtonGoogle = new ImageButton(mActivity);
-                //imageButtonGoogle.seth
-
                 Button buttonGoogle = new Button(mActivity);
                 buttonGoogle.setLayoutParams(new LinearLayout.LayoutParams(
                         0,
@@ -114,11 +125,25 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                 buttonMicrosoft.setOnClickListener(this);
                 addView(buttonMicrosoft);
             }
+
+            if(checkQuestionType(field.getLabel()) == QuestionType.Heart_Rate
+                    && mHeartRateServiceSenderConnection != null
+                    && mHeartRateServiceSenderConnection.devicesAvailable()) {
+                Button buttonHeartRate = new Button(mActivity);
+                buttonHeartRate.setLayoutParams(new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f));
+                buttonHeartRate.setText("Measure");
+                buttonHeartRate.setId(sHeartRateId);
+                buttonHeartRate.setOnClickListener(this);
+                addView(buttonHeartRate);
+            }
         } else {
             mEditText.setLayoutParams(new LinearLayout.LayoutParams(
                     0,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
-                    8f));
+                    9f));
         }
     }
 
@@ -147,11 +172,13 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
     private QuestionType checkQuestionType(String question) {
         String temp = question.toLowerCase();
 
-        //  TODO Change to steps
+        //  TODO Change to steps and heart rate
         if(temp.contains("s")) {
             return QuestionType.Steps;
         } else if(temp.contains("activity")) {
             return QuestionType.Activity;
+        } else if(temp.contains("g")) {
+            return QuestionType.Heart_Rate;
         }
 
         return QuestionType.Undefined;
@@ -234,6 +261,13 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                         break;
                 }
                 break;
+            case sHeartRateId:
+                mHeartRateServiceSenderConnection.getHeartRate();
+
+                CSHeartRateDialog csHeartRateDialog = new CSHeartRateDialog(mActivity, mHeartRateDataServiceReceiverConnection);
+                csHeartRateDialog.registerListener(this);
+                csHeartRateDialog.show();
+                break;
         }
     }
 
@@ -306,6 +340,27 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
     public void onValueSelected(String value) {
         if(mEditText != null) {
             mEditText.setText(value);
+        }
+    }
+
+    @Override
+    public void onHeartRateSelected(String value) {
+        if(mEditText != null) {
+            mEditText.setText(value);
+        }
+    }
+
+    // Heart rate upnp service
+
+    @Override
+    public void onDeviceAdded() {
+
+    }
+
+    @Override
+    public void onResponseAvailable(String method, boolean success, ActionArgumentValue[] output) {
+        if(success) {
+
         }
     }
 }

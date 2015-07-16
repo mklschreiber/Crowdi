@@ -26,6 +26,8 @@ import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CSDateElement;
 import eu.applabs.crowdsensingtv.base.CSEditTextGroup;
 import eu.applabs.crowdsensingtv.base.CSTimeElement;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
 public class SinglePollFragment extends Fragment {
 
@@ -34,6 +36,8 @@ public class SinglePollFragment extends Fragment {
     private LinearLayout mLinearLayout = null;
     private List<View> mViewList = null;
     private Field mField = null;
+    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
+    private HeartRateDataServiceReceiverConnection mHeartRateDataServiceReceiverConnection = null;
 
     private FitnessLibrary mFitnessLibrary = null;
     List<Portal.PortalType> mConnectedPortalsList;
@@ -44,6 +48,14 @@ public class SinglePollFragment extends Fragment {
 
     public void setField(Field field) {
         mField = field;
+    }
+
+    public void setHeartRateServiceSenderConnection(HeartRateServiceSenderConnection heartRateServiceSenderConnection) {
+        mHeartRateServiceSenderConnection = heartRateServiceSenderConnection;
+    }
+
+    public void setHeartRateDataServiceReceiverConnection(HeartRateDataServiceReceiverConnection heartRateDataServiceReceiverConnection) {
+        mHeartRateDataServiceReceiverConnection = heartRateDataServiceReceiverConnection;
     }
 
     public boolean allRequiredFieldsFilled() {
@@ -175,7 +187,8 @@ public class SinglePollFragment extends Fragment {
         switch(field.getType()) {
             case text:
 
-                CSEditTextGroup csetg = new CSEditTextGroup(getActivity(), field);
+                CSEditTextGroup csetg = new CSEditTextGroup(getActivity(), field,
+                        mHeartRateServiceSenderConnection, mHeartRateDataServiceReceiverConnection);
                 csetg.setOrientation(LinearLayout.HORIZONTAL);
                 mViewList.add(csetg.getEditText()); // Add the child
 

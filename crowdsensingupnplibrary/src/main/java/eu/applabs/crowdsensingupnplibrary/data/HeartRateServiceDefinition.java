@@ -19,9 +19,6 @@ public class HeartRateServiceDefinition {
 
     private PropertyChangeSupport mPropertyChangeSupport;
 
-    @UpnpStateVariable(defaultValue = "0.0", name = "mHeartRate")
-    private String mHeartRate = "0.0";
-
     @UpnpStateVariable(defaultValue = "0", name = "mStartMeasuring")
     private boolean mStartMeasuring = false;
 
@@ -49,13 +46,6 @@ public class HeartRateServiceDefinition {
         mPropertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    public void setHeartRate(String heartRate) {
-        mHeartRate = heartRate;
-
-        // Set the flag to indicate measuring is completed
-        mStartMeasuring = false;
-    }
-
     public String getNotificationTitle() {
         return mNotificationTitle;
     }
@@ -68,17 +58,14 @@ public class HeartRateServiceDefinition {
         return mNotificationUrl;
     }
 
-    @UpnpAction(out = @UpnpOutputArgument(name = "HeartRate", stateVariable = "mHeartRate"))
-    public String getHeartRate()
+    @UpnpAction()
+    public void getHeartRate()
     {
         // Set the variable to trigger PropertyChanged
+        boolean oldValue = mStartMeasuring;
         mStartMeasuring = true;
 
-        mPropertyChangeSupport.firePropertyChange("mStartMeasuring", false, true);
-
-        while(mStartMeasuring) { /* Block this thread till the measuring is completed */ }
-
-        return mHeartRate;
+        mPropertyChangeSupport.firePropertyChange("mStartMeasuring", oldValue, mStartMeasuring);
     }
 
     @UpnpAction

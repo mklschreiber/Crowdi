@@ -43,12 +43,6 @@ public class HeartRateServiceReceiverConnection implements ServiceConnection, Pr
         mIHeartRateServiceReceiverConnectionListenerList.remove(listener);
     }
 
-    public void sendHeartRate(String heartRate) {
-        if(mHeartRateService != null) {
-            mHeartRateService.getManager().getImplementation().setHeartRate(heartRate);
-        }
-    }
-
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         mAndroidUpnpService = (AndroidUpnpService) service;

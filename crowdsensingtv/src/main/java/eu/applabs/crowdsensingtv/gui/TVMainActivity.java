@@ -35,8 +35,7 @@ import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnecti
 
 public class TVMainActivity extends Activity implements
         OnItemViewClickedListener,
-        ILibraryResultListener,
-        HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener {
+        ILibraryResultListener {
 
     private static final String sClassName = TVMainActivity.class.getSimpleName();
 
@@ -46,7 +45,6 @@ public class TVMainActivity extends Activity implements
     private BrowseFragment mBrowseFragment = null;
     private ArrayObjectAdapter mArrayObjectAdapter = null;
     private List<Command> mCommandList = null;
-    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
 
     private Library mLibrary = null;
     private FitnessLibrary mFitnessLibrary = null;
@@ -55,8 +53,6 @@ public class TVMainActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tvmain);
-
-        mHeartRateServiceSenderConnection = new HeartRateServiceSenderConnection();
 
         mFragmentManager = getFragmentManager();
         mBrowseFragment = (BrowseFragment) mFragmentManager.findFragmentById(R.id.id_frag_TVMainActivity);
@@ -93,9 +89,6 @@ public class TVMainActivity extends Activity implements
 
         Intent intent = new Intent(this, UpnpService.class);
         startService(intent);
-
-        mHeartRateServiceSenderConnection.registerListener(this);
-        bindService(new Intent(this, AndroidUpnpServiceImpl.class), mHeartRateServiceSenderConnection, BIND_AUTO_CREATE);
     }
 
     @Override
@@ -125,9 +118,6 @@ public class TVMainActivity extends Activity implements
     @Override
     protected void onStop() {
         super.onStop();
-
-        mHeartRateServiceSenderConnection.unregisterListener(this);
-        unbindService(mHeartRateServiceSenderConnection);
     }
 
     @Override
@@ -202,18 +192,5 @@ public class TVMainActivity extends Activity implements
                 updateUI();
             }
         }
-    }
-
-    // Heart rate upnp service
-
-    @Override
-    public void onDeviceAdded() {
-        mHeartRateServiceSenderConnection.startNotification("Pizza", "Pizza bestellen", "http://as.applabs.eu:8080/FancyModule/pizza");
-        mHeartRateServiceSenderConnection.getHeartRate();
-    }
-
-    @Override
-    public void onResponseAvailable(String method, boolean success, ActionArgumentValue[] output) {
-        Toast.makeText(getApplicationContext(), method + ", Status: " + String.valueOf(success), Toast.LENGTH_SHORT).show();
     }
 }

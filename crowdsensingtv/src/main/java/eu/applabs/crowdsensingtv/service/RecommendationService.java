@@ -11,6 +11,9 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.fourthline.cling.android.AndroidUpnpServiceImpl;
+import org.fourthline.cling.model.action.ActionArgumentValue;
+
 import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
@@ -20,18 +23,42 @@ import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
 import eu.applabs.crowdsensingtv.gui.TVMainActivity;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
-public class RecommendationService extends IntentService implements ILibraryResultListener {
+public class RecommendationService extends IntentService implements ILibraryResultListener,
+        HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener {
 
     private static final String sClassName = RecommendationService.class.getSimpleName();
     private static final int BASE_ID = 42;
 
     private Library mLibrary = null;
+    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
 
     public RecommendationService() {
         super(RecommendationService.class.getSimpleName());
 
         mLibrary = Library.getInstance();
+        mHeartRateServiceSenderConnection = new HeartRateServiceSenderConnection();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if(mHeartRateServiceSenderConnection != null) {
+            mHeartRateServiceSenderConnection.registerListener(this);
+            bindService(new Intent(this, AndroidUpnpServiceImpl.class), mHeartRateServiceSenderConnection, BIND_AUTO_CREATE);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(mHeartRateServiceSenderConnection != null) {
+            mHeartRateServiceSenderConnection.unregisterListener(this);
+            unbindService(mHeartRateServiceSenderConnection);
+        }
     }
 
     @Override
@@ -71,6 +98,14 @@ public class RecommendationService extends IntentService implements ILibraryResu
                                 .build();
 
                         notificationManager.notify(BASE_ID + i, notification);
+
+                        mHeartRateServiceSenderConnection.startNotification(
+                                getString(R.string.RecommendationService_Title_Recommendation),
+                                list.get(i).getInfo(),
+                                TVMainActivity.BASE_URL + list.get(i).getCommand());
+
+                        // Break the loop to display only the first command
+                        break;
                     }
                 } catch (Exception e) {
                     Log.e(sClassName, e.getMessage());
@@ -88,6 +123,16 @@ public class RecommendationService extends IntentService implements ILibraryResu
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         return pi;
+    }
+
+    @Override
+    public void onDeviceAdded() {
+
+    }
+
+    @Override
+    public void onResponseAvailable(String method, boolean success, ActionArgumentValue[] output) {
+
     }
 }
 

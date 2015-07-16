@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import org.fourthline.cling.android.AndroidUpnpServiceImpl;
+
 import java.util.List;
 
 import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
@@ -19,6 +21,8 @@ import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CSActivity;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
+import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
 public class SinglePollActivity extends CSActivity implements ILibraryResultListener,
         View.OnClickListener {
@@ -39,11 +43,16 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     private int mCurrentField = 0;
 
     private Library mLibrary = null;
+    private HeartRateDataServiceReceiverConnection mHeartRateDataServiceReceiverConnection = null;
+    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singlepoll);
+
+        mHeartRateServiceSenderConnection = new HeartRateServiceSenderConnection();
+        mHeartRateDataServiceReceiverConnection = new HeartRateDataServiceReceiverConnection();
 
         initializeButtons();
         mProgressBar = (ProgressBar) findViewById(R.id.id_SinglePollActivity_ProgressBar);
@@ -74,6 +83,18 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
         mLibrary.registerListener(this);
         mActivity = this;
+
+        if(mHeartRateServiceSenderConnection != null) {
+            bindService(new Intent(mActivity, AndroidUpnpServiceImpl.class),
+                    mHeartRateServiceSenderConnection,
+                    Activity.BIND_AUTO_CREATE);
+        }
+
+        if(mHeartRateDataServiceReceiverConnection != null) {
+            bindService(new Intent(mActivity, AndroidUpnpServiceImpl.class),
+                    mHeartRateDataServiceReceiverConnection,
+                    Activity.BIND_AUTO_CREATE);
+        }
     }
 
     @Override
@@ -82,6 +103,14 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
         mLibrary.unregisterListener(this);
         mActivity = null;
+
+        if(mHeartRateServiceSenderConnection != null) {
+            unbindService(mHeartRateServiceSenderConnection);
+        }
+
+        if(mHeartRateDataServiceReceiverConnection != null) {
+            unbindService(mHeartRateDataServiceReceiverConnection);
+        }
     }
 
     @Override
@@ -229,6 +258,8 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
             ft.commit();
 
             mSinglePollFragment.setField(mPoll.getFieldList().get(number));
+            mSinglePollFragment.setHeartRateServiceSenderConnection(mHeartRateServiceSenderConnection);
+            mSinglePollFragment.setHeartRateDataServiceReceiverConnection(mHeartRateDataServiceReceiverConnection);
         }
     }
 }
