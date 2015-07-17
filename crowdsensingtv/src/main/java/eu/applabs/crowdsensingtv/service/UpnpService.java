@@ -42,7 +42,8 @@ public class UpnpService extends Service implements
 
     @Override
     public void onStartPoll(String url) {
-        Intent intent = new Intent(this, SinglePollActivity.class);
+        Intent intent = new Intent().setClass(this, SinglePollActivity.class);
+        intent.setAction("SinglePollActivity" + String.valueOf(Math.random()));
         intent.putExtra(SinglePollActivity.EXTRA_URL, url);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

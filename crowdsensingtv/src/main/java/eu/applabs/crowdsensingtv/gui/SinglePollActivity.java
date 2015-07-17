@@ -51,6 +51,8 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singlepoll);
 
+        mActivity = this;
+
         mHeartRateServiceSenderConnection = new HeartRateServiceSenderConnection();
         mHeartRateDataServiceReceiverConnection = new HeartRateDataServiceReceiverConnection();
 
@@ -58,7 +60,9 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         mProgressBar = (ProgressBar) findViewById(R.id.id_SinglePollActivity_ProgressBar);
 
         mPollUrl = checkStartingIntent();
+
         mLibrary = Library.getInstance();
+        mLibrary.registerListener(this);
 
         if(mPollUrl != null
                 && mPollUrl.compareTo("") != 0
@@ -81,9 +85,6 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     protected void onStart() {
         super.onStart();
 
-        mLibrary.registerListener(this);
-        mActivity = this;
-
         if(mHeartRateServiceSenderConnection != null) {
             bindService(new Intent(mActivity, AndroidUpnpServiceImpl.class),
                     mHeartRateServiceSenderConnection,
@@ -102,7 +103,6 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
         super.onStop();
 
         mLibrary.unregisterListener(this);
-        mActivity = null;
 
         if(mHeartRateServiceSenderConnection != null) {
             unbindService(mHeartRateServiceSenderConnection);
@@ -176,10 +176,10 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     }
 
     private String checkStartingIntent() {
-        Intent startingIntent = getIntent();
-        Bundle extras = startingIntent.getExtras();
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
 
-        if(extras != null && extras.containsKey(EXTRA_URL)) {
+        if (extras != null && extras.containsKey(EXTRA_URL)) {
             return extras.getString(EXTRA_URL);
         }
 

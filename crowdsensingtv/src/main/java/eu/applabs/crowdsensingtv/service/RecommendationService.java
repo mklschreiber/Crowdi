@@ -105,7 +105,7 @@ public class RecommendationService extends IntentService implements ILibraryResu
                                 MainActivity.BASE_URL + list.get(i).getCommand());
 
                         // Break the loop to display only the first command
-                        break;
+                        //break;
                     }
                 } catch (Exception e) {
                     Log.e(sClassName, e.getMessage());
@@ -115,10 +115,9 @@ public class RecommendationService extends IntentService implements ILibraryResu
     }
 
     private PendingIntent buildPendingIntent(String url) {
-        Intent intent = new Intent(getApplicationContext(), SinglePollActivity.class);
-        Bundle extras = new Bundle();
-        extras.putString(SinglePollActivity.EXTRA_URL, url);
-        intent.putExtras(extras);
+        Intent intent = new Intent().setClass(getApplicationContext(), SinglePollActivity.class);
+        intent.setAction("SinglePollActivity" + String.valueOf(Math.random()));
+        intent.putExtra(SinglePollActivity.EXTRA_URL, url);
 
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
