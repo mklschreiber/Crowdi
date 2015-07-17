@@ -36,7 +36,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/id_LoginDialog_EditText_Password"
         android:orientation="horizontal"
         android:weightSum="1.0">
 

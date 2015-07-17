@@ -1,11 +1,13 @@
-package eu.applabs.crowdsensingwearlibrary.gui;
+package eu.applabs.crowdsensingwearlibrary.service;
 
-import android.app.Activity;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
+import android.os.Binder;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.PutDataMapRequest;
@@ -13,19 +15,25 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import eu.applabs.crowdsensingwearlibrary.data.Constants;
-import eu.applabs.crowdsensingwearlibrary.service.DataTransferService;
 
-public abstract class WearConnectionActivity extends Activity {
+public abstract class AppConnectionService extends Service {
 
+    private IBinder mBinder = new LocalBinder();
     private DataTransferServiceBroadcastReceiver mDataTransferServiceBroadcastReceiver = null;
     private GoogleApiClient mGoogleApiClient = null;
 
     abstract public void onDataReceived(String data);
     abstract public void onStartOnTvReceived(String url);
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
         mDataTransferServiceBroadcastReceiver = new DataTransferServiceBroadcastReceiver();
 
@@ -45,7 +53,7 @@ public abstract class WearConnectionActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
 
         if(mDataTransferServiceBroadcastReceiver != null) {
@@ -101,6 +109,12 @@ public abstract class WearConnectionActivity extends Activity {
                     onStartOnTvReceived(url);
                 }
             }
+        }
+    }
+
+    public class LocalBinder extends Binder {
+        public AppConnectionService getService() {
+            return AppConnectionService.this;
         }
     }
 }

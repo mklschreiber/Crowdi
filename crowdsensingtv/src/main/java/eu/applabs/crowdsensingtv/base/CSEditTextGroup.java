@@ -21,23 +21,19 @@ import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
+import eu.applabs.crowdsensingfitnesslibrary.util.QuestionChecker;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
+import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
-public class CSEditTextGroup extends LinearLayout implements View.OnClickListener,
+public class CSEditTextGroup extends LinearLayout implements
+        View.OnClickListener,
         FitnessLibrary.IFitnessLibraryListener,
         CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener,
         HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener,
         CSHeartRateDialog.ICSHeartRateDialogListener {
-
-    public enum QuestionType {
-        Undefined,
-        Steps,
-        Activity,
-        Heart_Rate
-    }
 
     private static final int sGoogleId = 0;
     private static final int sAppleId = 1;
@@ -89,14 +85,14 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
         mEditText.setFocusable(true);
         addView(mEditText);
 
-        if(checkQuestionType(field.getLabel()) != QuestionType.Undefined) {
+        if(QuestionChecker.check(mActivity, mField.getLabel()) != QuestionChecker.QuestionType.Undefined) {
             if (mConnectedPortalList.contains(Portal.PortalType.Google)) {
                 Button buttonGoogle = new Button(mActivity);
                 buttonGoogle.setLayoutParams(new LinearLayout.LayoutParams(
                         0,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1f));
-                buttonGoogle.setText("Google");
+                buttonGoogle.setText(R.string.CSEditTextGroup_Button_Google);
                 buttonGoogle.setId(sGoogleId);
                 buttonGoogle.setOnClickListener(this);
                 addView(buttonGoogle);
@@ -108,7 +104,7 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                         0,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1f));
-                buttonApple.setText("Apple");
+                buttonApple.setText(R.string.CSEditTextGroup_Button_Apple);
                 buttonApple.setId(sAppleId);
                 buttonApple.setOnClickListener(this);
                 addView(buttonApple);
@@ -120,13 +116,13 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                         0,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1f));
-                buttonMicrosoft.setText("Microsoft");
+                buttonMicrosoft.setText(R.string.CSEditTextGroup_Button_Microsoft);
                 buttonMicrosoft.setId(sMicrosoftId);
                 buttonMicrosoft.setOnClickListener(this);
                 addView(buttonMicrosoft);
             }
 
-            if(checkQuestionType(field.getLabel()) == QuestionType.Heart_Rate
+            if(QuestionChecker.check(mActivity, field.getLabel()) == QuestionChecker.QuestionType.Heart_Rate
                     && mHeartRateServiceSenderConnection != null
                     && mHeartRateServiceSenderConnection.devicesAvailable()) {
                 Button buttonHeartRate = new Button(mActivity);
@@ -134,7 +130,7 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                         0,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1f));
-                buttonHeartRate.setText("Measure");
+                buttonHeartRate.setText(R.string.CSEditTextGroup_Button_Measure);
                 buttonHeartRate.setId(sHeartRateId);
                 buttonHeartRate.setOnClickListener(this);
                 addView(buttonHeartRate);
@@ -169,21 +165,6 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
         }
     }
 
-    private QuestionType checkQuestionType(String question) {
-        String temp = question.toLowerCase();
-
-        //  TODO Change to steps and heart rate
-        if(temp.contains("s")) {
-            return QuestionType.Steps;
-        } else if(temp.contains("activity")) {
-            return QuestionType.Activity;
-        } else if(temp.contains("g")) {
-            return QuestionType.Heart_Rate;
-        }
-
-        return QuestionType.Undefined;
-    }
-
     @Override
     public void onClick(View v) {
         Calendar cal = Calendar.getInstance();
@@ -196,7 +177,7 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
 
         switch (v.getId()) {
             case sGoogleId:
-                switch(checkQuestionType(mField.getLabel())) {
+                switch(QuestionChecker.check(mActivity, mField.getLabel())) {
                     case Steps:
                         mFitnessLibrary.getSteps(Portal.PortalType.Google,
                                 startTime,
@@ -206,7 +187,16 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                                 TimeUnit.DAYS,
                                 mRequestId);
                         break;
-                    case Activity:
+                    case Activity_Count:
+                        mFitnessLibrary.getActivities(Portal.PortalType.Google,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                    case Activity_Duration:
                         mFitnessLibrary.getActivities(Portal.PortalType.Google,
                                 startTime,
                                 endTime,
@@ -218,7 +208,7 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                 }
                 break;
             case sAppleId:
-                switch(checkQuestionType(mField.getLabel())) {
+                switch(QuestionChecker.check(mActivity, mField.getLabel())) {
                     case Steps:
                         mFitnessLibrary.getSteps(Portal.PortalType.Apple,
                                 startTime,
@@ -228,7 +218,16 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                                 TimeUnit.DAYS,
                                 mRequestId);
                         break;
-                    case Activity:
+                    case Activity_Count:
+                        mFitnessLibrary.getActivities(Portal.PortalType.Apple,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                    case Activity_Duration:
                         mFitnessLibrary.getActivities(Portal.PortalType.Apple,
                                 startTime,
                                 endTime,
@@ -240,7 +239,7 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                 }
                 break;
             case sMicrosoftId:
-                switch(checkQuestionType(mField.getLabel())) {
+                switch(QuestionChecker.check(mActivity, mField.getLabel())) {
                     case Steps:
                         mFitnessLibrary.getSteps(Portal.PortalType.Microsoft,
                                 startTime,
@@ -250,7 +249,16 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                                 TimeUnit.DAYS,
                                 mRequestId);
                         break;
-                    case Activity:
+                    case Activity_Count:
+                        mFitnessLibrary.getActivities(Portal.PortalType.Microsoft,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                    case Activity_Duration:
                         mFitnessLibrary.getActivities(Portal.PortalType.Microsoft,
                                 startTime,
                                 endTime,
@@ -264,7 +272,8 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
             case sHeartRateId:
                 mHeartRateServiceSenderConnection.getHeartRate();
 
-                CSHeartRateDialog csHeartRateDialog = new CSHeartRateDialog(mActivity, mHeartRateDataServiceReceiverConnection);
+                CSHeartRateDialog csHeartRateDialog = new CSHeartRateDialog(mActivity,
+                        mHeartRateDataServiceReceiverConnection);
                 csHeartRateDialog.registerListener(this);
                 csHeartRateDialog.show();
                 break;
@@ -292,10 +301,15 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                         String startDate = sdf.format(bucket.getStepStartDate());
                         String endDate = sdf.format(bucket.getStepEndDate());
 
-                        valueLabelList.add("Steps\n\n" + startDate + "\n - \n" + endDate);
+                        valueLabelList.add(mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_Steps)
+                                + "\n\n" + startDate + "\n - \n" + endDate);
                     }
 
-                    CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
+                    CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity,
+                            mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_Count),
+                            mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_TimeRange),
+                            valueList,
+                            valueLabelList);
                     dialog.registerListener(mCSEditTextGroup);
                     dialog.show();
                 }
@@ -309,13 +323,21 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
+                    QuestionChecker.QuestionType type = QuestionChecker.check(mActivity, mField.getLabel());
+
                     ArrayList<String> valueList = new ArrayList<>();
                     ArrayList<String> valueLabelList = new ArrayList<>();
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
                     for (ActivityBucket bucket : list) {
-                        valueList.add(String.valueOf(bucket.getActivityCount()));
+                        if(type == QuestionChecker.QuestionType.Activity_Count) {
+                            valueList.add(String.valueOf(bucket.getActivityCount()));
+                        } else {
+                            valueList.add(String.valueOf(bucket.getActivityDuration()));
+                        }
+
                         String activity = eu.applabs.crowdsensingfitnesslibrary.data.Activity.convertToString(bucket.getActivityType());
                         String startDate = sdf.format(bucket.getActivityStartDate());
                         String endDate = sdf.format(bucket.getActivityEndDate());
@@ -323,7 +345,22 @@ public class CSEditTextGroup extends LinearLayout implements View.OnClickListene
                         valueLabelList.add(activity + "\n\n" + startDate + "\n - \n" + endDate);
                     }
 
-                    CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
+                    CSFitnessRequestResultDialog dialog = null;
+
+                    if(type == QuestionChecker.QuestionType.Activity_Count) {
+                        dialog = new CSFitnessRequestResultDialog(mActivity,
+                                mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_Count),
+                                mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_TimeRange),
+                                valueList,
+                                valueLabelList);
+                    } else {
+                        dialog = new CSFitnessRequestResultDialog(mActivity,
+                                mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_Duration),
+                                mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_TimeRange),
+                                valueList,
+                                valueLabelList);
+                    }
+
                     dialog.registerListener(mCSEditTextGroup);
                     dialog.show();
                 }

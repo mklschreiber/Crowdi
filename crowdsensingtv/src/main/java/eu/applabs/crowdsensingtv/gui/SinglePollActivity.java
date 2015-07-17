@@ -68,7 +68,7 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
             mLibrary.loadPoll(mPollUrl, sClassName);
             changeButtonEnableStatus(true);
         } else {
-            Toast.makeText(this, "Error during starting process...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.SinglePollActivity_Toast_Error, Toast.LENGTH_SHORT).show();
             changeButtonEnableStatus(false);
         }
 

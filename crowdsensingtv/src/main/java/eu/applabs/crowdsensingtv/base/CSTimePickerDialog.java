@@ -27,6 +27,7 @@ public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
     public CSTimePickerDialog(Context context, OnTimeSetListener listener) {
         super(context);
         setContentView(R.layout.dialog_cstimepicker);
+        setTitle(R.string.CSTimePickerDialog_Title);
 
         mOnTimeSetListener = listener;
 

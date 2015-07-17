@@ -17,6 +17,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -47,6 +48,7 @@ dependencies {
     compile 'com.android.support:leanback-v17:22.2.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.squareup.picasso:picasso:2.3.2'
+    compile 'com.android.support:multidex:1.0.0'
 
     // Poll stuff
     compile project(':crowdsensinglibrary')

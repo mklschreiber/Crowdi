@@ -8,4 +8,30 @@
     <string name="SinglePollActivity_Button_Right">Next</string>
     <string name="CSTimePickerDialog_Button_Ok">Ok</string>
     <string name="CSDatePickerDialog_Button_Ok">Ok</string>
+    <string name="CSDatePickerDialog_Title">Select the date</string>
+    <string name="CSEditTextGroup_Button_Google">Google</string>
+    <string name="CSEditTextGroup_Button_Apple">Apple</string>
+    <string name="CSEditTextGroup_Button_Microsoft">Microsoft</string>
+    <string name="CSEditTextGroup_Button_Measure">Measure</string>
+
+    <string name="CSFitnessRequestResultDialog_Label_Steps">Steps</string>
+    <string name="CSFitnessRequestResultDialog_Label_Count">Count</string>
+    <string name="CSFitnessRequestResultDialog_Label_TimeRange">Time range</string>
+    <string name="CSFitnessRequestResultDialog_Label_Duration">Duration</string>
+    <string name="CSHeartRateDialog_Title">Select heart rate</string>
+    <string name="CSTimePickerDialog_Title">Select time</string>
+    <string name="MainActivity_Header_Polls">Polls</string>
+    <string name="MainActivity_Header_Settings">Settings</string>
+    <string name="MainActivity_Action_ManageAccounts">Manage accounts</string>
+    <string name="ManageAccountActivity_Toast_LoginError">Login incorrect!</string>
+    <string name="ManageAccountActivity_Toast_NotSupported">Currently not supported</string>
+    <string name="ManageAccountActivity_LogoutDialog_Title">Logout</string>
+    <string name="ManageAccountActivity_LogoutDialog_Message">Do you like to logout the current user?</string>
+    <string name="ManageAccountActivity_LogoutDialog_Button_Ok">Yes</string>
+    <string name="ManageAccountActivity_LogoutDialog_Button_Cancel">No</string>
+    <string name="ManageAccountActivity_Header_Account">Account</string>
+    <string name="ManageAccountActivity_Header_ConnectedPortals">Connected portals</string>
+    <string name="ManageAccountActivity_Header_AvailablePortals">Available portals</string>
+    <string name="SinglePollActivity_Toast_Error">Error during starting process. Try again later...</string>
+    <string name="FinishedPollDialog_Title">Select next poll</string>
 </resources>

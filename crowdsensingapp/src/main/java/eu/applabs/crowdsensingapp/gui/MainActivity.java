@@ -1,73 +1,59 @@
 package eu.applabs.crowdsensingapp.gui;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import android.os.IBinder;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
-
-import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import eu.applabs.crowdsensingapp.R;
+import eu.applabs.crowdsensingapp.service.UpnpService;
 import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
 import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
 import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceSenderConnection;
-import eu.applabs.crowdsensingwearlibrary.gui.WearConnectionActivity;
 import eu.applabs.crowdsensingwearlibrary.service.DataTransferService;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceReceiverConnection;
-import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceSenderConnection;
 
-public class MainActivity extends WearConnectionActivity implements View.OnClickListener,
-        HeartRateServiceReceiverConnection.IHeartRateServiceReceiverConnectionListener,
-        FitnessLibrary.IFitnessLibraryListener, CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener {
+public class MainActivity extends Activity implements
+        View.OnClickListener,
+        FitnessLibrary.IFitnessLibraryListener,
+        CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener {
 
     private MainActivity mActivity = null;
-    private HeartRateServiceReceiverConnection mHeartRateServiceReceiverConnection;
-    private StartPollServiceSenderConnection mStartPollServiceSenderConnection;
-    private HeartRateDataServiceSenderConnection mHeartRateDataServiceSenderConnection;
+    private UpnpService mUpnpService = null;
+    private UpnpServiceConnection mUpnpServiceConnection = null;
 
     private int mRequestId = 0;
 
     private FitnessLibrary mFitnessLibrary = null;
 
     @Override
-    public void onDataReceived(String data) {
-        Toast.makeText(this, "Received data: " + data, Toast.LENGTH_SHORT).show();
-
-        if(mHeartRateDataServiceSenderConnection != null) {
-            mHeartRateDataServiceSenderConnection.setHeartRate(data);
-        }
-    }
-
-    @Override
-    public void onStartOnTvReceived(String url) {
-        if(mStartPollServiceSenderConnection != null) {
-            mStartPollServiceSenderConnection.startPoll(url);
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-
         setContentView(R.layout.activity_main);
+
+        // Fake boot_complete to ensure the starting of the service
+        BootupActivity ba = new BootupActivity();
+        ba.onReceive(this, new Intent().setAction(Intent.ACTION_BOOT_COMPLETED));
+
+        mUpnpServiceConnection = new UpnpServiceConnection();
+        bindService(new Intent(this, UpnpService.class),
+                mUpnpServiceConnection,
+                Context.BIND_AUTO_CREATE);
 
         mActivity = this;
 
@@ -75,10 +61,6 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
         mFitnessLibrary.init(this);
         mFitnessLibrary.registerListener(this);
         mFitnessLibrary.connect(Portal.PortalType.Google);
-
-        mHeartRateDataServiceSenderConnection = new HeartRateDataServiceSenderConnection();
-        mHeartRateServiceReceiverConnection = new HeartRateServiceReceiverConnection();
-        mStartPollServiceSenderConnection = new StartPollServiceSenderConnection();
 
         Button b = (Button) findViewById(R.id.button);
         b.setOnClickListener(this);
@@ -106,31 +88,13 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     @Override
     protected void onStart() {
         super.onStart();
-
-        mHeartRateServiceReceiverConnection.registerListener(this);
-        bindService(new Intent(this, AndroidUpnpServiceImpl.class),
-                mHeartRateServiceReceiverConnection,
-                Context.BIND_AUTO_CREATE);
-
-        bindService(new Intent(this, AndroidUpnpServiceImpl.class),
-                mStartPollServiceSenderConnection,
-                Context.BIND_AUTO_CREATE);
-
-        bindService(new Intent(this, AndroidUpnpServiceImpl.class),
-                mHeartRateDataServiceSenderConnection,
-                Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        mHeartRateServiceReceiverConnection.unregisterListener(this);
-        unbindService(mHeartRateServiceReceiverConnection);
-
-        unbindService(mStartPollServiceSenderConnection);
-
-        unbindService(mHeartRateDataServiceSenderConnection);
+        unbindService(mUpnpServiceConnection);
 
         if(mFitnessLibrary != null) {
             mFitnessLibrary.disconnect(Portal.PortalType.Google);
@@ -151,11 +115,15 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
 
         switch(v.getId()) {
             case R.id.button:
-                showNotification("Pizza", "Pizza wählen", "Auf TV starten",
-                        DataTransferService.ACTION_START_ON_TV, "http://as.applabs.eu:8080/FancyModule/pizza");
+                if(mUpnpService != null) {
+                    mUpnpService.showNotification("Pizza", "Pizza wählen", "Auf TV starten",
+                            DataTransferService.ACTION_START_ON_TV, "http://as.applabs.eu:8080/FancyModule/pizza");
+                }
                 break;
             case R.id.button2:
-                mStartPollServiceSenderConnection.startPoll("http://as.applabs.eu:8080/FancyModule/pizza");
+                if(mUpnpService != null) {
+                    mUpnpService.startPoll("http://as.applabs.eu:8080/FancyModule/pizza");
+                }
                 break;
             case R.id.button3:
                 mFitnessLibrary.getPerson(Portal.PortalType.Google);
@@ -181,16 +149,6 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
                 );
                 break;
         }
-    }
-
-    @Override
-    public void onStartNotification(String title, String content, String url) {
-        showNotification(title, content, "Auf TV starten", DataTransferService.ACTION_START_ON_TV, url);
-    }
-
-    @Override
-    public void onStartMeasuring() {
-        showNotification("Messung starten", "...");
     }
 
     @Override
@@ -261,5 +219,19 @@ public class MainActivity extends WearConnectionActivity implements View.OnClick
     @Override
     public void onValueSelected(String value) {
         Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
+    }
+
+    private class UpnpServiceConnection implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            UpnpService.LocalBinder binder = (UpnpService.LocalBinder) service;
+            mUpnpService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mUpnpService = null;
+        }
     }
 }

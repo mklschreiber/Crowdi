@@ -47,9 +47,8 @@ public class StartPollServiceDefinition {
             mPollUrl = pollUrl;
         }
 
-        boolean oldValue = mStartPoll;
         mStartPoll = true;
 
-        mPropertyChangeSupport.firePropertyChange("mStartPoll", oldValue, mStartPoll);
+        mPropertyChangeSupport.firePropertyChange("mStartPoll", !mStartPoll, mStartPoll);
     }
 }

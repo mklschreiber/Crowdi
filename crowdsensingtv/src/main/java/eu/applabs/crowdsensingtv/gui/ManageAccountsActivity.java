@@ -18,8 +18,6 @@ import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.widget.Toast;
 
-import org.fourthline.cling.model.action.ActionArgumentValue;
-
 import java.util.List;
 
 import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
@@ -69,7 +67,6 @@ public class ManageAccountsActivity extends Activity implements
         mBrowseFragment = (BrowseFragment) mFragmentManager.findFragmentById(R.id.id_Fragment_ManageAccountActivity);
 
         mBrowseFragment.setHeadersState(BrowseFragment.HEADERS_ENABLED);
-        mBrowseFragment.setTitle("CrowdSensingTV");
         mBrowseFragment.setBadgeDrawable(getDrawable(R.drawable.browse_logo));
         mBrowseFragment.setOnItemViewClickedListener(this);
 
@@ -118,15 +115,15 @@ public class ManageAccountsActivity extends Activity implements
 
                 accountAdapter.add(libraryAccount);
 
-                HeaderItem accountHeader = new HeaderItem("LibraryAccount");
+                HeaderItem accountHeader = new HeaderItem(getString(R.string.ManageAccountActivity_Header_Account));
                 mArrayObjectAdapter.add(new ListRow(accountHeader, accountAdapter));
 
                 // Portals
                 ArrayObjectAdapter connectedPortalsAdapter = new ArrayObjectAdapter(new FitnessAccountPresenter());
-                HeaderItem connectedPortalsHeader = new HeaderItem("Connected portals");
+                HeaderItem connectedPortalsHeader = new HeaderItem(getString(R.string.ManageAccountActivity_Header_ConnectedPortals));
 
                 ArrayObjectAdapter availablePortalsAdapter = new ArrayObjectAdapter(new FitnessAccountPresenter());
-                HeaderItem availablePortalsHeader = new HeaderItem("Available portals");
+                HeaderItem availablePortalsHeader = new HeaderItem(getString(R.string.ManageAccountActivity_Header_AvailablePortals));
 
                 if(mFitnessLibrary != null) {
                     // Check Google
@@ -173,16 +170,16 @@ public class ManageAccountsActivity extends Activity implements
             if(mLibrary != null && mLibrary.accountAvailable()) {
                 // Logout
                 new AlertDialog.Builder(this)
-                        .setTitle("Logout")
-                        .setMessage("Do you like to logout the current user?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.ManageAccountActivity_LogoutDialog_Title)
+                        .setMessage(R.string.ManageAccountActivity_LogoutDialog_Message)
+                        .setPositiveButton(R.string.ManageAccountActivity_LogoutDialog_Button_Ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mLibrary.logout();
                                 dialog.dismiss();
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.ManageAccountActivity_LogoutDialog_Button_Cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -200,16 +197,16 @@ public class ManageAccountsActivity extends Activity implements
             if(mFitnessLibrary != null && mFitnessLibrary.isConnected(account.getType())) {
                 // Logout
                 new AlertDialog.Builder(this)
-                        .setTitle("Logout")
-                        .setMessage("Do you like to logout the current user?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.ManageAccountActivity_LogoutDialog_Title)
+                        .setMessage(R.string.ManageAccountActivity_LogoutDialog_Message)
+                        .setPositiveButton(R.string.ManageAccountActivity_LogoutDialog_Button_Ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mFitnessLibrary.disconnect(account.getType());
                                 dialog.dismiss();
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.ManageAccountActivity_LogoutDialog_Button_Cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -218,7 +215,7 @@ public class ManageAccountsActivity extends Activity implements
             } else if (mFitnessLibrary!= null && !mFitnessLibrary.isConnected(account.getType())) {
                 // Login
                 if(account.getType() != Portal.PortalType.Google) {
-                    Toast.makeText(this, "Currently not supported", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.ManageAccountActivity_Toast_NotSupported, Toast.LENGTH_SHORT).show();
                 } else {
                     mFitnessLibrary.connect(account.getType(), this);
                 }
@@ -235,7 +232,7 @@ public class ManageAccountsActivity extends Activity implements
 
     @Override
     public void onLoginSaved() {
-        mLibrary.loadCommands(TVMainActivity.BASE_URL + "start", sClassName);
+        mLibrary.loadCommands(MainActivity.START_URL, sClassName);
     }
 
     @Override
@@ -270,7 +267,7 @@ public class ManageAccountsActivity extends Activity implements
                 @Override
                 public void run() {
                     if (status != ILibraryResultListener.ExecutionStatus.Success) {
-                        Toast.makeText(mActivity, "Login incorrect!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, R.string.ManageAccountActivity_Toast_LoginError, Toast.LENGTH_SHORT).show();
                         mLibrary.logout();
 
                         // Login

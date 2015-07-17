@@ -33,6 +33,8 @@ public class FinishedPollDialog extends Dialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_finishedpoll);
+        setTitle(R.string.FinishedPollDialog_Title);
+
         mLinearLayout = (LinearLayout) findViewById(R.id.id_FinishedPollDialog_LinearLayout);
 
         generateUI();
@@ -54,7 +56,7 @@ public class FinishedPollDialog extends Dialog implements View.OnClickListener {
                 if(command.getId() == v.getId()) {
                     Intent intent = new Intent(mActivity, SinglePollActivity.class);
                     Bundle extras = new Bundle();
-                    extras.putString(SinglePollActivity.EXTRA_URL, TVMainActivity.BASE_URL + command.getCommand());
+                    extras.putString(SinglePollActivity.EXTRA_URL, MainActivity.BASE_URL + command.getCommand());
                     intent.putExtras(extras);
 
                     mContext.startActivity(intent);
@@ -73,6 +75,9 @@ public class FinishedPollDialog extends Dialog implements View.OnClickListener {
             b.setText(command.getInfo());
             b.setId(command.getId());
             b.setOnClickListener(this);
+            b.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
 
             if(i == 0) {
                 b.requestFocus();

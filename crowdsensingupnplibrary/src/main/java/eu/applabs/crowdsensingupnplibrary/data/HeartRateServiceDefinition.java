@@ -85,9 +85,8 @@ public class HeartRateServiceDefinition {
             mNotificationUrl = notificationUrl;
         }
 
-        boolean oldValue = mStartNotification;
         mStartNotification = true;
 
-        mPropertyChangeSupport.firePropertyChange("mStartNotification", oldValue, mStartNotification);
+        mPropertyChangeSupport.firePropertyChange("mStartNotification", !mStartNotification, mStartNotification);
     }
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import eu.applabs.crowdsensingtv.service.RecommendationService;
+import eu.applabs.crowdsensingtv.service.UpnpService;
 
 public class BootupActivity extends BroadcastReceiver {
 
@@ -20,21 +21,18 @@ public class BootupActivity extends BroadcastReceiver {
         Log.d(sClassName, "BootupActivity called");
 
         if (intent.getAction().endsWith(Intent.ACTION_BOOT_COMPLETED)) {
-            scheduleRecommendationUpdate(context);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+            Intent recommendationIntent = new Intent(context, RecommendationService.class);
+            PendingIntent alarmIntent = PendingIntent.getService(context, 0, recommendationIntent, 0);
+
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    sInitialDelay,
+                    AlarmManager.INTERVAL_HALF_HOUR,
+                    alarmIntent);
+
+            Intent upnpIntent = new Intent(context, UpnpService.class);
+            context.startService(upnpIntent);
         }
-    }
-
-    private void scheduleRecommendationUpdate(Context context) {
-        Log.d(sClassName, "Scheduling recommendations update");
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent recommendationIntent = new Intent(context, RecommendationService.class);
-        PendingIntent alarmIntent = PendingIntent.getService(context, 0, recommendationIntent, 0);
-
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                sInitialDelay,
-                AlarmManager.INTERVAL_HALF_HOUR,
-                alarmIntent);
     }
 }

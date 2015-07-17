@@ -72,6 +72,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/leanback-v17/22.2.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex/1.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jacoco" />
@@ -98,19 +99,20 @@
     <orderEntry type="library" exported="" name="jetty-util-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="jetty-servlet-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="slf4j-jdk14-1.7.5" level="project" />
-    <orderEntry type="library" exported="" name="jetty-http-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="javax.servlet-3.0.0.v201112011016" level="project" />
+    <orderEntry type="library" exported="" name="jetty-http-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.3.2" level="project" />
     <orderEntry type="library" exported="" name="cling-support-2.0.1" level="project" />
+    <orderEntry type="library" exported="" name="seamless-http-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="jetty-io-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="jetty-server-8.1.12.v20130726" level="project" />
-    <orderEntry type="library" exported="" name="seamless-http-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="seamless-swing-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="seamless-xml-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="jetty-security-8.1.12.v20130726" level="project" />
+    <orderEntry type="library" exported="" name="multidex-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.5" level="project" />
     <orderEntry type="library" exported="" name="jetty-continuation-8.1.12.v20130726" level="project" />
     <orderEntry type="module" module-name="crowdsensingupnplibrary" exported="" />

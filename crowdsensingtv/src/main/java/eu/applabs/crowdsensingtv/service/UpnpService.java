@@ -10,7 +10,8 @@ import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
 import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceReceiverConnection;
 
-public class UpnpService extends Service implements StartPollServiceReceiverConnection.IStartPollServiceReceiverConnectionListener {
+public class UpnpService extends Service implements
+        StartPollServiceReceiverConnection.IStartPollServiceReceiverConnectionListener {
 
     private StartPollServiceReceiverConnection mStartPollServiceReceiverConnection = null;
 
@@ -21,16 +22,15 @@ public class UpnpService extends Service implements StartPollServiceReceiverConn
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+        super.onCreate();
+
         mStartPollServiceReceiverConnection = new StartPollServiceReceiverConnection();
         mStartPollServiceReceiverConnection.registerListener(this);
 
         bindService(new Intent(this, AndroidUpnpServiceImpl.class),
                 mStartPollServiceReceiverConnection, BIND_AUTO_CREATE);
-
-        return super.onStartCommand(intent, flags, startId);
     }
-
 
     @Override
     public void onDestroy() {

@@ -29,6 +29,7 @@ public class CSDatePickerDialog extends Dialog implements View.OnClickListener {
     public CSDatePickerDialog(Context context, CSDatePickerDialog.OnDateSetListener listener) {
         super(context);
         setContentView(R.layout.dialog_csdatepicker);
+        setTitle(R.string.CSDatePickerDialog_Title);
 
         mOnDateSetListener = listener;
 

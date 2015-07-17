@@ -183,24 +183,29 @@ public class SinglePollFragment extends Fragment {
         View view = null;
         EditText et = null;
         LinearLayout ll = null;
+        CSEditTextGroup csEditTextGroup = null;
 
         switch(field.getType()) {
             case text:
+                csEditTextGroup = new CSEditTextGroup(getActivity(),
+                        field,
+                        mHeartRateServiceSenderConnection,
+                        mHeartRateDataServiceReceiverConnection);
+                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
+                mViewList.add(csEditTextGroup.getEditText()); // Add the child
 
-                CSEditTextGroup csetg = new CSEditTextGroup(getActivity(), field,
-                        mHeartRateServiceSenderConnection, mHeartRateDataServiceReceiverConnection);
-                csetg.setOrientation(LinearLayout.HORIZONTAL);
-                mViewList.add(csetg.getEditText()); // Add the child
-
-                view = csetg;
+                view = csEditTextGroup;
                 break;
             case textarea:
-                et = new EditText(getActivity());
-                et.setHint(field.getLabel());
-                et.setText(field.getValue());
-                et.setId(field.getId());
-                et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-                view = et;
+                csEditTextGroup = new CSEditTextGroup(getActivity(),
+                        field,
+                        mHeartRateServiceSenderConnection,
+                        mHeartRateDataServiceReceiverConnection);
+                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
+                mViewList.add(csEditTextGroup.getEditText()); // Add the child
+                csEditTextGroup.getEditText().setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
+                view = csEditTextGroup;
                 break;
             case password:
                 et = new EditText(getActivity());
@@ -211,12 +216,15 @@ public class SinglePollFragment extends Fragment {
                 view = et;
                 break;
             case number:
-                et = new EditText(getActivity());
-                et.setHint(field.getLabel());
-                et.setText(field.getValue());
-                et.setId(field.getId());
-                et.setInputType(InputType.TYPE_CLASS_NUMBER);
-                view = et;
+                csEditTextGroup = new CSEditTextGroup(getActivity(),
+                        field,
+                        mHeartRateServiceSenderConnection,
+                        mHeartRateDataServiceReceiverConnection);
+                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
+                mViewList.add(csEditTextGroup.getEditText()); // Add the child
+                csEditTextGroup.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+
+                view = csEditTextGroup;
                 break;
             case email:
                 et = new EditText(getActivity());

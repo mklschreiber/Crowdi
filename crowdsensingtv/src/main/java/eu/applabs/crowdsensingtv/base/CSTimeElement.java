@@ -26,14 +26,6 @@ public class CSTimeElement extends Button implements View.OnClickListener, CSTim
         setOnClickListener(this);
     }
 
-    public int getHour() {
-        return mHour;
-    }
-
-    public int getMinute() {
-        return mMinute;
-    }
-
     public void displayCurrentTime() {
         setText(String.valueOf(mHour) + ":" + String.valueOf(mMinute));
     }

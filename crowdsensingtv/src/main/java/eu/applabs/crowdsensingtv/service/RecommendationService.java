@@ -22,7 +22,7 @@ import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
-import eu.applabs.crowdsensingtv.gui.TVMainActivity;
+import eu.applabs.crowdsensingtv.gui.MainActivity;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
 public class RecommendationService extends IntentService implements ILibraryResultListener,
@@ -65,7 +65,7 @@ public class RecommendationService extends IntentService implements ILibraryResu
     protected void onHandleIntent(Intent intent) {
         if(mLibrary != null && mLibrary.accountAvailable()) {
             mLibrary.registerListener(this);
-            mLibrary.loadCommands(TVMainActivity.BASE_URL + "start", sClassName);
+            mLibrary.loadCommands(MainActivity.START_URL, sClassName);
         }
     }
 
@@ -94,7 +94,7 @@ public class RecommendationService extends IntentService implements ILibraryResu
                                 .setStyle(new Notification.BigPictureStyle().bigPicture(bitmap))
                                 .setColor(getApplicationContext().getResources().getColor(R.color.primary))
                                 .setCategory(Notification.CATEGORY_RECOMMENDATION)
-                                .setContentIntent(buildPendingIntent(TVMainActivity.BASE_URL + list.get(i).getCommand()))
+                                .setContentIntent(buildPendingIntent(MainActivity.BASE_URL + list.get(i).getCommand()))
                                 .build();
 
                         notificationManager.notify(BASE_ID + i, notification);
@@ -102,7 +102,7 @@ public class RecommendationService extends IntentService implements ILibraryResu
                         mHeartRateServiceSenderConnection.startNotification(
                                 getString(R.string.RecommendationService_Title_Recommendation),
                                 list.get(i).getInfo(),
-                                TVMainActivity.BASE_URL + list.get(i).getCommand());
+                                MainActivity.BASE_URL + list.get(i).getCommand());
 
                         // Break the loop to display only the first command
                         break;

@@ -49,8 +49,12 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
 
     public boolean devicesAvailable() {
         if(mAndroidUpnpService != null) {
-            if(mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices().size() > 0) {
-                return true;
+            for(Device device : mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices()) {
+                Service heartRateService = device.findService(new UDAServiceId("HeartRateService"));
+
+                if(heartRateService != null) {
+                    return true;
+                }
             }
         }
 

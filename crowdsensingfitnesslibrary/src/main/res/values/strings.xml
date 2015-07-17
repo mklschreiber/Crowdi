@@ -1,3 +1,36 @@
 <resources>
     <string name="app_name">crowdsensingfitnesslibrary</string>
+
+    <string-array name="steps_keywords">
+        <item>steps</item>
+        <item>step</item>
+        <item>pace</item>
+        <item>move</item>
+        <item>footstep</item>
+    </string-array>
+
+    <string-array name="activity_keywords">
+        <item>activity</item>
+        <item>activities</item>
+        <item>action</item>
+    </string-array>
+
+    <string-array name="duration_keywords">
+        <item>duration</item>
+        <item>length</item>
+        <item>period</item>
+        <item>term</item>
+    </string-array>
+
+    <string-array name="count_keywords">
+        <item>count</item>
+        <item>frequency</item>
+        <item>commonness</item>
+    </string-array>
+
+    <string-array name="heart_rate_keywords">
+        <item>heart</item>
+        <item>rate</item>
+        <item>pulse</item>
+    </string-array>
 </resources>

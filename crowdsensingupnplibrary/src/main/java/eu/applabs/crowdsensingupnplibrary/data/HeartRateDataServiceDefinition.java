@@ -41,13 +41,13 @@ public class HeartRateDataServiceDefinition {
     @UpnpAction()
     public void setHeartRate(@UpnpInputArgument(name = "HeartRate", stateVariable = "mHeartRate") String heartRate)
     {
-        String oldValue = mHeartRate;
+        String oldValue = mHeartRate + String.valueOf(System.currentTimeMillis());
 
         if(heartRate != null) {
             mHeartRate = heartRate;
         }
 
-        mPropertyChangeSupport.firePropertyChange("mStartMeasuring", oldValue, mHeartRate);
+        mPropertyChangeSupport.firePropertyChange("mHeartRate", oldValue, mHeartRate);
     }
 }
 

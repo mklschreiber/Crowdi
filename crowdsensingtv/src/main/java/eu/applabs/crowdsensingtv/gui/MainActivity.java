@@ -14,10 +14,6 @@ import android.support.v17.leanback.widget.OnItemViewClickedListener;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
-import android.widget.Toast;
-
-import org.fourthline.cling.android.AndroidUpnpServiceImpl;
-import org.fourthline.cling.model.action.ActionArgumentValue;
 
 import java.util.List;
 
@@ -30,16 +26,15 @@ import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.data.Action;
 import eu.applabs.crowdsensingtv.presenter.ActionPresenter;
 import eu.applabs.crowdsensingtv.presenter.CommandPresenter;
-import eu.applabs.crowdsensingtv.service.UpnpService;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
-public class TVMainActivity extends Activity implements
+public class MainActivity extends Activity implements
         OnItemViewClickedListener,
         ILibraryResultListener {
 
-    private static final String sClassName = TVMainActivity.class.getSimpleName();
+    private static final String sClassName = MainActivity.class.getSimpleName();
 
     public static final String BASE_URL = "http://as.applabs.eu:8080/FancyModule/";
+    public static final String START_URL = "http://as.applabs.eu:8080/FancyModule/start";
 
     private FragmentManager mFragmentManager = null;
     private BrowseFragment mBrowseFragment = null;
@@ -58,7 +53,6 @@ public class TVMainActivity extends Activity implements
         mBrowseFragment = (BrowseFragment) mFragmentManager.findFragmentById(R.id.id_frag_TVMainActivity);
 
         mBrowseFragment.setHeadersState(BrowseFragment.HEADERS_ENABLED);
-        mBrowseFragment.setTitle("CrowdSensingTV");
         mBrowseFragment.setBadgeDrawable(getDrawable(R.drawable.browse_logo));
         mBrowseFragment.setOnItemViewClickedListener(this);
 
@@ -86,9 +80,6 @@ public class TVMainActivity extends Activity implements
     @Override
     protected void onStart() {
         super.onStart();
-
-        Intent intent = new Intent(this, UpnpService.class);
-        startService(intent);
     }
 
     @Override
@@ -97,7 +88,7 @@ public class TVMainActivity extends Activity implements
 
         if(mLibrary != null && mLibrary.accountAvailable()) {
             mLibrary.registerListener(this);
-            mLibrary.loadCommands(BASE_URL + "start", sClassName);
+            mLibrary.loadCommands(START_URL, sClassName);
 
             startPeriodicNotification();
         } else {
@@ -157,20 +148,20 @@ public class TVMainActivity extends Activity implements
                     }
                 }
 
-                HeaderItem accountHeader = new HeaderItem("Commands");
+                HeaderItem accountHeader = new HeaderItem(getString(R.string.MainActivity_Header_Polls));
                 mArrayObjectAdapter.add(new ListRow(accountHeader, accountAdapter));
 
                 // Settings
                 ArrayObjectAdapter settingsAdapter = new ArrayObjectAdapter(new ActionPresenter());
 
                 Action action = new Action(getApplicationContext());
-                action.setTitle("Manage accounts");
+                action.setTitle(getString(R.string.MainActivity_Action_ManageAccounts));
                 action.setIcon(getApplicationContext().getDrawable(R.drawable.settings_manageaccounts));
                 action.setIntent(new Intent(getApplicationContext(), ManageAccountsActivity.class));
 
                 settingsAdapter.add(action);
 
-                HeaderItem settingsHeader = new HeaderItem("Settings");
+                HeaderItem settingsHeader = new HeaderItem(getString(R.string.MainActivity_Header_Settings));
                 mArrayObjectAdapter.add(new ListRow(settingsHeader, settingsAdapter));
             }
         });

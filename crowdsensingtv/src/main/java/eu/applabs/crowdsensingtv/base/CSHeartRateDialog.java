@@ -34,7 +34,7 @@ public class CSHeartRateDialog extends Dialog implements View.OnClickListener,
 
         mHeartRateDataServiceReceiverConnection = heartRateDataServiceReceiverConnection;
         mCSHeartRateDialog = this;
-        setTitle("Select your heart rate");
+        setTitle(R.string.CSHeartRateDialog_Title);
 
         mActivity = activity;
         mLinearLayout = (LinearLayout) findViewById(R.id.id_CSHeartRateDialog_LinearLayout);

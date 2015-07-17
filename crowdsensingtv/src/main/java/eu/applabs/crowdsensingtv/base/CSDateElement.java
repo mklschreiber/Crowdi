@@ -28,18 +28,6 @@ public class CSDateElement extends Button implements View.OnClickListener, CSDat
         setOnClickListener(this);
     }
 
-    public int getYear() {
-        return mYear;
-    }
-
-    public int getMonth() {
-        return mMonth;
-    }
-
-    public int getDay() {
-        return mDay;
-    }
-
     public void displayCurrentDate() {
         setText(String.valueOf(mDay) + "." + String.valueOf(mMonth) + "." + String.valueOf(mYear));
     }
