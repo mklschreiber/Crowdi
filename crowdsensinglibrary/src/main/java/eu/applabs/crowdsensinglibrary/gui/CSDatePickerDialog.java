@@ -1,4 +1,4 @@
-package eu.applabs.crowdsensingtv.base;
+package eu.applabs.crowdsensinglibrary.gui;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import java.util.Calendar;
 
-import eu.applabs.crowdsensingtv.R;
+import eu.applabs.crowdsensinglibrary.R;
 
 public class CSDatePickerDialog extends Dialog implements View.OnClickListener {
 
@@ -82,32 +82,24 @@ public class CSDatePickerDialog extends Dialog implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
-            case R.id.id_CSDatePickerDialog_Button_Ok:
-                if(mOnDateSetListener != null) {
-                    mOnDateSetListener.onDateSet(mYear, mMonth, mDay);
-                }
+        if(v.getId() == R.id.id_CSDatePickerDialog_Button_Ok) {
+            if(mOnDateSetListener != null) {
+                mOnDateSetListener.onDateSet(mYear, mMonth, mDay);
+            }
 
-                dismiss();
-                break;
-            case R.id.id_CSDatePickerDialog_Button_YearIncrement:
-                incrementYear();
-                break;
-            case R.id.id_CSDatePickerDialog_Button_YearDecrement:
-                decrementYear();
-                break;
-            case R.id.id_CSDatePickerDialog_Button_MonthIncrement:
-                incrementMonth();
-                break;
-            case R.id.id_CSDatePickerDialog_Button_MonthDecrement:
-                decrementMonth();
-                break;
-            case R.id.id_CSDatePickerDialog_Button_DayIncrement:
-                incrementDay();
-                break;
-            case R.id.id_CSDatePickerDialog_Button_DayDecrement:
-                decrementDay();
-                break;
+            dismiss();
+        } else if(v.getId() == R.id.id_CSDatePickerDialog_Button_YearIncrement) {
+            incrementYear();
+        } else if(v.getId() == R.id.id_CSDatePickerDialog_Button_YearDecrement) {
+            decrementYear();
+        } else if(v.getId() == R.id.id_CSDatePickerDialog_Button_MonthIncrement) {
+            incrementMonth();
+        } else if(v.getId() == R.id.id_CSDatePickerDialog_Button_MonthDecrement) {
+            decrementMonth();
+        } else if(v.getId() == R.id.id_CSDatePickerDialog_Button_DayIncrement) {
+            incrementDay();
+        } else if(v.getId() == R.id.id_CSDatePickerDialog_Button_DayDecrement) {
+            decrementDay();
         }
     }
 

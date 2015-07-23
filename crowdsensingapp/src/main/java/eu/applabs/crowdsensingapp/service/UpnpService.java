@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
+import eu.applabs.crowdsensingapp.settings.SettingsManager;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceSenderConnection;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceSenderConnection;
@@ -23,6 +23,8 @@ public class UpnpService extends AppConnectionService implements
     private HeartRateServiceReceiverConnection mHeartRateServiceReceiverConnection;
     private StartPollServiceSenderConnection mStartPollServiceSenderConnection;
     private HeartRateDataServiceSenderConnection mHeartRateDataServiceSenderConnection;
+
+    private SettingsManager mSettingsManager = null;
 
     public void startPoll(String url) {
         if(mStartPollServiceSenderConnection != null) {
@@ -39,34 +41,46 @@ public class UpnpService extends AppConnectionService implements
     public void onCreate() {
         super.onCreate();
 
-        mHeartRateDataServiceSenderConnection = new HeartRateDataServiceSenderConnection();
-        mHeartRateServiceReceiverConnection = new HeartRateServiceReceiverConnection();
-        mStartPollServiceSenderConnection = new StartPollServiceSenderConnection();
+        mSettingsManager = new SettingsManager(getApplicationContext());
 
-        mHeartRateServiceReceiverConnection.registerListener(this);
-        bindService(new Intent(this, AndroidUpnpServiceImpl.class),
-                mHeartRateServiceReceiverConnection,
-                Context.BIND_AUTO_CREATE);
+        if(mSettingsManager.getUpnpServiceEnabled()) {
 
-        bindService(new Intent(this, AndroidUpnpServiceImpl.class),
-                mStartPollServiceSenderConnection,
-                Context.BIND_AUTO_CREATE);
+            mHeartRateDataServiceSenderConnection = new HeartRateDataServiceSenderConnection();
+            mHeartRateServiceReceiverConnection = new HeartRateServiceReceiverConnection();
+            mStartPollServiceSenderConnection = new StartPollServiceSenderConnection();
 
-        bindService(new Intent(this, AndroidUpnpServiceImpl.class),
-                mHeartRateDataServiceSenderConnection,
-                Context.BIND_AUTO_CREATE);
+            mHeartRateServiceReceiverConnection.registerListener(this);
+            bindService(new Intent(this, AndroidUpnpServiceImpl.class),
+                    mHeartRateServiceReceiverConnection,
+                    Context.BIND_AUTO_CREATE);
+
+            bindService(new Intent(this, AndroidUpnpServiceImpl.class),
+                    mStartPollServiceSenderConnection,
+                    Context.BIND_AUTO_CREATE);
+
+            bindService(new Intent(this, AndroidUpnpServiceImpl.class),
+                    mHeartRateDataServiceSenderConnection,
+                    Context.BIND_AUTO_CREATE);
+
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        mHeartRateServiceReceiverConnection.unregisterListener(this);
-        unbindService(mHeartRateServiceReceiverConnection);
+        if(mHeartRateServiceReceiverConnection != null) {
+            mHeartRateServiceReceiverConnection.unregisterListener(this);
+            unbindService(mHeartRateServiceReceiverConnection);
+        }
 
-        unbindService(mStartPollServiceSenderConnection);
+        if(mStartPollServiceSenderConnection != null) {
+            unbindService(mStartPollServiceSenderConnection);
+        }
 
-        unbindService(mHeartRateDataServiceSenderConnection);
+        if(mHeartRateDataServiceSenderConnection != null) {
+            unbindService(mHeartRateDataServiceSenderConnection);
+        }
     }
 
     // AppConnectionService

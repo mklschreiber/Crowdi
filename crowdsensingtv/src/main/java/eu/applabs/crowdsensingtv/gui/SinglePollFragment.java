@@ -22,10 +22,10 @@ import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.data.Option;
+import eu.applabs.crowdsensinglibrary.gui.CSDateElement;
+import eu.applabs.crowdsensinglibrary.gui.CSTimeElement;
 import eu.applabs.crowdsensingtv.R;
-import eu.applabs.crowdsensingtv.base.CSDateElement;
 import eu.applabs.crowdsensingtv.base.CSEditTextGroup;
-import eu.applabs.crowdsensingtv.base.CSTimeElement;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 

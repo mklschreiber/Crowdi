@@ -8,4 +8,6 @@
     <color name="primary_text" type="color">#212121</color>
     <color name="secondary_text" type="color">#727272</color>
     <color name="divider" type="color">#B6B6B6</color>
+
+    <color name="questionview_background" type="color">#90FFFFFF</color>
 </resources>

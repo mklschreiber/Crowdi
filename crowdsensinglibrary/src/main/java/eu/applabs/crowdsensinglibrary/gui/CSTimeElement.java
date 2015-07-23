@@ -1,4 +1,4 @@
-package eu.applabs.crowdsensingtv.base;
+package eu.applabs.crowdsensinglibrary.gui;
 
 import android.content.Context;
 import android.view.View;

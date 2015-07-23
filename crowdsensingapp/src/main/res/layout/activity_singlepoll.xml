@@ -22,15 +22,29 @@
         android:background="#000000"
         android:alpha="0.1"/>
 
-    <LinearLayout
-        android:id="@+id/id_MainActivity_LinearLayout"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:orientation="vertical"
+    <Button
+        android:id="@+id/id_SinglePollActivity_Button_Send"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Send"/>
 
-    </LinearLayout>
+    <ScrollView
+        android:layout_above="@id/id_SinglePollActivity_Button_Send"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/id_SinglePollActivity_LinearLayout"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package eu.applabs.crowdsensingtv.base;
+package eu.applabs.crowdsensinglibrary.gui;
 
 import android.content.Context;
 import android.view.View;
@@ -47,3 +47,4 @@ public class CSDateElement extends Button implements View.OnClickListener, CSDat
         dialog.show();
     }
 }
+

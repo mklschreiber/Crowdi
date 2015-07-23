@@ -1,7 +1,24 @@
 <resources>
+
+    <string name="Application_Name">CrowdSensingApp</string>
+
     <string name="app_name">CrowdSensingApp</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="MainActivity_Button_Send">Send</string>
+    <string name="TestActivity_Switch_UPnPService">UPnP-Service</string>
+    <string name="TestActivity_Button_ShowNotification">Show notification on Android Wear</string>
+    <string name="TestActivity_Button_StartPoll">Start a poll on the TV</string>
+    <string name="TestActivity_Button_GetSteps">Get steps from Google Fit</string>
+    <string name="TestActivity_Button_GetActivities">Get activities from Google Fit</string>
+    <string name="MainMenu_Action_Test">Test</string>
+    <string name="SinglePollActivity_Toast_Error">Error during starting process</string>
+    <string name="CSHeartRateDialog_Title">Select heart rate</string>
+
+    <string name="CSEditTextGroup_Button_Google">Google</string>
+    <string name="CSEditTextGroup_Button_Apple">Apple</string>
+    <string name="CSEditTextGroup_Button_Microsoft">Microsoft</string>
+    <string name="CSEditTextGroup_Button_Measure">Measure</string>
+    <string name="FinishedPollDialog_Title">Select next poll</string>
 </resources>

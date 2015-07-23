@@ -14,10 +14,6 @@
     <string name="CSEditTextGroup_Button_Microsoft">Microsoft</string>
     <string name="CSEditTextGroup_Button_Measure">Measure</string>
 
-    <string name="CSFitnessRequestResultDialog_Label_Steps">Steps</string>
-    <string name="CSFitnessRequestResultDialog_Label_Count">Count</string>
-    <string name="CSFitnessRequestResultDialog_Label_TimeRange">Time range</string>
-    <string name="CSFitnessRequestResultDialog_Label_Duration">Duration</string>
     <string name="CSHeartRateDialog_Title">Select heart rate</string>
     <string name="CSTimePickerDialog_Title">Select time</string>
     <string name="MainActivity_Header_Polls">Polls</string>

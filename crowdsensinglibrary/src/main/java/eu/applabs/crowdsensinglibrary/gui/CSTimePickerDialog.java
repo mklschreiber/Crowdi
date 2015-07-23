@@ -1,4 +1,4 @@
-package eu.applabs.crowdsensingtv.base;
+package eu.applabs.crowdsensinglibrary.gui;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import java.util.Calendar;
 
-import eu.applabs.crowdsensingtv.R;
+import eu.applabs.crowdsensinglibrary.R;
 
 public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
 
@@ -73,25 +73,20 @@ public class CSTimePickerDialog extends Dialog implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
-            case R.id.id_CSTimePickerDialog_Button_Ok:
-                if(mOnTimeSetListener != null) {
-                    mOnTimeSetListener.onTimeSet(mHour, mMinute);
-                }
+        if(v.getId() == R.id.id_CSTimePickerDialog_Button_Ok) {
+            if(mOnTimeSetListener != null) {
+                mOnTimeSetListener.onTimeSet(mHour, mMinute);
+            }
 
-                dismiss();
-                break;
-            case R.id.id_CSTimePickerDialog_Button_HourIncrement:
-                incrementHours();
-                break;
-            case R.id.id_CSTimePickerDialog_Button_HourDecrement:
-                decrementHours();
-                break;
-            case R.id.id_CSTimePickerDialog_Button_MinuteIncrement:
-                incrementMinutes();
-                break;
-            case R.id.id_CSTimePickerDialog_Button_MinuteDecrement:
-                decrementMinutes();
+            dismiss();
+        } else if(v.getId() == R.id.id_CSTimePickerDialog_Button_HourIncrement) {
+            incrementHours();
+        } else if(v.getId() == R.id.id_CSTimePickerDialog_Button_HourDecrement) {
+            decrementHours();
+        } else if(v.getId() == R.id.id_CSTimePickerDialog_Button_MinuteIncrement) {
+            incrementMinutes();
+        } else if(v.getId() == R.id.id_CSTimePickerDialog_Button_MinuteDecrement) {
+            decrementMinutes();
         }
     }
 

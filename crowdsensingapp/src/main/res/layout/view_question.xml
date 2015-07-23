@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/id_QuestionView_Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:text="Test"
+        android:textSize="22sp"
+        android:padding="10dp"/>
+
+    <RelativeLayout
+        android:id="@+id/id_QuestionView_Content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_QuestionView_Title"
+        android:background="@color/questionview_background"
+        android:padding="10dp">
+
+    </RelativeLayout>
+</RelativeLayout>
