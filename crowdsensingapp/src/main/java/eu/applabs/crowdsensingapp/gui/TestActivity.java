@@ -87,6 +87,8 @@ public class TestActivity extends AppCompatActivity implements
             bindService(new Intent(this, UpnpService.class),
                     mUpnpServiceConnection,
                     Context.BIND_AUTO_CREATE);
+        } else {
+            mButtonStartPoll.setEnabled(false);
         }
     }
 
@@ -246,9 +248,13 @@ public class TestActivity extends AppCompatActivity implements
 
         if(buttonView.getId() == R.id.id_MainActivity_Switch_UPnPService) {
             if(isChecked) {
+                mSettingsManager.setUpnpServiceEnabled(true);
+
                 startService(intent);
                 mButtonStartPoll.setEnabled(true);
             } else {
+                mSettingsManager.setUpnpServiceEnabled(false);
+
                 stopService(intent);
                 mButtonStartPoll.setEnabled(false);
             }

@@ -3,6 +3,7 @@ package eu.applabs.crowdsensinglibrary.gui;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,9 +29,7 @@ public class CSFitnessRequestResultDialog extends Dialog implements View.OnClick
     private List<String> mValues = null;
     private List<String> mValueLabels = null;
     private LinearLayout mLinearLayout = null;
-    private boolean mButtonsGenerated = false;
-
-    private int mMaximum = 0;
+    private boolean mViewGenerated = false;
 
     private List<ICSFitnessRequestResultDialogListener> mICSFitnessRequestResultDialogListenerList = null;
 
@@ -74,35 +73,35 @@ public class CSFitnessRequestResultDialog extends Dialog implements View.OnClick
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        if(!mButtonsGenerated) {
-                            mButtonsGenerated = true;
+                        if(!mViewGenerated) {
+                            mViewGenerated = true;
+                            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                            for (int i = 0; i < mValues.size(); ++i) {
-                                LinearLayout ll = new LinearLayout(mContext);
-                                ll.setOrientation(LinearLayout.VERTICAL);
+                            View resultView;
+                            TextView textViewDescription;
+                            Button buttonValue;
 
-                                Button button = new Button(mContext);
-                                button.setOnClickListener(mCSFitnessRequestResultDialog);
-                                button.setText(mValues.get(i));
+                            for(int i = 0; i < mValues.size(); ++i) {
+                                resultView = inflater.inflate(R.layout.view_csfitnessrequestresult, null, false);
 
-                                int height = getHeight(mValues.get(i), mValues, mLinearLayout.getHeight() - 100);
+                                textViewDescription = (TextView) resultView.findViewById(R.id.id_CSFitnessRequestResultView_TextView_Description);
+                                textViewDescription.setText(mValueLabels.get(i));
+
+                                buttonValue = (Button) resultView.findViewById(R.id.id_CSFitnessRequestResultView_Button_Value);
+                                buttonValue.setOnClickListener(mCSFitnessRequestResultDialog);
+                                buttonValue.setText(mValues.get(i));
+
+                                int height = getHeight(mValues.get(i), mValues, mLinearLayout.getHeight());
 
                                 if(height > 0) {
-                                    button.setHeight(height);
+                                    buttonValue.setHeight(height);
                                 }
 
                                 if(i == 0) {
-                                    button.requestFocus();
+                                    buttonValue.requestFocus();
                                 }
 
-                                TextView tv = new TextView(mContext);
-                                tv.setText(mValueLabels.get(i));
-                                tv.setFocusable(false);
-
-                                ll.addView(button);
-                                ll.addView(tv);
-
-                                mLinearLayout.addView(ll);
+                                mLinearLayout.addView(resultView);
                             }
                         }
                     }

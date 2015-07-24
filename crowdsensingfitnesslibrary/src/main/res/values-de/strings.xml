@@ -2,10 +2,13 @@
 
     <string name="Library_Name">CrowdSensingFitnessLibrary</string>
 
+    <string name="CSFitnessRequestResultDialog_Title">Übersicht</string>
     <string name="CSFitnessRequestResultDialog_Label_Steps">Schritte</string>
     <string name="CSFitnessRequestResultDialog_Label_Count">Anzahl</string>
     <string name="CSFitnessRequestResultDialog_Label_TimeRange">Zeitspanne</string>
     <string name="CSFitnessRequestResultDialog_Label_Duration">Dauer</string>
+
+    <string name="CSFitnessRequestResultDialog_Unit_Minutes">Minuten</string>
 
     <string-array name="steps_keywords">
         <item>schritte</item>
@@ -15,9 +18,11 @@
     <string-array name="activity_keywords">
         <item>aktivität</item>
         <item>aktivitäten</item>
+        <item>sport</item>
     </string-array>
 
     <string-array name="duration_keywords">
+        <item>zeit</item>
         <item>dauer</item>
         <item>länge</item>
         <item>lange</item>
@@ -29,6 +34,7 @@
     <string-array name="count_keywords">
         <item>anzahl</item>
         <item>häufigkeit</item>
+        <item>meisten</item>
     </string-array>
 
     <string-array name="heart_rate_keywords">

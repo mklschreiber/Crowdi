@@ -1,11 +1,15 @@
 package eu.applabs.crowdsensingtv.base;
 
 import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import org.fourthline.cling.model.action.ActionArgumentValue;
 
@@ -28,18 +32,12 @@ import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
-public class CSEditTextGroup extends LinearLayout implements
+public class CSEditTextGroup extends RelativeLayout implements
         View.OnClickListener,
         FitnessLibrary.IFitnessLibraryListener,
         CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener,
         HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener,
         CSHeartRateDialog.ICSHeartRateDialogListener {
-
-    private static final int sGoogleId = 0;
-    private static final int sAppleId = 1;
-    private static final int sMicrosoftId = 2;
-
-    private static final int sHeartRateId = 3;
 
     private CSEditTextGroup mCSEditTextGroup = null;
 
@@ -62,98 +60,79 @@ public class CSEditTextGroup extends LinearLayout implements
         mCSEditTextGroup = this;
         mActivity = activity;
         mField = field;
+
         mHeartRateServiceSenderConnection = heartRateServiceSenderConnection;
         mHeartRateDataServiceReceiverConnection = heartRateDataServiceReceiverConnection;
+
+        mFitnessLibrary = FitnessLibrary.getInstance();
+        mConnectedPortalList = mFitnessLibrary.getConnectedPortals();
 
         setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        setWeightSum(9);
+        LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View csEditTextGroupView;
 
-        mFitnessLibrary = FitnessLibrary.getInstance();
-        mConnectedPortalList = mFitnessLibrary.getConnectedPortals();
+        QuestionChecker.QuestionType questionType = QuestionChecker.check(mActivity, mField.getLabel());
 
-        mEditText = new EditText(mActivity);
-        mEditText.setLayoutParams(new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                5f));
-        mEditText.setHint(mField.getLabel());
-        mEditText.setText(mField.getValue());
-        mEditText.setId(mField.getId());
-        mEditText.setFocusable(true);
-        addView(mEditText);
+        if(questionType == QuestionChecker.QuestionType.Undefined ||
+                (questionType != QuestionChecker.QuestionType.Heart_Rate
+                        && mConnectedPortalList.size() == 0)) {
 
-        if(QuestionChecker.check(mActivity, mField.getLabel()) != QuestionChecker.QuestionType.Undefined) {
-            if (mConnectedPortalList.contains(Portal.PortalType.Google)) {
-                Button buttonGoogle = new Button(mActivity);
-                buttonGoogle.setLayoutParams(new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1f));
-                buttonGoogle.setText(R.string.CSEditTextGroup_Button_Google);
-                buttonGoogle.setId(sGoogleId);
-                buttonGoogle.setOnClickListener(this);
-                addView(buttonGoogle);
-            }
+            // If no specific question was found or no portal is connected show the regular EditText
 
-            if (mConnectedPortalList.contains(Portal.PortalType.Apple)) {
-                Button buttonApple = new Button(mActivity);
-                buttonApple.setLayoutParams(new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1f));
-                buttonApple.setText(R.string.CSEditTextGroup_Button_Apple);
-                buttonApple.setId(sAppleId);
-                buttonApple.setOnClickListener(this);
-                addView(buttonApple);
-            }
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup, null, false);
+            mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
+            mEditText.setText(mField.getValue());
+            mEditText.setId(mField.getId());
+        } else if (questionType == QuestionChecker.QuestionType.Heart_Rate) {
 
-            if (mConnectedPortalList.contains(Portal.PortalType.Microsoft)) {
-                Button buttonMicrosoft = new Button(mActivity);
-                buttonMicrosoft.setLayoutParams(new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1f));
-                buttonMicrosoft.setText(R.string.CSEditTextGroup_Button_Microsoft);
-                buttonMicrosoft.setId(sMicrosoftId);
-                buttonMicrosoft.setOnClickListener(this);
-                addView(buttonMicrosoft);
-            }
+            // If the heart rate keyword was detected show the heart rate layout
 
-            if(QuestionChecker.check(mActivity, field.getLabel()) == QuestionChecker.QuestionType.Heart_Rate
-                    && mHeartRateServiceSenderConnection != null
-                    && mHeartRateServiceSenderConnection.devicesAvailable()) {
-                Button buttonHeartRate = new Button(mActivity);
-                buttonHeartRate.setLayoutParams(new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1f));
-                buttonHeartRate.setText(R.string.CSEditTextGroup_Button_Measure);
-                buttonHeartRate.setId(sHeartRateId);
-                buttonHeartRate.setOnClickListener(this);
-                addView(buttonHeartRate);
-            }
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_heartrate, null, false);
+            mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
+            mEditText.setText(mField.getValue());
+            mEditText.setId(mField.getId());
+
+            Button buttonMeasureHeartRate = (Button) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_Button_MeasureHeartRate);
+            buttonMeasureHeartRate.setOnClickListener(this);
         } else {
-            mEditText.setLayoutParams(new LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    9f));
+
+            // Show the fitness layout
+
+            mFitnessLibrary.registerListener(this);
+
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_fitness, null, false);
+            mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
+            mEditText.setText(mField.getValue());
+            mEditText.setId(mField.getId());
+
+            ImageButton imageButtonGoogle = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_GoogleFit);
+            imageButtonGoogle.setOnClickListener(this);
+            ImageButton imageButtonApple = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_AppleHealthKit);
+            imageButtonApple.setOnClickListener(this);
+            ImageButton imageButtonMicrosoft = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_MicrosoftHealthVault);
+            imageButtonMicrosoft.setOnClickListener(this);
+
+            if (!mConnectedPortalList.contains(Portal.PortalType.Google)) {
+                imageButtonGoogle.setVisibility(GONE);
+            }
+
+            if (!mConnectedPortalList.contains(Portal.PortalType.Apple)) {
+                imageButtonApple.setVisibility(GONE);
+            }
+
+            if (!mConnectedPortalList.contains(Portal.PortalType.Microsoft)) {
+                imageButtonMicrosoft.setVisibility(GONE);
+            }
         }
+
+        addView(csEditTextGroupView);
     }
 
     public EditText getEditText() {
         return mEditText;
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        if(mFitnessLibrary != null) {
-            mFitnessLibrary.registerListener(this);
-        }
     }
 
     @Override
@@ -176,7 +155,7 @@ public class CSEditTextGroup extends LinearLayout implements
         mRequestId = (int) (Math.random() * 1000);
 
         switch (v.getId()) {
-            case sGoogleId:
+            case R.id.id_CSEditTextGroup_ImageButton_GoogleFit:
                 switch(QuestionChecker.check(mActivity, mField.getLabel())) {
                     case Steps:
                         mFitnessLibrary.getSteps(Portal.PortalType.Google,
@@ -207,7 +186,7 @@ public class CSEditTextGroup extends LinearLayout implements
                         break;
                 }
                 break;
-            case sAppleId:
+            case R.id.id_CSEditTextGroup_ImageButton_AppleHealthKit:
                 switch(QuestionChecker.check(mActivity, mField.getLabel())) {
                     case Steps:
                         mFitnessLibrary.getSteps(Portal.PortalType.Apple,
@@ -238,7 +217,7 @@ public class CSEditTextGroup extends LinearLayout implements
                         break;
                 }
                 break;
-            case sMicrosoftId:
+            case R.id.id_CSEditTextGroup_ImageButton_MicrosoftHealthVault:
                 switch(QuestionChecker.check(mActivity, mField.getLabel())) {
                     case Steps:
                         mFitnessLibrary.getSteps(Portal.PortalType.Microsoft,
@@ -269,7 +248,7 @@ public class CSEditTextGroup extends LinearLayout implements
                         break;
                 }
                 break;
-            case sHeartRateId:
+            case R.id.id_CSEditTextGroup_Button_MeasureHeartRate:
                 mHeartRateServiceSenderConnection.getHeartRate();
 
                 CSHeartRateDialog csHeartRateDialog = new CSHeartRateDialog(mActivity,
@@ -310,6 +289,8 @@ public class CSEditTextGroup extends LinearLayout implements
                             mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_TimeRange),
                             valueList,
                             valueLabelList);
+
+                    dialog.setTitle(getResources().getString(R.string.CSFitnessRequestResultDialog_Title));
                     dialog.registerListener(mCSEditTextGroup);
                     dialog.show();
                 }
@@ -330,19 +311,25 @@ public class CSEditTextGroup extends LinearLayout implements
                     ArrayList<String> valueLabelList = new ArrayList<>();
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    String unit = null;
 
                     for (ActivityBucket bucket : list) {
                         if(type == QuestionChecker.QuestionType.Activity_Count) {
                             valueList.add(String.valueOf(bucket.getActivityCount()));
                         } else {
-                            valueList.add(String.valueOf(bucket.getActivityDuration()));
+                            valueList.add(String.valueOf(bucket.getActivityDuration() / 1000 / 60));
+                            unit = getResources().getString(R.string.CSFitnessRequestResultDialog_Unit_Minutes);
                         }
 
                         String activity = eu.applabs.crowdsensingfitnesslibrary.data.Activity.convertToString(bucket.getActivityType());
                         String startDate = sdf.format(bucket.getActivityStartDate());
                         String endDate = sdf.format(bucket.getActivityEndDate());
 
-                        valueLabelList.add(activity + "\n\n" + startDate + "\n - \n" + endDate);
+                        if(unit != null) {
+                            valueLabelList.add(unit + "\n\n" + activity + "\n\n" + startDate + "\n - \n" + endDate);
+                        } else {
+                            valueLabelList.add(activity + "\n\n" + startDate + "\n - \n" + endDate);
+                        }
                     }
 
                     CSFitnessRequestResultDialog dialog = null;
@@ -361,6 +348,7 @@ public class CSEditTextGroup extends LinearLayout implements
                                 valueLabelList);
                     }
 
+                    dialog.setTitle(getResources().getString(R.string.CSFitnessRequestResultDialog_Title));
                     dialog.registerListener(mCSEditTextGroup);
                     dialog.show();
                 }

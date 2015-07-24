@@ -20,6 +20,7 @@
             android:layout_height="fill_parent"
             android:text="@string/SinglePollActivity_Button_Left"
             android:id="@+id/id_SinglePollActivity_Button_Left"
+            android:background="@drawable/button"
             android:layout_gravity="center_vertical" />
 
         <Button
@@ -28,6 +29,7 @@
             android:layout_height="fill_parent"
             android:text="@string/SinglePollActivity_Button_Right"
             android:id="@+id/id_SinglePollActivity_Button_Right"
+            android:background="@drawable/button"
             android:layout_gravity="center_vertical" />
 
     </LinearLayout>
@@ -36,7 +38,7 @@
         android:id="@+id/id_SinglePollActivity_ProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
-        android:layout_height="10dp"
+        android:layout_height="15dp"
         android:progress="0"
         android:layout_gravity="center_horizontal"
         android:focusable="false"/>

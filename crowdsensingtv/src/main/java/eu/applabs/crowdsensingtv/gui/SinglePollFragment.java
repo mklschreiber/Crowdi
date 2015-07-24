@@ -1,6 +1,7 @@
 package eu.applabs.crowdsensingtv.gui;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
@@ -13,6 +14,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,28 +131,47 @@ public class SinglePollFragment extends Fragment {
     public void updateFieldValues() {
         if(mField != null && mViewList != null && mViewList.size() > 0) {
             for(View v : mViewList) {
-                try {
+                if (v instanceof CSEditTextGroup) {
+                    CSEditTextGroup csEditTextGroup = (CSEditTextGroup) v;
+                    Field field = mField.getField(csEditTextGroup.getEditText().getId());
+                    field.setValue(csEditTextGroup.getEditText().getText().toString());
+                } else if (v instanceof EditText) {
                     EditText et = (EditText) v;
                     Field field = mField.getField(et.getId());
                     field.setValue(et.getText().toString());
-                } catch (Exception e) {
-                    Log.e(sClassName, e.getMessage());
-                }
-
-                try {
+                } else if (v instanceof CSTimeElement) {
                     CSTimeElement te = (CSTimeElement) v;
                     Field field = mField.getField(te.getId());
                     field.setValue(te.getText().toString());
-                } catch (Exception e) {
-                    Log.e(sClassName, e.getMessage());
-                }
-
-                try {
+                } else if (v instanceof CSDateElement) {
                     CSDateElement de = (CSDateElement) v;
                     Field field = mField.getField(de.getId());
                     field.setValue(de.getText().toString());
-                } catch (Exception e) {
-                    Log.e(sClassName, e.getMessage());
+                } else if (v instanceof CheckBox) {
+                    CheckBox cb = (CheckBox) v;
+                    Field field = mField.getField(cb.getId());
+                    field.setSelected(cb.isChecked());
+                } else if (v instanceof RadioGroup) {
+                    RadioGroup rg = (RadioGroup) v;
+                    Field field = mField.getField(rg.getId());
+                    for(int i = 0; i < rg.getChildCount(); ++i) {
+                        View view = rg.getChildAt(i);
+
+                        if(view instanceof RadioButton) {
+                            RadioButton rb = (RadioButton) view;
+
+                            if(rb.isChecked()) {
+                                field.getOption(rb.getId()).setSelected(true);
+                            }
+                        }
+                    }
+                } else if (v instanceof MultiSelectView) {
+                    MultiSelectView msv = (MultiSelectView) v;
+                    Field field = mField.getField(msv.getId());
+                    for(Option option : field.getOptionList()) {
+                        CheckBox cb = (CheckBox) msv.findViewById(option.getId());
+                        option.setSelected(cb.isChecked());
+                    }
                 }
             }
         }
@@ -180,10 +202,23 @@ public class SinglePollFragment extends Fragment {
     }
 
     private View createViewForField(Field field, boolean firstField) {
-        View view = null;
-        EditText et = null;
-        LinearLayout ll = null;
-        CSEditTextGroup csEditTextGroup = null;
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View questionView = inflater.inflate(R.layout.view_question, null, false);
+
+        TextView title = (TextView) questionView.findViewById(R.id.id_QuestionView_Title);
+        title.setText(field.getLabel());
+
+        RelativeLayout content = (RelativeLayout) questionView.findViewById(R.id.id_QuestionView_Content);
+
+        EditText editText;
+        LinearLayout linearLayout;
+        CSEditTextGroup csEditTextGroup;
+        CSDateElement csDateElement;
+        CSTimeElement csTimeElement;
+        RadioGroup radioGroup;
+        CheckBox checkBox;
+        MultiSelectView multiSelectView;
 
         switch(field.getType()) {
             case text:
@@ -191,137 +226,171 @@ public class SinglePollFragment extends Fragment {
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
-                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
 
-                view = csEditTextGroup;
+                content.addView(csEditTextGroup);
                 break;
             case textarea:
                 csEditTextGroup = new CSEditTextGroup(getActivity(),
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
-                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
                 csEditTextGroup.getEditText().setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
-                view = csEditTextGroup;
+                content.addView(csEditTextGroup);
                 break;
             case password:
-                et = new EditText(getActivity());
-                et.setHint(field.getLabel());
-                et.setText(field.getValue());
-                et.setId(field.getId());
-                et.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                view = et;
+                editText = new EditText(getActivity());
+                editText.setHint(field.getLabel());
+                editText.setText(field.getValue());
+                editText.setId(field.getId());
+                editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+                mViewList.add(editText);
+                content.addView(editText);
                 break;
             case number:
                 csEditTextGroup = new CSEditTextGroup(getActivity(),
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
-                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
                 csEditTextGroup.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 
-                view = csEditTextGroup;
+                content.addView(csEditTextGroup);
                 break;
             case email:
-                et = new EditText(getActivity());
-                et.setHint(field.getLabel());
-                et.setId(field.getId());
-                et.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                view = et;
+                editText = new EditText(getActivity());
+                editText.setHint(field.getLabel());
+                editText.setId(field.getId());
+                editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+                mViewList.add(editText);
+                content.addView(editText);
                 break;
             case tel:
-                et = new EditText(getActivity());
-                et.setHint(field.getLabel());
-                et.setText(field.getValue());
-                et.setId(field.getId());
-                et.setInputType(InputType.TYPE_CLASS_PHONE);
-                view = et;
+                editText = new EditText(getActivity());
+                editText.setHint(field.getLabel());
+                editText.setText(field.getValue());
+                editText.setId(field.getId());
+                editText.setInputType(InputType.TYPE_CLASS_PHONE);
+
+                mViewList.add(editText);
+                content.addView(editText);
                 break;
             case url:
-                et = new EditText(getActivity());
-                et.setHint(field.getLabel());
-                et.setText(field.getValue());
-                et.setId(field.getId());
-                et.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
-                view = et;
+                editText = new EditText(getActivity());
+                editText.setHint(field.getLabel());
+                editText.setText(field.getValue());
+                editText.setId(field.getId());
+                editText.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+
+                mViewList.add(editText);
+                content.addView(editText);
                 break;
             case date:
-                CSDateElement de = new CSDateElement(getActivity());
-                de.setHint(field.getLabel());
-                de.setText(field.getValue());
-                de.setId(field.getId());
-                de.displayCurrentDate();
-                view = de;
+                csDateElement = new CSDateElement(getActivity());
+                csDateElement.setHint(field.getLabel());
+                csDateElement.setText(field.getValue());
+                csDateElement.setId(field.getId());
+                csDateElement.displayCurrentDate();
+
+                mViewList.add(csDateElement);
+                content.addView(csDateElement);
                 break;
             case time:
-                CSTimeElement te = new CSTimeElement(getActivity());
-                te.setHint(field.getLabel());
-                te.setText(field.getValue());
-                te.setId(field.getId());
-                te.displayCurrentTime();
-                view = te;
+                csTimeElement = new CSTimeElement(getActivity());
+                csTimeElement.setHint(field.getLabel());
+                csTimeElement.setText(field.getValue());
+                csTimeElement.setId(field.getId());
+                csTimeElement.displayCurrentTime();
+
+                mViewList.add(csTimeElement);
+                content.addView(csTimeElement);
                 break;
             case datetime:
-                et = new EditText(getActivity()); // TODO Parse it correct
-                et.setHint(field.getLabel());
-                et.setText(field.getValue());
-                et.setId(field.getId());
-                view = et;
+                editText = new EditText(getActivity()); // TODO Parse it correct
+                editText.setHint(field.getLabel());
+                editText.setText(field.getValue());
+                editText.setId(field.getId());
+
+                mViewList.add(editText);
+                content.addView(editText);
                 break;
             case range:
                 break;
             case select:
-                RadioGroup rg = new RadioGroup(getActivity());
-                rg.setOrientation(RadioGroup.VERTICAL);
+                radioGroup = new RadioGroup(getActivity());
+                radioGroup.setId(field.getId());
+                radioGroup.setOrientation(RadioGroup.VERTICAL);
                 for(Option o : field.getOptionList()) {
                     RadioButton rb = new RadioButton(getActivity());
                     rb.setHint(o.getLabel());
                     rb.setText(o.getLabel());
                     rb.setId(o.getId());
-                    rg.addView(rb);
+                    rb.setChecked(o.getSelected());
+                    rb.setSelected(o.getSelected());
+
+                    radioGroup.addView(rb);
                 }
-                view = rg;
+
+                mViewList.add(radioGroup);
+                content.addView(radioGroup);
                 break;
             case multiselect:
-                ll = new LinearLayout(getActivity());
-                ll.setOrientation(LinearLayout.VERTICAL);
+                multiSelectView = new MultiSelectView(getActivity());
+                multiSelectView.setOrientation(LinearLayout.VERTICAL);
+                multiSelectView.setId(field.getId());
 
                 for(Option o : field.getOptionList()) {
-                    CheckBox cb = new CheckBox(getActivity());
-                    cb.setHint(o.getLabel());
-                    cb.setText(o.getLabel());
-                    cb.setId(o.getId());
-                    ll.addView(cb);
+                    checkBox = new CheckBox(getActivity());
+                    checkBox.setHint(o.getLabel());
+                    checkBox.setText(o.getLabel());
+                    checkBox.setChecked(o.getSelected());
+                    checkBox.setSelected(o.getSelected());
+                    checkBox.setId(o.getId());
+
+                    multiSelectView.addView(checkBox);
                 }
-                view = ll;
+
+                mViewList.add(multiSelectView);
+                content.addView(multiSelectView);
                 break;
             case checkbox:
-                CheckBox cb = new CheckBox(getActivity());
-                cb.setHint(field.getLabel());
-                cb.setId(field.getId());
-                view = cb;
+                checkBox = new CheckBox(getActivity());
+                checkBox.setHint(field.getLabel());
+                checkBox.setId(field.getId());
+                checkBox.setChecked(field.getSelected());
+                checkBox.setSelected(field.getSelected());
+
+                mViewList.add(checkBox);
+                content.addView(checkBox);
                 break;
             case radio:
-                RadioGroup rgg = new RadioGroup(getActivity());
-                rgg.setOrientation(RadioGroup.VERTICAL);
+                radioGroup = new RadioGroup(getActivity());
+                radioGroup.setOrientation(RadioGroup.VERTICAL);
+                radioGroup.setId(field.getId());
+
                 for(Option o : field.getOptionList()) {
                     RadioButton rb = new RadioButton(getActivity());
                     rb.setHint(o.getLabel());
                     rb.setText(o.getLabel());
                     rb.setId(o.getId());
-                    rgg.addView(rb);
+                    rb.setChecked(o.getSelected());
+                    rb.setSelected(o.getSelected());
+
+                    radioGroup.addView(rb);
                 }
-                view = rgg;
+
+                mViewList.add(radioGroup);
+                content.addView(radioGroup);
                 break;
         }
 
         if(field.getCompositeField().compareTo("") != 0) {
-            ll = new LinearLayout(getActivity());
-            ll.setOrientation(LinearLayout.VERTICAL);
+            linearLayout = new LinearLayout(getActivity());
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
 
             for(int i = 0; i < field.getFieldList().size(); ++i) {
                 Field f = field.getFieldList().get(i);
@@ -335,22 +404,21 @@ public class SinglePollFragment extends Fragment {
 
                 if(v != null) {
                     mViewList.add(v);
-                    ll.addView(v);
+                    linearLayout.addView(v);
                 }
             }
 
-            view = ll;
+            content.addView(linearLayout);
         }
 
-        if(view != null) {
-            if (firstField) {
-                view.requestFocus();
-                view.setNextFocusUpId(R.id.id_SinglePollActivity_Button_Right);
+        if(questionView != null) {
+            if(firstField) {
+                questionView.requestFocus();
             }
 
-            mViewList.add(view);
+            mViewList.add(questionView);
         }
 
-        return view;
+        return questionView;
     }
 }

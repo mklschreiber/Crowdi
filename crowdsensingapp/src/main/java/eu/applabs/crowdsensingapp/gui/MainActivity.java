@@ -1,14 +1,17 @@
 package eu.applabs.crowdsensingapp.gui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -100,24 +103,25 @@ public class MainActivity extends AppCompatActivity implements
                     // Response to our request
 
                     if(status == ILibraryResultListener.ExecutionStatus.Success) {
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         mCommandList = list;
 
                         for(int i = 0; i < mCommandList.size(); ++i) {
                             Command command = mCommandList.get(i);
 
-                            Button b = new Button(getApplicationContext());
-                            b.setText(command.getInfo());
-                            b.setId(command.getId());
-                            b.setOnClickListener(mActivity);
-                            b.setLayoutParams(new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.MATCH_PARENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT));
+                            View commandView = inflater.inflate(R.layout.view_command, null, false);
+
+                            Button button = (Button) commandView.findViewById(R.id.id_CommandView_Button);
+
+                            button.setText(command.getInfo());
+                            button.setId(command.getId());
+                            button.setOnClickListener(mActivity);
 
                             if(i == 0) {
-                                b.requestFocus();
+                                button.requestFocus();
                             }
 
-                            mLinearLayout.addView(b);
+                            mLinearLayout.addView(commandView);
                         }
                     }
                 }

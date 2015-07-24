@@ -42,7 +42,9 @@ public abstract class Portal {
     }
 
     public void registerListener(IPortalListener listener) {
-        mIPortalListenerList.add(listener);
+        if(!mIPortalListenerList.contains(listener)) {
+            mIPortalListenerList.add(listener);
+        }
     }
 
     public void unregisterListener(IPortalListener listener) {

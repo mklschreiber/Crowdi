@@ -42,6 +42,7 @@ public class Field {
     private boolean mRequired = false;
     private String mValue = null;
     private List<Option> mOptionList = null;
+    private boolean mSelected = false;
 
     // Constructor
 
@@ -55,6 +56,7 @@ public class Field {
         mRequired = false;
         mValue = "";
         mOptionList = new ArrayList<>();
+        mSelected = false;
     }
 
     // Setter
@@ -140,6 +142,10 @@ public class Field {
         mValue = value;
     }
 
+    public void setSelected(boolean selected) {
+        mSelected = selected;
+    }
+
     // Getter
 
     public int getId() {
@@ -206,6 +212,10 @@ public class Field {
         }
 
         return null;
+    }
+
+    public boolean getSelected() {
+        return mSelected;
     }
 
     // Misc

@@ -21,4 +21,6 @@
     <string name="CSEditTextGroup_Button_Microsoft">Microsoft</string>
     <string name="CSEditTextGroup_Button_Measure">Measure</string>
     <string name="FinishedPollDialog_Title">Select next poll</string>
+    <string name="id_SinglePollMenu_Action_Send">Send</string>
+    <string name="CSEditTextGroup_Button_MeasureHeartRate">Measure</string>
 </resources>

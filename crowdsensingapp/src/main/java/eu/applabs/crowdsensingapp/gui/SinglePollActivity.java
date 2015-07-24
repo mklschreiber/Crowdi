@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -34,8 +37,9 @@ import eu.applabs.crowdsensinglibrary.tool.StopWatch;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
-public class SinglePollActivity extends AppCompatActivity implements ILibraryResultListener,
-    View.OnClickListener, StopWatch.IStopWatchListener {
+public class SinglePollActivity extends AppCompatActivity implements
+        ILibraryResultListener,
+        StopWatch.IStopWatchListener {
 
     private static final String sClassName = SinglePollActivity.class.getSimpleName();
 
@@ -63,9 +67,6 @@ public class SinglePollActivity extends AppCompatActivity implements ILibraryRes
 
         mActivity = this;
 
-        Button b = (Button) findViewById(R.id.id_SinglePollActivity_Button_Send);
-        b.setOnClickListener(this);
-
         mViewList = new ArrayList<>();
 
         mStopWatch = new StopWatch(this);
@@ -84,6 +85,25 @@ public class SinglePollActivity extends AppCompatActivity implements ILibraryRes
         }
 
         mLinearLayout = (LinearLayout) findViewById(R.id.id_SinglePollActivity_LinearLayout);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_singlepoll, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.id_SinglePollMenu_Action_Send:
+                mStopWatch.stop();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -159,7 +179,6 @@ public class SinglePollActivity extends AppCompatActivity implements ILibraryRes
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
-                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
 
                 content.addView(csEditTextGroup);
@@ -169,7 +188,6 @@ public class SinglePollActivity extends AppCompatActivity implements ILibraryRes
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
-                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
                 csEditTextGroup.getEditText().setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
@@ -189,7 +207,6 @@ public class SinglePollActivity extends AppCompatActivity implements ILibraryRes
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
-                csEditTextGroup.setOrientation(LinearLayout.HORIZONTAL);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
                 csEditTextGroup.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 
@@ -330,13 +347,6 @@ public class SinglePollActivity extends AppCompatActivity implements ILibraryRes
         }
 
         return questionView;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if(v.getId() == R.id.id_SinglePollActivity_Button_Send) {
-            mStopWatch.stop();
-        }
     }
 
     // IStopWatchListener

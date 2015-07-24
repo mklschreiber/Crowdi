@@ -30,4 +30,5 @@
     <string name="ManageAccountActivity_Header_AvailablePortals">Available portals</string>
     <string name="SinglePollActivity_Toast_Error">Error during starting process. Try again later...</string>
     <string name="FinishedPollDialog_Title">Select next poll</string>
+    <string name="CSEditTextGroup_Button_MeasureHeartRate">Measure</string>
 </resources>

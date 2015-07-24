@@ -15,7 +15,8 @@ import java.util.List;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
 
-public class CSHeartRateDialog extends Dialog implements View.OnClickListener,
+public class CSHeartRateDialog extends Dialog implements
+        View.OnClickListener,
         HeartRateDataServiceReceiverConnection.IHeartRateDataServiceReceiverConnectionListener{
 
     public interface ICSHeartRateDialogListener {

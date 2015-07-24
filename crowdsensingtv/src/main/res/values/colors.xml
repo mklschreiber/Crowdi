@@ -5,7 +5,15 @@
     <color name="accent" type="color">#A0B1CD</color>
     <color name="background" type="color">#F9F9F9</color>
     <color name="text_and_icons" type="color">#FFFFFF</color>
-    <color name="primary_text" type="color">#212121</color>
+    <color name="primary_text" type="color">#FFFFFF</color>
     <color name="secondary_text" type="color">#727272</color>
     <color name="divider" type="color">#B6B6B6</color>
+
+    <color name="questionview_title_background" type="color">#89A3B4</color>
+    <color name="questionview_title" type="color">#F9F9F9</color>
+    <color name="questionview_background" type="color">#30FFFFFF</color>
+
+    <color name="button_default" type="color">#30FFFFFF</color>
+    <color name="button_focused" type="color">#90FFFFFF</color>
+    <color name="button_pressed" type="color">#BBFFFFFF</color>
 </resources>

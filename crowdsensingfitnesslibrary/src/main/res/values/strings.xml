@@ -2,10 +2,13 @@
 
     <string name="Library_Name">CrowdSensingFitnessLibrary</string>
 
+    <string name="CSFitnessRequestResultDialog_Title">Overview</string>
     <string name="CSFitnessRequestResultDialog_Label_Steps">Steps</string>
     <string name="CSFitnessRequestResultDialog_Label_Count">Count</string>
     <string name="CSFitnessRequestResultDialog_Label_TimeRange">Time range</string>
     <string name="CSFitnessRequestResultDialog_Label_Duration">Duration</string>
+
+    <string name="CSFitnessRequestResultDialog_Unit_Minutes">Minutes</string>
 
     <string-array name="steps_keywords">
         <item>steps</item>
