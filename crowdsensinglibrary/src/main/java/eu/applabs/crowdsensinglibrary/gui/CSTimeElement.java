@@ -2,6 +2,7 @@ package eu.applabs.crowdsensinglibrary.gui;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import java.util.Calendar;
@@ -22,6 +23,8 @@ public class CSTimeElement extends Button implements View.OnClickListener, CSTim
 
         mHour = mCalendar.get(Calendar.HOUR_OF_DAY);
         mMinute = mCalendar.get(Calendar.MINUTE);
+
+        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         setOnClickListener(this);
     }

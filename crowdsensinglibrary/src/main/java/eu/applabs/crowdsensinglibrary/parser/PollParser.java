@@ -24,6 +24,9 @@ public class PollParser {
     }
 
     private List<Field> parseString(String string, JSONArray compositeFields) {
+
+        Log.d("test", string);
+
         List<Field> poll = null;
 
         try {

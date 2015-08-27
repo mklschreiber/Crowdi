@@ -14,6 +14,9 @@ public class CommandParser {
     private static final String sClassName = CommandParser.class.getSimpleName();
 
     public List<Command> parseString(String string) {
+
+        Log.d("test", string);
+
         List<Command> list = new ArrayList<>();
 
         try {

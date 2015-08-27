@@ -82,18 +82,14 @@ public class CSEditTextGroup extends RelativeLayout implements
 
             // If no specific question was found or no portal is connected show the regular EditText
 
-            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup, null, false);
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup, this, false);
             mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
-            mEditText.setText(mField.getValue());
-            mEditText.setId(mField.getId());
         } else if (questionType == QuestionChecker.QuestionType.Heart_Rate) {
 
             // If the heart rate keyword was detected show the heart rate layout
 
-            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_heartrate, null, false);
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_heartrate, this, false);
             mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
-            mEditText.setText(mField.getValue());
-            mEditText.setId(mField.getId());
 
             Button buttonMeasureHeartRate = (Button) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_Button_MeasureHeartRate);
             buttonMeasureHeartRate.setOnClickListener(this);
@@ -103,10 +99,8 @@ public class CSEditTextGroup extends RelativeLayout implements
 
             mFitnessLibrary.registerListener(this);
 
-            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_fitness, null, false);
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_fitness, this, false);
             mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
-            mEditText.setText(mField.getValue());
-            mEditText.setId(mField.getId());
 
             ImageButton imageButtonGoogle = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_GoogleFit);
             imageButtonGoogle.setOnClickListener(this);
@@ -114,6 +108,8 @@ public class CSEditTextGroup extends RelativeLayout implements
             imageButtonApple.setOnClickListener(this);
             ImageButton imageButtonMicrosoft = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_MicrosoftHealthVault);
             imageButtonMicrosoft.setOnClickListener(this);
+            ImageButton imageButtonFake = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_Fake);
+            imageButtonFake.setOnClickListener(this);
 
             if (!mConnectedPortalList.contains(Portal.PortalType.Google)) {
                 imageButtonGoogle.setVisibility(GONE);
@@ -126,7 +122,13 @@ public class CSEditTextGroup extends RelativeLayout implements
             if (!mConnectedPortalList.contains(Portal.PortalType.Microsoft)) {
                 imageButtonMicrosoft.setVisibility(GONE);
             }
+
+            if (!mConnectedPortalList.contains(Portal.PortalType.Fake)) {
+                imageButtonFake.setVisibility(GONE);
+            }
         }
+
+        mEditText.setText(mField.getValue());
 
         addView(csEditTextGroupView);
     }
@@ -239,6 +241,37 @@ public class CSEditTextGroup extends RelativeLayout implements
                         break;
                     case Activity_Duration:
                         mFitnessLibrary.getActivities(Portal.PortalType.Microsoft,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                }
+                break;
+            case R.id.id_CSEditTextGroup_ImageButton_Fake:
+                switch(QuestionChecker.check(mActivity, mField.getLabel())) {
+                    case Steps:
+                        mFitnessLibrary.getSteps(Portal.PortalType.Fake,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                    case Activity_Count:
+                        mFitnessLibrary.getActivities(Portal.PortalType.Fake,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                    case Activity_Duration:
+                        mFitnessLibrary.getActivities(Portal.PortalType.Fake,
                                 startTime,
                                 endTime,
                                 TimeUnit.MILLISECONDS,

@@ -1,0 +1,24 @@
+<resources>
+    <string name="Application_Name">Crowdi</string>
+
+    <string name="app_name">Crowdi</string>
+
+    <string name="action_settings">Einstellungen</string>
+    <string name="MainActivity_Button_Send">Senden</string>
+    <string name="TestActivity_Switch_UPnPService">UPnP-Hintergrunddienst</string>
+    <string name="TestActivity_Button_ShowNotification">Benachrichtigung auf Android Wear anzeigen</string>
+    <string name="TestActivity_Button_StartPoll">Umfrage auf dem Fernseher starten</string>
+    <string name="TestActivity_Button_GetSteps">Schritte bei Google Fit abfragen</string>
+    <string name="TestActivity_Button_GetActivities">Aktivitäten bei Google Fit abfragen</string>
+    <string name="MainMenu_Action_Test">Test</string>
+    <string name="SinglePollActivity_Toast_Error">Fehler beim Start</string>
+    <string name="CSHeartRateDialog_Title">Wählen Sie ihre Herzfrequenz</string>
+
+    <string name="CSEditTextGroup_Button_Google">Google</string>
+    <string name="CSEditTextGroup_Button_Apple">Apple</string>
+    <string name="CSEditTextGroup_Button_Microsoft">Microsoft</string>
+    <string name="CSEditTextGroup_Button_Measure">Measure</string>
+    <string name="FinishedPollDialog_Title">Nächste Umfrage auswählen</string>
+    <string name="id_SinglePollMenu_Action_Send">Senden</string>
+    <string name="CSEditTextGroup_Button_MeasureHeartRate">Messen</string>
+</resources>

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -33,13 +34,11 @@ import eu.applabs.crowdsensinglibrary.data.Option;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensinglibrary.gui.CSDateElement;
 import eu.applabs.crowdsensinglibrary.gui.CSTimeElement;
-import eu.applabs.crowdsensinglibrary.tool.StopWatch;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
 
 public class SinglePollActivity extends AppCompatActivity implements
-        ILibraryResultListener,
-        StopWatch.IStopWatchListener {
+        ILibraryResultListener {
 
     private static final String sClassName = SinglePollActivity.class.getSimpleName();
 
@@ -52,8 +51,6 @@ public class SinglePollActivity extends AppCompatActivity implements
     private Library mLibrary = null;
     private Poll mPoll = null;
     private List<View> mViewList = null;
-
-    private StopWatch mStopWatch = null;
 
     private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection;
     private HeartRateDataServiceReceiverConnection mHeartRateDataServiceReceiverConnection;
@@ -69,22 +66,27 @@ public class SinglePollActivity extends AppCompatActivity implements
 
         mViewList = new ArrayList<>();
 
-        mStopWatch = new StopWatch(this);
-        mStopWatch.registerListener(this);
-        mStopWatch.start();
-
         mUrl = checkStartingIntent();
 
         mLibrary = Library.getInstance();
         mLibrary.registerListener(this);
 
-        if(mUrl != null) {
+        if (mUrl != null) {
             mLibrary.loadPoll(mUrl, sClassName);
         } else {
             Toast.makeText(this, R.string.SinglePollActivity_Toast_Error, Toast.LENGTH_SHORT).show();
         }
 
         mLinearLayout = (LinearLayout) findViewById(R.id.id_SinglePollActivity_LinearLayout);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(mLibrary != null) {
+            mLibrary.unregisterListener(this);
+        }
     }
 
     @Override
@@ -99,7 +101,7 @@ public class SinglePollActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.id_SinglePollMenu_Action_Send:
-                mStopWatch.stop();
+                mLibrary.uploadPoll(mUrl, mPoll.toJSON().toString(), sClassName);
                 return true;
         }
 
@@ -128,8 +130,10 @@ public class SinglePollActivity extends AppCompatActivity implements
             public void run() {
                 if(className.compareTo(sClassName) == 0) {
                     if(status == ExecutionStatus.Success) {
-                        FinishedPollDialog dialog = new FinishedPollDialog(mActivity, mActivity, list);
+                        FinishedPollDialog dialog = new FinishedPollDialog(MainActivity.mActivity, list);
                         dialog.show();
+
+                        finish();
                     }
                 }
             }
@@ -147,7 +151,7 @@ public class SinglePollActivity extends AppCompatActivity implements
     }
 
     public void generateUI() {
-        if(mLinearLayout != null && mPoll != null) {
+        if(mLinearLayout != null && mPoll != null && mPoll.getFieldList() != null) {
             for(Field field : mPoll.getFieldList()) {
                 View fv = createViewForField(field, false);
                 mLinearLayout.addView(fv);
@@ -172,6 +176,8 @@ public class SinglePollActivity extends AppCompatActivity implements
         CSTimeElement csTimeElement;
         RadioGroup radioGroup;
         CheckBox checkBox;
+
+        ViewGroup.LayoutParams lparams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         switch(field.getType()) {
             case text:
@@ -198,7 +204,8 @@ public class SinglePollActivity extends AppCompatActivity implements
                 editText.setHint(field.getLabel());
                 editText.setText(field.getValue());
                 editText.setId(field.getId());
-                editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                editText.setLayoutParams(lparams);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
                 content.addView(editText);
                 break;
@@ -216,7 +223,8 @@ public class SinglePollActivity extends AppCompatActivity implements
                 editText = new EditText(this);
                 editText.setHint(field.getLabel());
                 editText.setId(field.getId());
-                editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                editText.setLayoutParams(lparams);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
                 content.addView(editText);
                 break;
@@ -225,6 +233,7 @@ public class SinglePollActivity extends AppCompatActivity implements
                 editText.setHint(field.getLabel());
                 editText.setText(field.getValue());
                 editText.setId(field.getId());
+                editText.setLayoutParams(lparams);
                 editText.setInputType(InputType.TYPE_CLASS_PHONE);
 
                 content.addView(editText);
@@ -234,7 +243,8 @@ public class SinglePollActivity extends AppCompatActivity implements
                 editText.setHint(field.getLabel());
                 editText.setText(field.getValue());
                 editText.setId(field.getId());
-                editText.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+                editText.setLayoutParams(lparams);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
 
                 content.addView(editText);
                 break;
@@ -244,6 +254,7 @@ public class SinglePollActivity extends AppCompatActivity implements
                 csDateElement.setText(field.getValue());
                 csDateElement.setId(field.getId());
                 csDateElement.displayCurrentDate();
+                csDateElement.setBackground(getResources().getDrawable(R.drawable.button));
 
                 content.addView(csDateElement);
                 break;
@@ -253,6 +264,7 @@ public class SinglePollActivity extends AppCompatActivity implements
                 csTimeElement.setText(field.getValue());
                 csTimeElement.setId(field.getId());
                 csTimeElement.displayCurrentTime();
+                csTimeElement.setBackground(getResources().getDrawable(R.drawable.button));
 
                 content.addView(csTimeElement);
                 break;
@@ -261,6 +273,7 @@ public class SinglePollActivity extends AppCompatActivity implements
                 editText.setHint(field.getLabel());
                 editText.setText(field.getValue());
                 editText.setId(field.getId());
+                editText.setLayoutParams(lparams);
 
                 content.addView(editText);
                 break;
@@ -347,12 +360,5 @@ public class SinglePollActivity extends AppCompatActivity implements
         }
 
         return questionView;
-    }
-
-    // IStopWatchListener
-
-    @Override
-    public void onDismiss() {
-        mLibrary.uploadPoll(mUrl, mPoll.toJSON().toString(), sClassName);
     }
 }

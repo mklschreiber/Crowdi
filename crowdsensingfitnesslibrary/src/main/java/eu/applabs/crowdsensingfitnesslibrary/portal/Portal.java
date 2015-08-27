@@ -18,7 +18,8 @@ public abstract class Portal {
         Undefined,
         Google,
         Apple,
-        Microsoft
+        Microsoft,
+        Fake
     }
 
     public enum RequestType {
@@ -81,7 +82,7 @@ public abstract class Portal {
     public abstract boolean isConnected();
     public abstract boolean checkActivityResult(int requestCode, int resultCode, Intent data);
 
-    public abstract void getPerson();
+    public abstract void getPerson(int requestId);
     public abstract void getSteps(long startTime,
                                   long endTime,
                                   TimeUnit rangeUnit,

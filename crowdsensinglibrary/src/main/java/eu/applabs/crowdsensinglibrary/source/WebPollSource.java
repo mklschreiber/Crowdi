@@ -34,7 +34,7 @@ public class WebPollSource implements IPollSource {
             }
 
             BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(httpURLConnection.getInputStream()));
+                    new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
 
             String result = "";
             String line = null;

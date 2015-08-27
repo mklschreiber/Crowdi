@@ -241,7 +241,7 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
     private void loadFragment(int number, boolean leftSlide) {
         if(mPoll != null && mPoll.getFieldList().size() > number) {
-            mProgressBar.setProgress((number * 100) / mPoll.getFieldList().size());
+            mProgressBar.setProgress(((number + 1) * 100) / mPoll.getFieldList().size());
 
             mSinglePollFragment = new SinglePollFragment();
 

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements
     private Library mLibrary = null;
     private FitnessLibrary mFitnessLibrary = null;
 
-    private MainActivity mActivity = null;
+    public static MainActivity mActivity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,10 +1,8 @@
 <resources>
+    <string name="Application_Name">Crowdi</string>
 
-    <string name="Application_Name">CrowdSensingApp</string>
+    <string name="app_name">Crowdi</string>
 
-    <string name="app_name">CrowdSensingApp</string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="MainActivity_Button_Send">Send</string>
     <string name="TestActivity_Switch_UPnPService">UPnP-Service</string>

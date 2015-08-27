@@ -11,6 +11,8 @@
     <string name="CSFitnessRequestResultDialog_Unit_Minutes">Minutes</string>
 
     <string-array name="steps_keywords">
+        <item>schritt</item>
+        <item>schritte</item>
         <item>steps</item>
         <item>step</item>
         <item>pace</item>
@@ -38,6 +40,7 @@
     </string-array>
 
     <string-array name="heart_rate_keywords">
+        <item>herzfrequenz</item>
         <item>heart</item>
         <item>rate</item>
         <item>pulse</item>

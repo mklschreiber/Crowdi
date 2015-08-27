@@ -244,12 +244,12 @@ public class GooglePortal extends Portal implements GoogleApiClient.ConnectionCa
     }
 
     @Override
-    public void getPerson() {
+    public void getPerson(int requestId) {
         if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
 
         }
 
-        notifyPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, 0, new Person());
+        notifyPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, requestId, new Person());
     }
 
     @Override

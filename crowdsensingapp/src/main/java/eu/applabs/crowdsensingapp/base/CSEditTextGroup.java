@@ -82,13 +82,13 @@ public class CSEditTextGroup extends RelativeLayout implements
 
             // If no specific question was found or no portal is connected show the regular EditText
 
-            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup, null, false);
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup, this, false);
             mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
         } else if (questionType == QuestionChecker.QuestionType.Heart_Rate) {
 
             // If the heart rate keyword was detected show the heart rate layout
 
-            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_heartrate, null, false);
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_heartrate, this, false);
             mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
 
             Button buttonMeasureHeartRate = (Button) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_Button_MeasureHeartRate);
@@ -99,7 +99,7 @@ public class CSEditTextGroup extends RelativeLayout implements
 
             mFitnessLibrary.registerListener(this);
 
-            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_fitness, null, false);
+            csEditTextGroupView = inflater.inflate(R.layout.view_csedittextgroup_fitness, this, false);
             mEditText = (EditText) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_EditText);
 
             ImageButton imageButtonGoogle = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_GoogleFit);
@@ -243,12 +243,14 @@ public class CSEditTextGroup extends RelativeLayout implements
                 }
                 break;
             case R.id.id_CSEditTextGroup_Button_MeasureHeartRate:
-                mHeartRateServiceSenderConnection.getHeartRate();
+                if(mHeartRateServiceSenderConnection != null) {
+                    mHeartRateServiceSenderConnection.getHeartRate();
 
-                CSHeartRateDialog csHeartRateDialog = new CSHeartRateDialog(mActivity,
-                        mHeartRateDataServiceReceiverConnection);
-                csHeartRateDialog.registerListener(this);
-                csHeartRateDialog.show();
+                    CSHeartRateDialog csHeartRateDialog = new CSHeartRateDialog(mActivity,
+                            mHeartRateDataServiceReceiverConnection);
+                    csHeartRateDialog.registerListener(this);
+                    csHeartRateDialog.show();
+                }
                 break;
         }
     }

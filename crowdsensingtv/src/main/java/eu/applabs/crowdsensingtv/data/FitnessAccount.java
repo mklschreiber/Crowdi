@@ -38,6 +38,9 @@ public class FitnessAccount {
                 mName = "Microsoft Health Vault";
                 mLogo = mContext.getDrawable(R.drawable.microsofthealthvault);
                 break;
+            case Fake:
+                mName = "Fake";
+                mLogo = mContext.getDrawable(R.drawable.fake);
             case Undefined:
                 break;
         }

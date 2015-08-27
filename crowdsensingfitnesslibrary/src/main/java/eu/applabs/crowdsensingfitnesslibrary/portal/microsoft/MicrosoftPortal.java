@@ -39,8 +39,8 @@ public class MicrosoftPortal extends Portal {
     }
 
     @Override
-    public void getPerson() {
-        notifyPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, 0, new Person());
+    public void getPerson(int requestId) {
+        notifyPersonReceived(FitnessLibrary.IFitnessLibraryListener.ExecutionStatus.Error, requestId, new Person());
     }
 
     @Override

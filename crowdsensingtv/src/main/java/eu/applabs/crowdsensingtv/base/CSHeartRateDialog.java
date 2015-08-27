@@ -40,6 +40,9 @@ public class CSHeartRateDialog extends Dialog implements
         mActivity = activity;
         mLinearLayout = (LinearLayout) findViewById(R.id.id_CSHeartRateDialog_LinearLayout);
         mICSHeartRateDialogListenerList = new ArrayList<>();
+
+        Button cancelButton = (Button) findViewById(R.id.id_CSHeartRateDialog_Button_Cancel);
+        cancelButton.setOnClickListener(this);
     }
 
     @Override
@@ -70,6 +73,11 @@ public class CSHeartRateDialog extends Dialog implements
 
     @Override
     public void onClick(View v) {
+        if(v.getId() == R.id.id_CSHeartRateDialog_Button_Cancel) {
+            dismiss();
+            return;
+        }
+
         if(v instanceof Button) {
             Button b = (Button) v;
 

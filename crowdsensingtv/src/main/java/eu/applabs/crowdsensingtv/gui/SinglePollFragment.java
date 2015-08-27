@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -133,44 +134,58 @@ public class SinglePollFragment extends Fragment {
             for(View v : mViewList) {
                 if (v instanceof CSEditTextGroup) {
                     CSEditTextGroup csEditTextGroup = (CSEditTextGroup) v;
-                    Field field = mField.getField(csEditTextGroup.getEditText().getId());
-                    field.setValue(csEditTextGroup.getEditText().getText().toString());
+                    Field field = mField.getField(csEditTextGroup.getId());
+                    if(field != null) {
+                        field.setValue(csEditTextGroup.getEditText().getText().toString());
+                    }
                 } else if (v instanceof EditText) {
                     EditText et = (EditText) v;
                     Field field = mField.getField(et.getId());
-                    field.setValue(et.getText().toString());
+                    if(field != null) {
+                        field.setValue(et.getText().toString());
+                    }
                 } else if (v instanceof CSTimeElement) {
                     CSTimeElement te = (CSTimeElement) v;
                     Field field = mField.getField(te.getId());
-                    field.setValue(te.getText().toString());
+                    if(field != null) {
+                        field.setValue(te.getText().toString());
+                    }
                 } else if (v instanceof CSDateElement) {
                     CSDateElement de = (CSDateElement) v;
                     Field field = mField.getField(de.getId());
-                    field.setValue(de.getText().toString());
+                    if(field != null) {
+                        field.setValue(de.getText().toString());
+                    }
                 } else if (v instanceof CheckBox) {
                     CheckBox cb = (CheckBox) v;
                     Field field = mField.getField(cb.getId());
-                    field.setSelected(cb.isChecked());
+                    if(field != null) {
+                        field.setSelected(cb.isChecked());
+                    }
                 } else if (v instanceof RadioGroup) {
                     RadioGroup rg = (RadioGroup) v;
                     Field field = mField.getField(rg.getId());
-                    for(int i = 0; i < rg.getChildCount(); ++i) {
-                        View view = rg.getChildAt(i);
+                    if(field != null) {
+                        for (int i = 0; i < rg.getChildCount(); ++i) {
+                            View view = rg.getChildAt(i);
 
-                        if(view instanceof RadioButton) {
-                            RadioButton rb = (RadioButton) view;
+                            if (view instanceof RadioButton) {
+                                RadioButton rb = (RadioButton) view;
 
-                            if(rb.isChecked()) {
-                                field.getOption(rb.getId()).setSelected(true);
+                                if (rb.isChecked()) {
+                                    field.getOption(rb.getId()).setSelected(true);
+                                }
                             }
                         }
                     }
                 } else if (v instanceof MultiSelectView) {
                     MultiSelectView msv = (MultiSelectView) v;
                     Field field = mField.getField(msv.getId());
-                    for(Option option : field.getOptionList()) {
-                        CheckBox cb = (CheckBox) msv.findViewById(option.getId());
-                        option.setSelected(cb.isChecked());
+                    if(field != null) {
+                        for (Option option : field.getOptionList()) {
+                            CheckBox cb = (CheckBox) msv.findViewById(option.getId());
+                            option.setSelected(cb.isChecked());
+                        }
                     }
                 }
             }
@@ -218,7 +233,7 @@ public class SinglePollFragment extends Fragment {
         CSTimeElement csTimeElement;
         RadioGroup radioGroup;
         CheckBox checkBox;
-        MultiSelectView multiSelectView;
+        LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
 
         switch(field.getType()) {
             case text:
@@ -226,6 +241,8 @@ public class SinglePollFragment extends Fragment {
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
+                csEditTextGroup.setId(mField.getId());
+                mViewList.add(csEditTextGroup);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
 
                 content.addView(csEditTextGroup);
@@ -235,6 +252,8 @@ public class SinglePollFragment extends Fragment {
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
+                csEditTextGroup.setId(mField.getId());
+                mViewList.add(csEditTextGroup);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
                 csEditTextGroup.getEditText().setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
@@ -245,9 +264,9 @@ public class SinglePollFragment extends Fragment {
                 editText.setHint(field.getLabel());
                 editText.setText(field.getValue());
                 editText.setId(field.getId());
-                editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                editText.setLayoutParams(lparams);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-                mViewList.add(editText);
                 content.addView(editText);
                 break;
             case number:
@@ -255,6 +274,8 @@ public class SinglePollFragment extends Fragment {
                         field,
                         mHeartRateServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
+                csEditTextGroup.setId(mField.getId());
+                mViewList.add(csEditTextGroup);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
                 csEditTextGroup.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 
@@ -264,9 +285,9 @@ public class SinglePollFragment extends Fragment {
                 editText = new EditText(getActivity());
                 editText.setHint(field.getLabel());
                 editText.setId(field.getId());
-                editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                editText.setLayoutParams(lparams);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-                mViewList.add(editText);
                 content.addView(editText);
                 break;
             case tel:
@@ -274,9 +295,9 @@ public class SinglePollFragment extends Fragment {
                 editText.setHint(field.getLabel());
                 editText.setText(field.getValue());
                 editText.setId(field.getId());
+                editText.setLayoutParams(lparams);
                 editText.setInputType(InputType.TYPE_CLASS_PHONE);
 
-                mViewList.add(editText);
                 content.addView(editText);
                 break;
             case url:
@@ -284,9 +305,9 @@ public class SinglePollFragment extends Fragment {
                 editText.setHint(field.getLabel());
                 editText.setText(field.getValue());
                 editText.setId(field.getId());
-                editText.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+                editText.setLayoutParams(lparams);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
 
-                mViewList.add(editText);
                 content.addView(editText);
                 break;
             case date:
@@ -295,8 +316,8 @@ public class SinglePollFragment extends Fragment {
                 csDateElement.setText(field.getValue());
                 csDateElement.setId(field.getId());
                 csDateElement.displayCurrentDate();
+                csDateElement.setBackground(getResources().getDrawable(R.drawable.button, null));
 
-                mViewList.add(csDateElement);
                 content.addView(csDateElement);
                 break;
             case time:
@@ -305,85 +326,66 @@ public class SinglePollFragment extends Fragment {
                 csTimeElement.setText(field.getValue());
                 csTimeElement.setId(field.getId());
                 csTimeElement.displayCurrentTime();
+                csTimeElement.setBackground(getResources().getDrawable(R.drawable.button, null));
 
-                mViewList.add(csTimeElement);
                 content.addView(csTimeElement);
                 break;
             case datetime:
                 editText = new EditText(getActivity()); // TODO Parse it correct
                 editText.setHint(field.getLabel());
                 editText.setText(field.getValue());
+                editText.setLayoutParams(lparams);
                 editText.setId(field.getId());
 
-                mViewList.add(editText);
                 content.addView(editText);
                 break;
             case range:
                 break;
             case select:
                 radioGroup = new RadioGroup(getActivity());
-                radioGroup.setId(field.getId());
                 radioGroup.setOrientation(RadioGroup.VERTICAL);
                 for(Option o : field.getOptionList()) {
                     RadioButton rb = new RadioButton(getActivity());
                     rb.setHint(o.getLabel());
                     rb.setText(o.getLabel());
                     rb.setId(o.getId());
-                    rb.setChecked(o.getSelected());
-                    rb.setSelected(o.getSelected());
-
                     radioGroup.addView(rb);
                 }
 
-                mViewList.add(radioGroup);
                 content.addView(radioGroup);
                 break;
             case multiselect:
-                multiSelectView = new MultiSelectView(getActivity());
-                multiSelectView.setOrientation(LinearLayout.VERTICAL);
-                multiSelectView.setId(field.getId());
+                linearLayout = new LinearLayout(getActivity());
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
 
                 for(Option o : field.getOptionList()) {
                     checkBox = new CheckBox(getActivity());
                     checkBox.setHint(o.getLabel());
                     checkBox.setText(o.getLabel());
-                    checkBox.setChecked(o.getSelected());
-                    checkBox.setSelected(o.getSelected());
                     checkBox.setId(o.getId());
-
-                    multiSelectView.addView(checkBox);
+                    linearLayout.addView(checkBox);
                 }
 
-                mViewList.add(multiSelectView);
-                content.addView(multiSelectView);
+                content.addView(linearLayout);
                 break;
             case checkbox:
                 checkBox = new CheckBox(getActivity());
                 checkBox.setHint(field.getLabel());
                 checkBox.setId(field.getId());
-                checkBox.setChecked(field.getSelected());
-                checkBox.setSelected(field.getSelected());
 
-                mViewList.add(checkBox);
                 content.addView(checkBox);
                 break;
             case radio:
                 radioGroup = new RadioGroup(getActivity());
                 radioGroup.setOrientation(RadioGroup.VERTICAL);
-                radioGroup.setId(field.getId());
-
                 for(Option o : field.getOptionList()) {
                     RadioButton rb = new RadioButton(getActivity());
                     rb.setHint(o.getLabel());
                     rb.setText(o.getLabel());
                     rb.setId(o.getId());
-                    rb.setChecked(o.getSelected());
-                    rb.setSelected(o.getSelected());
-
                     radioGroup.addView(rb);
                 }
 
-                mViewList.add(radioGroup);
                 content.addView(radioGroup);
                 break;
         }

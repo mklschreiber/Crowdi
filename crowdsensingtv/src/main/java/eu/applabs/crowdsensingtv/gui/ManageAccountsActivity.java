@@ -156,6 +156,16 @@ public class ManageAccountsActivity extends Activity implements
                         availablePortalsAdapter.add(microsofthealthvault);
                     }
 
+                    // Check Fake
+                    FitnessAccount fake = new FitnessAccount(getApplicationContext());
+                    fake.setType(Portal.PortalType.Fake);
+
+                    if(mFitnessLibrary.isConnected(Portal.PortalType.Fake)) {
+                        connectedPortalsAdapter.add(fake);
+                    } else {
+                        availablePortalsAdapter.add(fake);
+                    }
+
                 }
 
                 mArrayObjectAdapter.add(new ListRow(connectedPortalsHeader, connectedPortalsAdapter));
@@ -214,7 +224,7 @@ public class ManageAccountsActivity extends Activity implements
                         }).create().show();
             } else if (mFitnessLibrary!= null && !mFitnessLibrary.isConnected(account.getType())) {
                 // Login
-                if(account.getType() != Portal.PortalType.Google) {
+                if(account.getType() == Portal.PortalType.Microsoft || account.getType() == Portal.PortalType.Apple) {
                     Toast.makeText(this, R.string.ManageAccountActivity_Toast_NotSupported, Toast.LENGTH_SHORT).show();
                 } else {
                     mFitnessLibrary.connect(account.getType(), this);

@@ -11,6 +11,7 @@ import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
 import eu.applabs.crowdsensingfitnesslibrary.portal.apple.ApplePortal;
+import eu.applabs.crowdsensingfitnesslibrary.portal.fake.FakePortal;
 import eu.applabs.crowdsensingfitnesslibrary.portal.google.GooglePortal;
 import eu.applabs.crowdsensingfitnesslibrary.portal.microsoft.MicrosoftPortal;
 import eu.applabs.crowdsensingfitnesslibrary.settings.SettingsManager;
@@ -18,7 +19,7 @@ import eu.applabs.crowdsensingfitnesslibrary.settings.SettingsManager;
 public class FitnessLibrary implements Portal.IPortalListener{
 
     public interface IFitnessLibraryListener {
-        public enum ExecutionStatus {
+        enum ExecutionStatus {
             Undefined,
             Success,
             Error
@@ -61,6 +62,7 @@ public class FitnessLibrary implements Portal.IPortalListener{
             mPortalList.add(new GooglePortal());
             mPortalList.add(new ApplePortal());
             mPortalList.add(new MicrosoftPortal());
+            mPortalList.add(new FakePortal());
 
             List<Portal.PortalType> list = mSettingsManager.getConnectedServices();
 
@@ -97,6 +99,10 @@ public class FitnessLibrary implements Portal.IPortalListener{
 
         if(isConnected(Portal.PortalType.Microsoft)) {
             list.add(Portal.PortalType.Microsoft);
+        }
+
+        if(isConnected(Portal.PortalType.Fake)) {
+            list.add(Portal.PortalType.Fake);
         }
 
         return list;
@@ -136,11 +142,11 @@ public class FitnessLibrary implements Portal.IPortalListener{
         mIFitnessLibraryListenerList.remove(listener);
     }
 
-    public void getPerson(Portal.PortalType type) {
+    public void getPerson(Portal.PortalType type, int requestId) {
         Portal portal = findPortal(type);
 
         if(portal != null) {
-            portal.getPerson();
+            portal.getPerson(requestId);
         }
     }
 
