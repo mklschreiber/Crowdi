@@ -12,10 +12,10 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 @UpnpService(
-        serviceId = @UpnpServiceId("HeartRateService"),
-        serviceType = @UpnpServiceType(value = "HeartRateService", version = 1)
+        serviceId = @UpnpServiceId("WearNotificationService"),
+        serviceType = @UpnpServiceType(value = "WearNotificationService", version = 1)
 )
-public class HeartRateServiceDefinition {
+public class WearNotificationServiceDefinition {
 
     private PropertyChangeSupport mPropertyChangeSupport;
 
@@ -34,7 +34,7 @@ public class HeartRateServiceDefinition {
     @UpnpStateVariable(defaultValue = "", name = "mNotificationUrl")
     private String mNotificationUrl = "";
 
-    public HeartRateServiceDefinition() {
+    public WearNotificationServiceDefinition() {
         mPropertyChangeSupport = new PropertyChangeSupport(this);
     }
 

@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import org.fourthline.cling.android.AndroidUpnpService;
-import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.controlpoint.ActionCallback;
 import org.fourthline.cling.model.action.ActionArgumentValue;
 import org.fourthline.cling.model.action.ActionInvocation;
@@ -21,36 +20,36 @@ import org.fourthline.cling.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeartRateServiceSenderConnection extends DefaultRegistryListener implements ServiceConnection {
+public class WearNotificationServiceSenderConnection extends DefaultRegistryListener implements ServiceConnection {
 
-    private static final String sClassName = HeartRateServiceSenderConnection.class.getSimpleName();
+    private static final String sClassName = WearNotificationServiceSenderConnection.class.getSimpleName();
 
-    public interface IHeartRateServiceSenderConnectionListener
+    public interface IWearNotificationServiceSenderConnectionListener
     {
         void onDeviceAdded();
         void onResponseAvailable(String method, boolean success, ActionArgumentValue[] output);
     }
 
     private AndroidUpnpService mAndroidUpnpService = null;
-    private List<IHeartRateServiceSenderConnectionListener> mICSUpnpServiceConnectionListenerList = null;
+    private List<IWearNotificationServiceSenderConnectionListener> mICSUpnpServiceConnectionListenerList = null;
     private PeriodicSearchThread mPeriodicSearchThread = null;
 
-    public HeartRateServiceSenderConnection() {
+    public WearNotificationServiceSenderConnection() {
         mICSUpnpServiceConnectionListenerList = new ArrayList<>();
     }
 
-    public void registerListener(IHeartRateServiceSenderConnectionListener listener) {
+    public void registerListener(IWearNotificationServiceSenderConnectionListener listener) {
         mICSUpnpServiceConnectionListenerList.add(listener);
     }
 
-    public void unregisterListener(IHeartRateServiceSenderConnectionListener listener) {
+    public void unregisterListener(IWearNotificationServiceSenderConnectionListener listener) {
         mICSUpnpServiceConnectionListenerList.remove(listener);
     }
 
     public boolean devicesAvailable() {
         if(mAndroidUpnpService != null) {
             for(Device device : mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices()) {
-                Service heartRateService = device.findService(new UDAServiceId("HeartRateService"));
+                Service heartRateService = device.findService(new UDAServiceId("WearNotificationService"));
 
                 if(heartRateService != null) {
                     return true;
@@ -65,7 +64,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
         if(mAndroidUpnpService != null) {
             for (Device device : mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices()) {
                 Service pollNotificationService =
-                        device.findService(new UDAServiceId("HeartRateService"));
+                        device.findService(new UDAServiceId("WearNotificationService"));
 
                 if (pollNotificationService != null) {
                     StartNotificationActionInvocation action =
@@ -78,7 +77,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
                                     public void success(ActionInvocation invocation) {
                                         ActionArgumentValue[] output = invocation.getOutput();
 
-                                        for (IHeartRateServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
+                                        for (IWearNotificationServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
                                             listener.onResponseAvailable("StartNotification", true, output);
                                         }
                                     }
@@ -88,7 +87,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
                                                         UpnpResponse operation,
                                                         String defaultMsg) {
 
-                                        for (IHeartRateServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
+                                        for (IWearNotificationServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
                                             listener.onResponseAvailable("StartNotification", false, null);
                                         }
                                     }
@@ -104,7 +103,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
         if(mAndroidUpnpService != null) {
             for (Device device : mAndroidUpnpService.getControlPoint().getRegistry().getRemoteDevices()) {
                 Service heartRateService =
-                        device.findService(new UDAServiceId("HeartRateService"));
+                        device.findService(new UDAServiceId("WearNotificationService"));
 
                 if (heartRateService != null) {
                     GetHeartRateActionInvocation action =
@@ -117,7 +116,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
                                     public void success(ActionInvocation invocation) {
                                         ActionArgumentValue[] output = invocation.getOutput();
 
-                                        for (IHeartRateServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
+                                        for (IWearNotificationServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
                                             listener.onResponseAvailable("GetHeartRate", true, output);
                                         }
                                     }
@@ -127,7 +126,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
                                                         UpnpResponse operation,
                                                         String defaultMsg) {
 
-                                        for (IHeartRateServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
+                                        for (IWearNotificationServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
                                             listener.onResponseAvailable("GetHeartRate", false, null);
                                         }
                                     }
@@ -168,7 +167,7 @@ public class HeartRateServiceSenderConnection extends DefaultRegistryListener im
     public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
         super.remoteDeviceAdded(registry, device);
 
-        for(IHeartRateServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
+        for(IWearNotificationServiceSenderConnectionListener listener : mICSUpnpServiceConnectionListenerList) {
             listener.onDeviceAdded();
         }
     }

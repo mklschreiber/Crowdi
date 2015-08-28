@@ -18,7 +18,6 @@ import java.util.UUID;
 
 import eu.applabs.crowdsensingupnplibrary.data.DeviceFactory;
 import eu.applabs.crowdsensingupnplibrary.data.HeartRateDataServiceDefinition;
-import eu.applabs.crowdsensingupnplibrary.data.HeartRateServiceDefinition;
 
 public class HeartRateDataServiceReceiverConnection implements ServiceConnection, PropertyChangeListener {
 

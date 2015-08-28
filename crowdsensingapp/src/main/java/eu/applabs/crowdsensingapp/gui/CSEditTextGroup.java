@@ -1,4 +1,4 @@
-package eu.applabs.crowdsensingapp.base;
+package eu.applabs.crowdsensingapp.gui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import org.fourthline.cling.model.action.ActionArgumentValue;
@@ -30,20 +29,20 @@ import eu.applabs.crowdsensingfitnesslibrary.util.QuestionChecker;
 import eu.applabs.crowdsensinglibrary.data.Field;
 import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
+import eu.applabs.crowdsensingupnplibrary.service.WearNotificationServiceSenderConnection;
 
 public class CSEditTextGroup extends RelativeLayout implements
         View.OnClickListener,
         FitnessLibrary.IFitnessLibraryListener,
         CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener,
-        HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener,
+        WearNotificationServiceSenderConnection.IWearNotificationServiceSenderConnectionListener,
         CSHeartRateDialog.ICSHeartRateDialogListener {
 
     private CSEditTextGroup mCSEditTextGroup = null;
 
     private Activity mActivity = null;
     private Field mField = null;
-    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
+    private WearNotificationServiceSenderConnection mWearNotificationServiceSenderConnection = null;
     private HeartRateDataServiceReceiverConnection mHeartRateDataServiceReceiverConnection = null;
     private FitnessLibrary mFitnessLibrary = null;
     private List<Portal.PortalType> mConnectedPortalList = null;
@@ -53,7 +52,7 @@ public class CSEditTextGroup extends RelativeLayout implements
     private int mRequestId = -1;
 
     public CSEditTextGroup(Activity activity, Field field,
-                           HeartRateServiceSenderConnection heartRateServiceSenderConnection,
+                           WearNotificationServiceSenderConnection wearNotificationServiceSenderConnection,
                            HeartRateDataServiceReceiverConnection heartRateDataServiceReceiverConnection) {
         super(activity);
 
@@ -61,7 +60,7 @@ public class CSEditTextGroup extends RelativeLayout implements
         mActivity = activity;
         mField = field;
 
-        mHeartRateServiceSenderConnection = heartRateServiceSenderConnection;
+        mWearNotificationServiceSenderConnection = wearNotificationServiceSenderConnection;
         mHeartRateDataServiceReceiverConnection = heartRateDataServiceReceiverConnection;
 
         mFitnessLibrary = FitnessLibrary.getInstance();
@@ -108,6 +107,8 @@ public class CSEditTextGroup extends RelativeLayout implements
             imageButtonApple.setOnClickListener(this);
             ImageButton imageButtonMicrosoft = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_MicrosoftHealthVault);
             imageButtonMicrosoft.setOnClickListener(this);
+            ImageButton imageButtonFake = (ImageButton) csEditTextGroupView.findViewById(R.id.id_CSEditTextGroup_ImageButton_Fake);
+            imageButtonFake.setOnClickListener(this);
 
             if (!mConnectedPortalList.contains(Portal.PortalType.Google)) {
                 imageButtonGoogle.setVisibility(GONE);
@@ -119,6 +120,10 @@ public class CSEditTextGroup extends RelativeLayout implements
 
             if (!mConnectedPortalList.contains(Portal.PortalType.Microsoft)) {
                 imageButtonMicrosoft.setVisibility(GONE);
+            }
+
+            if(!mConnectedPortalList.contains(Portal.PortalType.Fake)) {
+                imageButtonFake.setVisibility(GONE);
             }
         }
 
@@ -242,9 +247,40 @@ public class CSEditTextGroup extends RelativeLayout implements
                         break;
                 }
                 break;
+            case R.id.id_CSEditTextGroup_ImageButton_Fake:
+                switch(QuestionChecker.check(mActivity, mField.getLabel())) {
+                    case Steps:
+                        mFitnessLibrary.getSteps(Portal.PortalType.Fake,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                    case Activity_Count:
+                        mFitnessLibrary.getActivities(Portal.PortalType.Fake,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                    case Activity_Duration:
+                        mFitnessLibrary.getActivities(Portal.PortalType.Fake,
+                                startTime,
+                                endTime,
+                                TimeUnit.MILLISECONDS,
+                                1,
+                                TimeUnit.DAYS,
+                                mRequestId);
+                        break;
+                }
+                break;
             case R.id.id_CSEditTextGroup_Button_MeasureHeartRate:
-                if(mHeartRateServiceSenderConnection != null) {
-                    mHeartRateServiceSenderConnection.getHeartRate();
+                if(mWearNotificationServiceSenderConnection != null) {
+                    mWearNotificationServiceSenderConnection.getHeartRate();
 
                     CSHeartRateDialog csHeartRateDialog = new CSHeartRateDialog(mActivity,
                             mHeartRateDataServiceReceiverConnection);

@@ -25,7 +25,6 @@ import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
-import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
@@ -40,7 +39,7 @@ public class ManageAccountsActivity extends Activity implements
         OnItemViewClickedListener,
         LoginDialog.ILoginDialogListener,
         FitnessLibrary.IFitnessLibraryListener,
-        ILibraryResultListener {
+        Library.ILibraryResultListener {
 
     private static final String sClassName = ManageAccountsActivity.class.getSimpleName();
 
@@ -266,17 +265,17 @@ public class ManageAccountsActivity extends Activity implements
     }
 
     @Override
-    public void onLibraryResult(final ILibraryResultListener.ExecutionStatus status, final Poll poll, final String className) {
+    public void onLibraryResult(final Library.ILibraryResultListener.ExecutionStatus status, final Poll poll, final String className) {
 
     }
 
     @Override
-    public void onLibraryResult(final ILibraryResultListener.ExecutionStatus status, final List<Command> list, final String className) {
+    public void onLibraryResult(final Library.ILibraryResultListener.ExecutionStatus status, final List<Command> list, final String className) {
         if(className.compareTo(sClassName) == 0) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (status != ILibraryResultListener.ExecutionStatus.Success) {
+                    if (status != Library.ILibraryResultListener.ExecutionStatus.Success) {
                         Toast.makeText(mActivity, R.string.ManageAccountActivity_Toast_LoginError, Toast.LENGTH_SHORT).show();
                         mLibrary.logout();
 

@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.applabs.crowdsensingupnplibrary.data.DeviceFactory;
-import eu.applabs.crowdsensingupnplibrary.data.HeartRateServiceDefinition;
+import eu.applabs.crowdsensingupnplibrary.data.WearNotificationServiceDefinition;
 
-public class HeartRateServiceReceiverConnection implements ServiceConnection, PropertyChangeListener {
+public class WearNotificationServiceReceiverConnection implements ServiceConnection, PropertyChangeListener {
 
     public interface IHeartRateServiceReceiverConnectionListener {
         void onStartNotification(String title, String content, String url);
@@ -28,10 +28,10 @@ public class HeartRateServiceReceiverConnection implements ServiceConnection, Pr
 
     private UDN mUDN = new UDN(UUID.randomUUID());
     private AndroidUpnpService mAndroidUpnpService = null;
-    private LocalService<HeartRateServiceDefinition> mHeartRateService = null;
+    private LocalService<WearNotificationServiceDefinition> mHeartRateService = null;
     private List<IHeartRateServiceReceiverConnectionListener> mIHeartRateServiceReceiverConnectionListenerList = null;
 
-    public HeartRateServiceReceiverConnection() {
+    public WearNotificationServiceReceiverConnection() {
         mIHeartRateServiceReceiverConnectionListenerList = new ArrayList<>();
     }
 
@@ -50,7 +50,7 @@ public class HeartRateServiceReceiverConnection implements ServiceConnection, Pr
         mHeartRateService = getHeartRateService();
 
         if(mHeartRateService == null) {
-            LocalDevice heartRateServiceDevice = new DeviceFactory().createHeartRateServiceDevice(mUDN);
+            LocalDevice heartRateServiceDevice = new DeviceFactory().createWearNotificationServiceDevice(mUDN);
 
             if(heartRateServiceDevice != null) {
                 mAndroidUpnpService.getRegistry().addDevice(heartRateServiceDevice);
@@ -88,7 +88,7 @@ public class HeartRateServiceReceiverConnection implements ServiceConnection, Pr
         }
     }
 
-    private LocalService<HeartRateServiceDefinition> getHeartRateService() {
+    private LocalService<WearNotificationServiceDefinition> getHeartRateService() {
         if (mAndroidUpnpService == null) {
             return null;
         }
@@ -99,7 +99,7 @@ public class HeartRateServiceReceiverConnection implements ServiceConnection, Pr
             return null;
         }
 
-        return (LocalService<HeartRateServiceDefinition>)
-                heartRateServiceDevice.findService(new UDAServiceType("HeartRateService", 1));
+        return (LocalService<WearNotificationServiceDefinition>)
+                heartRateServiceDevice.findService(new UDAServiceType("WearNotificationService", 1));
     }
 }

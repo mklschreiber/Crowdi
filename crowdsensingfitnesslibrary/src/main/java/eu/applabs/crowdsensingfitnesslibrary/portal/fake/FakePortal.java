@@ -93,7 +93,7 @@ public class FakePortal extends Portal {
             cal.add(Calendar.DAY_OF_MONTH, i);
 
             StepBucket sb = new StepBucket();
-            sb.setStepCount(i);
+            sb.setStepCount((int) (Math.random() * 1000));
             sb.setStepStartDate(cal.getTime());
             sb.setStepEndDate(cal.getTime());
 
@@ -116,9 +116,9 @@ public class FakePortal extends Portal {
             cal.add(Calendar.DAY_OF_MONTH, i);
 
             ActivityBucket ab = new ActivityBucket();
-            ab.setActivityCount(i);
+            ab.setActivityCount((int) (Math.random() * 10));
             ab.setActivityType(eu.applabs.crowdsensingfitnesslibrary.data.Activity.Type.Aerobic);
-            ab.setActivityDuration(2000);
+            ab.setActivityDuration((int) (Math.random() * 1000));
             ab.setActivityStartDate(cal.getTime());
             ab.setActivityEndDate(cal.getTime());
 

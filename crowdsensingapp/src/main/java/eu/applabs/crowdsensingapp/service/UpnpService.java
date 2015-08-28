@@ -10,17 +10,17 @@ import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
 import eu.applabs.crowdsensingapp.settings.SettingsManager;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceSenderConnection;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceReceiverConnection;
+import eu.applabs.crowdsensingupnplibrary.service.WearNotificationServiceReceiverConnection;
 import eu.applabs.crowdsensingupnplibrary.service.StartPollServiceSenderConnection;
 import eu.applabs.crowdsensingwearlibrary.service.AppConnectionService;
 import eu.applabs.crowdsensingwearlibrary.service.DataTransferService;
 
 public class UpnpService extends AppConnectionService implements
-        HeartRateServiceReceiverConnection.IHeartRateServiceReceiverConnectionListener {
+        WearNotificationServiceReceiverConnection.IHeartRateServiceReceiverConnectionListener {
 
     private final IBinder mBinder = new LocalBinder();
 
-    private HeartRateServiceReceiverConnection mHeartRateServiceReceiverConnection;
+    private WearNotificationServiceReceiverConnection mWearNotificationServiceReceiverConnection;
     private StartPollServiceSenderConnection mStartPollServiceSenderConnection;
     private HeartRateDataServiceSenderConnection mHeartRateDataServiceSenderConnection;
 
@@ -46,12 +46,12 @@ public class UpnpService extends AppConnectionService implements
         if(mSettingsManager.getUpnpServiceEnabled()) {
 
             mHeartRateDataServiceSenderConnection = new HeartRateDataServiceSenderConnection();
-            mHeartRateServiceReceiverConnection = new HeartRateServiceReceiverConnection();
+            mWearNotificationServiceReceiverConnection = new WearNotificationServiceReceiverConnection();
             mStartPollServiceSenderConnection = new StartPollServiceSenderConnection();
 
-            mHeartRateServiceReceiverConnection.registerListener(this);
+            mWearNotificationServiceReceiverConnection.registerListener(this);
             bindService(new Intent(this, AndroidUpnpServiceImpl.class),
-                    mHeartRateServiceReceiverConnection,
+                    mWearNotificationServiceReceiverConnection,
                     Context.BIND_AUTO_CREATE);
 
             bindService(new Intent(this, AndroidUpnpServiceImpl.class),
@@ -69,9 +69,9 @@ public class UpnpService extends AppConnectionService implements
     public void onDestroy() {
         super.onDestroy();
 
-        if(mHeartRateServiceReceiverConnection != null) {
-            mHeartRateServiceReceiverConnection.unregisterListener(this);
-            unbindService(mHeartRateServiceReceiverConnection);
+        if(mWearNotificationServiceReceiverConnection != null) {
+            mWearNotificationServiceReceiverConnection.unregisterListener(this);
+            unbindService(mWearNotificationServiceReceiverConnection);
         }
 
         if(mStartPollServiceSenderConnection != null) {

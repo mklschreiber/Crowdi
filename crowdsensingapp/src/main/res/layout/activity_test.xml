@@ -38,6 +38,12 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/MainActivity_Button_LoginGoogleFit"
+            android:id="@+id/id_MainActivity_Button_LoginGoogleFit" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/TestActivity_Button_ShowNotification"
             android:id="@+id/id_MainActivity_Button_ShowNotification"
             android:layout_gravity="center_horizontal" />

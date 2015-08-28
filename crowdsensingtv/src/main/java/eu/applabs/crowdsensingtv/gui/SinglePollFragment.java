@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +28,8 @@ import eu.applabs.crowdsensinglibrary.data.Option;
 import eu.applabs.crowdsensinglibrary.gui.CSDateElement;
 import eu.applabs.crowdsensinglibrary.gui.CSTimeElement;
 import eu.applabs.crowdsensingtv.R;
-import eu.applabs.crowdsensingtv.base.CSEditTextGroup;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
+import eu.applabs.crowdsensingupnplibrary.service.WearNotificationServiceSenderConnection;
 
 public class SinglePollFragment extends Fragment {
 
@@ -40,7 +38,7 @@ public class SinglePollFragment extends Fragment {
     private LinearLayout mLinearLayout = null;
     private List<View> mViewList = null;
     private Field mField = null;
-    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
+    private WearNotificationServiceSenderConnection mWearNotificationServiceSenderConnection = null;
     private HeartRateDataServiceReceiverConnection mHeartRateDataServiceReceiverConnection = null;
 
     private FitnessLibrary mFitnessLibrary = null;
@@ -54,8 +52,8 @@ public class SinglePollFragment extends Fragment {
         mField = field;
     }
 
-    public void setHeartRateServiceSenderConnection(HeartRateServiceSenderConnection heartRateServiceSenderConnection) {
-        mHeartRateServiceSenderConnection = heartRateServiceSenderConnection;
+    public void setHeartRateServiceSenderConnection(WearNotificationServiceSenderConnection wearNotificationServiceSenderConnection) {
+        mWearNotificationServiceSenderConnection = wearNotificationServiceSenderConnection;
     }
 
     public void setHeartRateDataServiceReceiverConnection(HeartRateDataServiceReceiverConnection heartRateDataServiceReceiverConnection) {
@@ -239,7 +237,7 @@ public class SinglePollFragment extends Fragment {
             case text:
                 csEditTextGroup = new CSEditTextGroup(getActivity(),
                         field,
-                        mHeartRateServiceSenderConnection,
+                        mWearNotificationServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
                 csEditTextGroup.setId(mField.getId());
                 mViewList.add(csEditTextGroup);
@@ -250,7 +248,7 @@ public class SinglePollFragment extends Fragment {
             case textarea:
                 csEditTextGroup = new CSEditTextGroup(getActivity(),
                         field,
-                        mHeartRateServiceSenderConnection,
+                        mWearNotificationServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
                 csEditTextGroup.setId(mField.getId());
                 mViewList.add(csEditTextGroup);
@@ -272,7 +270,7 @@ public class SinglePollFragment extends Fragment {
             case number:
                 csEditTextGroup = new CSEditTextGroup(getActivity(),
                         field,
-                        mHeartRateServiceSenderConnection,
+                        mWearNotificationServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
                 csEditTextGroup.setId(mField.getId());
                 mViewList.add(csEditTextGroup);

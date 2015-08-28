@@ -1,18 +1,15 @@
-package eu.applabs.crowdsensingtv.base;
+package eu.applabs.crowdsensingapp.gui;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import org.fourthline.cling.android.AndroidUpnpServiceImpl;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.applabs.crowdsensingtv.R;
+import eu.applabs.crowdsensingapp.R;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
 
 public class CSHeartRateDialog extends Dialog implements
@@ -40,9 +37,6 @@ public class CSHeartRateDialog extends Dialog implements
         mActivity = activity;
         mLinearLayout = (LinearLayout) findViewById(R.id.id_CSHeartRateDialog_LinearLayout);
         mICSHeartRateDialogListenerList = new ArrayList<>();
-
-        Button cancelButton = (Button) findViewById(R.id.id_CSHeartRateDialog_Button_Cancel);
-        cancelButton.setOnClickListener(this);
     }
 
     @Override
@@ -73,11 +67,6 @@ public class CSHeartRateDialog extends Dialog implements
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.id_CSHeartRateDialog_Button_Cancel) {
-            dismiss();
-            return;
-        }
-
         if(v instanceof Button) {
             Button b = (Button) v;
 
@@ -103,3 +92,4 @@ public class CSHeartRateDialog extends Dialog implements
         });
     }
 }
+

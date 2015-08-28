@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -21,14 +20,14 @@ import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
-import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 
 public class MainActivity extends AppCompatActivity implements
-        ILibraryResultListener,
-        View.OnClickListener, FitnessLibrary.IFitnessLibraryListener {
+        Library.ILibraryResultListener,
+        View.OnClickListener,
+        FitnessLibrary.IFitnessLibraryListener {
 
     private static final String sClassName = MainActivity.class.getSimpleName();
 
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
         mActivity = this;
 
         // Fake boot_complete to ensure the starting of the service
-        BootupActivity ba = new BootupActivity();
+        BootCompletedReceiver ba = new BootCompletedReceiver();
         ba.onReceive(this, new Intent().setAction(Intent.ACTION_BOOT_COMPLETED));
 
         mLibrary = Library.getInstance();
@@ -63,10 +62,18 @@ public class MainActivity extends AppCompatActivity implements
         mFitnessLibrary.init(this);
         mFitnessLibrary.registerListener(this);
         mFitnessLibrary.connect(Portal.PortalType.Google);
+        mFitnessLibrary.connect(Portal.PortalType.Fake);
 
         mLibrary.loadCommands(START_URL, sClassName);
 
         mLinearLayout = (LinearLayout) findViewById(R.id.id_MainActivity_LinearLayout);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        mFitnessLibrary.checkActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -90,19 +97,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLibraryResult(final ILibraryResultListener.ExecutionStatus status, final Poll poll, final String className) {
+    public void onLibraryResult(final Library.ILibraryResultListener.ExecutionStatus status, final Poll poll, final String className) {
 
     }
 
     @Override
-    public void onLibraryResult(final ILibraryResultListener.ExecutionStatus status, final List<Command> list, final String className) {
+    public void onLibraryResult(final Library.ILibraryResultListener.ExecutionStatus status, final List<Command> list, final String className) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(className.compareTo(sClassName) == 0) {
                     // Response to our request
 
-                    if(status == ILibraryResultListener.ExecutionStatus.Success) {
+                    if(status == Library.ILibraryResultListener.ExecutionStatus.Success) {
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         mCommandList = list;
 

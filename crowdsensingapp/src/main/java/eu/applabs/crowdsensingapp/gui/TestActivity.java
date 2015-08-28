@@ -28,13 +28,15 @@ import eu.applabs.crowdsensingfitnesslibrary.data.ActivityBucket;
 import eu.applabs.crowdsensingfitnesslibrary.data.Person;
 import eu.applabs.crowdsensingfitnesslibrary.data.StepBucket;
 import eu.applabs.crowdsensingfitnesslibrary.portal.Portal;
+import eu.applabs.crowdsensingfitnesslibrary.util.QuestionChecker;
 import eu.applabs.crowdsensinglibrary.gui.CSFitnessRequestResultDialog;
 import eu.applabs.crowdsensingwearlibrary.service.DataTransferService;
 
 public class TestActivity extends AppCompatActivity implements
         View.OnClickListener,
         FitnessLibrary.IFitnessLibraryListener,
-        CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener, CompoundButton.OnCheckedChangeListener {
+        CSFitnessRequestResultDialog.ICSFitnessRequestResultDialogListener,
+        CompoundButton.OnCheckedChangeListener {
 
     private TestActivity mActivity = null;
     private UpnpService mUpnpService = null;
@@ -69,7 +71,10 @@ public class TestActivity extends AppCompatActivity implements
         mButtonGetActivities = (Button) findViewById(R.id.id_MainActivity_Button_GetActivities);
         mButtonGetActivities.setOnClickListener(this);
 
-        Button b = (Button) findViewById(R.id.id_MainActivity_Button_ShowNotification);
+        Button b = (Button) findViewById(R.id.id_MainActivity_Button_LoginGoogleFit);
+        b.setOnClickListener(this);
+
+        b = (Button) findViewById(R.id.id_MainActivity_Button_ShowNotification);
         b.setOnClickListener(this);
 
         Switch s = (Switch) findViewById(R.id.id_MainActivity_Switch_UPnPService);
@@ -119,7 +124,7 @@ public class TestActivity extends AppCompatActivity implements
         Date now = new Date();
         cal.setTime(now);
         long endTime = cal.getTimeInMillis();
-        cal.add(Calendar.WEEK_OF_YEAR, -1);
+        cal.add(Calendar.MONTH, -1);
         long startTime = cal.getTimeInMillis();
 
         mRequestId = (int) (Math.random() * 1000);
@@ -156,6 +161,9 @@ public class TestActivity extends AppCompatActivity implements
                         mRequestId
                 );
                 break;
+            case R.id.id_MainActivity_Button_LoginGoogleFit:
+                mFitnessLibrary.connect(Portal.PortalType.Google);
+                break;
         }
     }
 
@@ -180,10 +188,17 @@ public class TestActivity extends AppCompatActivity implements
                         String startDate = sdf.format(bucket.getStepStartDate());
                         String endDate = sdf.format(bucket.getStepEndDate());
 
-                        valueLabelList.add("Steps\n\n" + startDate + "\n - \n" + endDate);
+                        valueLabelList.add(mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_Steps)
+                                + "\n\n" + startDate + "\n - \n" + endDate);
                     }
 
-                    CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
+                    CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity,
+                            mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_Count),
+                            mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_TimeRange),
+                            valueList,
+                            valueLabelList);
+
+                    dialog.setTitle(getResources().getString(R.string.CSFitnessRequestResultDialog_Title));
                     dialog.registerListener(mActivity);
                     dialog.show();
                 }
@@ -197,21 +212,50 @@ public class TestActivity extends AppCompatActivity implements
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    QuestionChecker.QuestionType type = QuestionChecker.QuestionType.Activity_Count;
+
                     ArrayList<String> valueList = new ArrayList<>();
                     ArrayList<String> valueLabelList = new ArrayList<>();
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    String unit = null;
 
                     for (ActivityBucket bucket : list) {
-                        valueList.add(String.valueOf(bucket.getActivityCount()));
+                        if(type == QuestionChecker.QuestionType.Activity_Count) {
+                            valueList.add(String.valueOf(bucket.getActivityCount()));
+                        } else {
+                            valueList.add(String.valueOf(bucket.getActivityDuration() / 1000 / 60));
+                            unit = getResources().getString(R.string.CSFitnessRequestResultDialog_Unit_Minutes);
+                        }
+
                         String activity = eu.applabs.crowdsensingfitnesslibrary.data.Activity.convertToString(bucket.getActivityType());
                         String startDate = sdf.format(bucket.getActivityStartDate());
                         String endDate = sdf.format(bucket.getActivityEndDate());
 
-                        valueLabelList.add(activity + "\n\n" + startDate + "\n - \n" + endDate);
+                        if(unit != null) {
+                            valueLabelList.add(unit + "\n\n" + activity + "\n\n" + startDate + "\n - \n" + endDate);
+                        } else {
+                            valueLabelList.add(activity + "\n\n" + startDate + "\n - \n" + endDate);
+                        }
                     }
 
-                    CSFitnessRequestResultDialog dialog = new CSFitnessRequestResultDialog(mActivity, "Anzahl", "Zeitraum", valueList, valueLabelList);
+                    CSFitnessRequestResultDialog dialog = null;
+
+                    if(type == QuestionChecker.QuestionType.Activity_Count) {
+                        dialog = new CSFitnessRequestResultDialog(mActivity,
+                                mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_Count),
+                                mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_TimeRange),
+                                valueList,
+                                valueLabelList);
+                    } else {
+                        dialog = new CSFitnessRequestResultDialog(mActivity,
+                                mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_Duration),
+                                mActivity.getString(R.string.CSFitnessRequestResultDialog_Label_TimeRange),
+                                valueList,
+                                valueLabelList);
+                    }
+
+                    dialog.setTitle(getResources().getString(R.string.CSFitnessRequestResultDialog_Title));
                     dialog.registerListener(mActivity);
                     dialog.show();
                 }

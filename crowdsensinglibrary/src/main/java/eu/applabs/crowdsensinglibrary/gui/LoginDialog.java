@@ -11,11 +11,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.R;
-import eu.applabs.crowdsensinglibrary.data.Command;
-import eu.applabs.crowdsensinglibrary.data.Poll;
 
 public class LoginDialog extends Dialog implements View.OnClickListener {
 

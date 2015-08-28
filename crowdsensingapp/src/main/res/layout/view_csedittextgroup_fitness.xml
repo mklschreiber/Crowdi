@@ -25,6 +25,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/googlefit"
+            android:background="@drawable/button"
             android:scaleType="fitCenter"/>
 
         <ImageButton
@@ -33,6 +34,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/applehealthkit"
+            android:background="@drawable/button"
             android:scaleType="fitCenter"/>
 
         <ImageButton
@@ -41,6 +43,16 @@
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/microsofthealthvault"
+            android:background="@drawable/button"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/id_CSEditTextGroup_ImageButton_Fake"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/fake"
+            android:background="@drawable/button"
             android:scaleType="fitCenter"/>
 
     </LinearLayout>

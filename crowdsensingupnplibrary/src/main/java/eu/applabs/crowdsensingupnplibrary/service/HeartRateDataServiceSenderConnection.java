@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import org.fourthline.cling.android.AndroidUpnpService;
-import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.controlpoint.ActionCallback;
 import org.fourthline.cling.model.action.ActionArgumentValue;
 import org.fourthline.cling.model.action.ActionInvocation;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class HeartRateDataServiceSenderConnection extends DefaultRegistryListener implements ServiceConnection {
 
-    private static final String sClassName = HeartRateServiceSenderConnection.class.getSimpleName();
+    private static final String sClassName = WearNotificationServiceSenderConnection.class.getSimpleName();
 
     public interface IHeartRateDataServiceSenderConnectionListener
     {

@@ -19,6 +19,17 @@ import eu.applabs.crowdsensinglibrary.source.WebPollSource;
 
 public class Library {
 
+    public interface ILibraryResultListener {
+        public enum ExecutionStatus {
+            Undefined,
+            Success,
+            Error
+        }
+
+        public void onLibraryResult(final ExecutionStatus status, final Poll poll, final String className);
+        public void onLibraryResult(final ExecutionStatus status, final List<Command> list, final String className);
+    }
+
     private static Library mInstance = null;
     private boolean mInitialized = false;
 

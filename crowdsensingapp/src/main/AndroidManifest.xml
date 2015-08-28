@@ -43,7 +43,7 @@
         </activity>
 
         <receiver
-            android:name=".gui.BootupActivity"
+            android:name=".gui.BootCompletedReceiver"
             android:enabled="true"
             android:exported="false">
 

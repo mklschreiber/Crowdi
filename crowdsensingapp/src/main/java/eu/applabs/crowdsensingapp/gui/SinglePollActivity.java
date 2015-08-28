@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.applabs.crowdsensingapp.R;
-import eu.applabs.crowdsensingapp.base.CSEditTextGroup;
-import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Field;
@@ -35,10 +32,10 @@ import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensinglibrary.gui.CSDateElement;
 import eu.applabs.crowdsensinglibrary.gui.CSTimeElement;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
+import eu.applabs.crowdsensingupnplibrary.service.WearNotificationServiceSenderConnection;
 
 public class SinglePollActivity extends AppCompatActivity implements
-        ILibraryResultListener {
+        Library.ILibraryResultListener {
 
     private static final String sClassName = SinglePollActivity.class.getSimpleName();
 
@@ -52,7 +49,7 @@ public class SinglePollActivity extends AppCompatActivity implements
     private Poll mPoll = null;
     private List<View> mViewList = null;
 
-    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection;
+    private WearNotificationServiceSenderConnection mWearNotificationServiceSenderConnection;
     private HeartRateDataServiceReceiverConnection mHeartRateDataServiceReceiverConnection;
 
     private String mUrl = null;
@@ -183,7 +180,7 @@ public class SinglePollActivity extends AppCompatActivity implements
             case text:
                 csEditTextGroup = new CSEditTextGroup(this,
                         field,
-                        mHeartRateServiceSenderConnection,
+                        mWearNotificationServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
 
@@ -192,7 +189,7 @@ public class SinglePollActivity extends AppCompatActivity implements
             case textarea:
                 csEditTextGroup = new CSEditTextGroup(this,
                         field,
-                        mHeartRateServiceSenderConnection,
+                        mWearNotificationServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
                 csEditTextGroup.getEditText().setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -212,7 +209,7 @@ public class SinglePollActivity extends AppCompatActivity implements
             case number:
                 csEditTextGroup = new CSEditTextGroup(this,
                         field,
-                        mHeartRateServiceSenderConnection,
+                        mWearNotificationServiceSenderConnection,
                         mHeartRateDataServiceReceiverConnection);
                 mViewList.add(csEditTextGroup.getEditText()); // Add the child
                 csEditTextGroup.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);

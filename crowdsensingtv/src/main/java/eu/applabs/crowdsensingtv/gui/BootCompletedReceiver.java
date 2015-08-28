@@ -6,19 +6,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import eu.applabs.crowdsensingtv.service.RecommendationService;
 import eu.applabs.crowdsensingtv.service.UpnpService;
 
-public class BootupActivity extends BroadcastReceiver {
+public class BootCompletedReceiver extends BroadcastReceiver {
 
-    private static final String sClassName = BootupActivity.class.getSimpleName();
+    private static final String sClassName = BootCompletedReceiver.class.getSimpleName();
     private static final long sInitialDelay = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(sClassName, "BootupActivity called");
+        Log.d(sClassName, "BootCompletedReceiver called");
 
         if (intent.getAction().endsWith(Intent.ACTION_BOOT_COMPLETED)) {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

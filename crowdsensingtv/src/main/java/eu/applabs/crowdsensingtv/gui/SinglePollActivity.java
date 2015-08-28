@@ -14,7 +14,6 @@ import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 
 import java.util.List;
 
-import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Field;
@@ -22,9 +21,10 @@ import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.base.CSActivity;
 import eu.applabs.crowdsensingupnplibrary.service.HeartRateDataServiceReceiverConnection;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
+import eu.applabs.crowdsensingupnplibrary.service.WearNotificationServiceSenderConnection;
 
-public class SinglePollActivity extends CSActivity implements ILibraryResultListener,
+public class SinglePollActivity extends CSActivity implements
+        Library.ILibraryResultListener,
         View.OnClickListener {
 
     public static final String EXTRA_URL = "SinglePollActivityExtraUrl";
@@ -44,7 +44,7 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
     private Library mLibrary = null;
     private HeartRateDataServiceReceiverConnection mHeartRateDataServiceReceiverConnection = null;
-    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
+    private WearNotificationServiceSenderConnection mWearNotificationServiceSenderConnection = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
         mActivity = this;
 
-        mHeartRateServiceSenderConnection = new HeartRateServiceSenderConnection();
+        mWearNotificationServiceSenderConnection = new WearNotificationServiceSenderConnection();
         mHeartRateDataServiceReceiverConnection = new HeartRateDataServiceReceiverConnection();
 
         initializeButtons();
@@ -85,9 +85,9 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
     protected void onStart() {
         super.onStart();
 
-        if(mHeartRateServiceSenderConnection != null) {
+        if(mWearNotificationServiceSenderConnection != null) {
             bindService(new Intent(mActivity, AndroidUpnpServiceImpl.class),
-                    mHeartRateServiceSenderConnection,
+                    mWearNotificationServiceSenderConnection,
                     Activity.BIND_AUTO_CREATE);
         }
 
@@ -104,8 +104,8 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
 
         mLibrary.unregisterListener(this);
 
-        if(mHeartRateServiceSenderConnection != null) {
-            unbindService(mHeartRateServiceSenderConnection);
+        if(mWearNotificationServiceSenderConnection != null) {
+            unbindService(mWearNotificationServiceSenderConnection);
         }
 
         if(mHeartRateDataServiceReceiverConnection != null) {
@@ -258,7 +258,7 @@ public class SinglePollActivity extends CSActivity implements ILibraryResultList
             ft.commit();
 
             mSinglePollFragment.setField(mPoll.getFieldList().get(number));
-            mSinglePollFragment.setHeartRateServiceSenderConnection(mHeartRateServiceSenderConnection);
+            mSinglePollFragment.setHeartRateServiceSenderConnection(mWearNotificationServiceSenderConnection);
             mSinglePollFragment.setHeartRateDataServiceReceiverConnection(mHeartRateDataServiceReceiverConnection);
         }
     }

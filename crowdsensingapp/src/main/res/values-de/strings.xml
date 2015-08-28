@@ -21,4 +21,5 @@
     <string name="FinishedPollDialog_Title">Nächste Umfrage auswählen</string>
     <string name="id_SinglePollMenu_Action_Send">Senden</string>
     <string name="CSEditTextGroup_Button_MeasureHeartRate">Messen</string>
+    <string name="MainActivity_Button_LoginGoogleFit">Einloggen bei Google-Fit</string>
 </resources>

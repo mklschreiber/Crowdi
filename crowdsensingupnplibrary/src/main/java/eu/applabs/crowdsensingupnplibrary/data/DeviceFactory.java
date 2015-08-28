@@ -20,18 +20,18 @@ public class DeviceFactory {
 
     private static final String sClassName = DeviceFactory.class.getSimpleName();
 
-    public LocalDevice createHeartRateServiceDevice(UDN udn) {
+    public LocalDevice createWearNotificationServiceDevice(UDN udn) {
         try {
 
-            DeviceType type = new UDADeviceType("HeartRateService", 1);
+            DeviceType type = new UDADeviceType("WearNotificationService", 1);
 
             DeviceDetails details =
                     new DeviceDetails(
-                            "HeartRateService",
+                            "WearNotificationService",
                             new ManufacturerDetails("ACME"),
                             new ModelDetails(
-                                    "HeartRateService",
-                                    "HeartRateService",
+                                    "WearNotificationService",
+                                    "WearNotificationService",
                                     "v1"
                             )
                     );
@@ -91,11 +91,11 @@ public class DeviceFactory {
                                     "04408001003EE42959E2CD74A60000000049454E44AE426082"
                     );
 
-            LocalService<HeartRateServiceDefinition> heartRateService =
-                    new AnnotationLocalServiceBinder().read(HeartRateServiceDefinition.class);
+            LocalService<WearNotificationServiceDefinition> heartRateService =
+                    new AnnotationLocalServiceBinder().read(WearNotificationServiceDefinition.class);
 
                 heartRateService.setManager(
-                    new HeartRateServiceManager(heartRateService, HeartRateServiceDefinition.class)
+                    new HeartRateServiceManager(heartRateService, WearNotificationServiceDefinition.class)
             );
 
             return new LocalDevice(new DeviceIdentity(udn), type, details, icon, heartRateService);

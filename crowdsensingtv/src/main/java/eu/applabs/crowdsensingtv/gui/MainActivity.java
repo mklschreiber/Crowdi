@@ -18,7 +18,6 @@ import android.support.v17.leanback.widget.RowPresenter;
 import java.util.List;
 
 import eu.applabs.crowdsensingfitnesslibrary.FitnessLibrary;
-import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
@@ -29,7 +28,7 @@ import eu.applabs.crowdsensingtv.presenter.CommandPresenter;
 
 public class MainActivity extends Activity implements
         OnItemViewClickedListener,
-        ILibraryResultListener {
+        Library.ILibraryResultListener {
 
     private static final String sClassName = MainActivity.class.getSimpleName();
 
@@ -72,8 +71,14 @@ public class MainActivity extends Activity implements
         updateUI();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mFitnessLibrary.checkActivityResult(requestCode, resultCode, data);
+    }
+
     private void startPeriodicNotification() {
-        BootupActivity ba = new BootupActivity();
+        BootCompletedReceiver ba = new BootCompletedReceiver();
         ba.onReceive(this, new Intent().setAction(Intent.ACTION_BOOT_COMPLETED));
     }
 

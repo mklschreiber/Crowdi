@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.util.Log;
 
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
@@ -16,38 +15,38 @@ import org.fourthline.cling.model.action.ActionArgumentValue;
 
 import java.util.List;
 
-import eu.applabs.crowdsensinglibrary.ILibraryResultListener;
 import eu.applabs.crowdsensinglibrary.Library;
 import eu.applabs.crowdsensinglibrary.data.Command;
 import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
 import eu.applabs.crowdsensingtv.gui.MainActivity;
-import eu.applabs.crowdsensingupnplibrary.service.HeartRateServiceSenderConnection;
+import eu.applabs.crowdsensingupnplibrary.service.WearNotificationServiceSenderConnection;
 
-public class RecommendationService extends IntentService implements ILibraryResultListener,
-        HeartRateServiceSenderConnection.IHeartRateServiceSenderConnectionListener {
+public class RecommendationService extends IntentService implements
+        Library.ILibraryResultListener,
+        WearNotificationServiceSenderConnection.IWearNotificationServiceSenderConnectionListener {
 
     private static final String sClassName = RecommendationService.class.getSimpleName();
     private static final int BASE_ID = 42;
 
     private Library mLibrary = null;
-    private HeartRateServiceSenderConnection mHeartRateServiceSenderConnection = null;
+    private WearNotificationServiceSenderConnection mWearNotificationServiceSenderConnection = null;
 
     public RecommendationService() {
         super(RecommendationService.class.getSimpleName());
 
         mLibrary = Library.getInstance();
-        mHeartRateServiceSenderConnection = new HeartRateServiceSenderConnection();
+        mWearNotificationServiceSenderConnection = new WearNotificationServiceSenderConnection();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        if(mHeartRateServiceSenderConnection != null) {
-            mHeartRateServiceSenderConnection.registerListener(this);
-            bindService(new Intent(this, AndroidUpnpServiceImpl.class), mHeartRateServiceSenderConnection, BIND_AUTO_CREATE);
+        if(mWearNotificationServiceSenderConnection != null) {
+            mWearNotificationServiceSenderConnection.registerListener(this);
+            bindService(new Intent(this, AndroidUpnpServiceImpl.class), mWearNotificationServiceSenderConnection, BIND_AUTO_CREATE);
         }
     }
 
@@ -55,9 +54,9 @@ public class RecommendationService extends IntentService implements ILibraryResu
     public void onDestroy() {
         super.onDestroy();
 
-        if(mHeartRateServiceSenderConnection != null) {
-            mHeartRateServiceSenderConnection.unregisterListener(this);
-            unbindService(mHeartRateServiceSenderConnection);
+        if(mWearNotificationServiceSenderConnection != null) {
+            mWearNotificationServiceSenderConnection.unregisterListener(this);
+            unbindService(mWearNotificationServiceSenderConnection);
         }
     }
 
@@ -99,7 +98,7 @@ public class RecommendationService extends IntentService implements ILibraryResu
 
                         notificationManager.notify(BASE_ID + i, notification);
 
-                        mHeartRateServiceSenderConnection.startNotification(
+                        mWearNotificationServiceSenderConnection.startNotification(
                                 getString(R.string.RecommendationService_Title_Recommendation),
                                 list.get(i).getInfo(),
                                 MainActivity.BASE_URL + list.get(i).getCommand());
