@@ -27,7 +27,7 @@ public class BootCompletedReceiver extends BroadcastReceiver {
 
             alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                     sInitialDelay,
-                    AlarmManager.INTERVAL_HALF_HOUR,
+                    AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                     alarmIntent);
 
             Intent upnpIntent = new Intent(context, UpnpService.class);

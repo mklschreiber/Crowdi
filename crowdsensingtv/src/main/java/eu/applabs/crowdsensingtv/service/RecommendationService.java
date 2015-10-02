@@ -21,6 +21,7 @@ import eu.applabs.crowdsensinglibrary.data.Poll;
 import eu.applabs.crowdsensingtv.R;
 import eu.applabs.crowdsensingtv.gui.SinglePollActivity;
 import eu.applabs.crowdsensingtv.gui.MainActivity;
+import eu.applabs.crowdsensingtv.settings.SettingsManager;
 import eu.applabs.crowdsensingupnplibrary.service.WearNotificationServiceSenderConnection;
 
 public class RecommendationService extends IntentService implements
@@ -30,6 +31,7 @@ public class RecommendationService extends IntentService implements
     private static final String sClassName = RecommendationService.class.getSimpleName();
     private static final int BASE_ID = 42;
 
+    private SettingsManager mSettingsManager = null;
     private Library mLibrary = null;
     private WearNotificationServiceSenderConnection mWearNotificationServiceSenderConnection = null;
 
@@ -43,6 +45,8 @@ public class RecommendationService extends IntentService implements
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mSettingsManager = new SettingsManager(this.getApplicationContext());
 
         if(mWearNotificationServiceSenderConnection != null) {
             mWearNotificationServiceSenderConnection.registerListener(this);
@@ -63,8 +67,15 @@ public class RecommendationService extends IntentService implements
     @Override
     protected void onHandleIntent(Intent intent) {
         if(mLibrary != null && mLibrary.accountAvailable()) {
-            mLibrary.registerListener(this);
-            mLibrary.loadCommands(MainActivity.START_URL, sClassName);
+            long lastTimeStamp = mSettingsManager.getNotificationTimeStamp();
+            long currentTimeStamp = System.currentTimeMillis();
+
+            // Difference should be greater than 30 minutes
+            if((currentTimeStamp - lastTimeStamp) > (30 * 60 * 1000)) {
+                mSettingsManager.setNotificationTimeStamp(currentTimeStamp);
+                mLibrary.registerListener(this);
+                mLibrary.loadCommands(MainActivity.START_URL, sClassName);
+            }
         }
     }
 

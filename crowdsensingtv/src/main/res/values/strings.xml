@@ -1,42 +1,42 @@
 <resources>
-    <string name="app_name">Crowdi</string>
+<string name="app_name">Crowdi</string>
 
-    <string name="MainActivity_Header_Polls">Umfragen</string>
-    <string name="MainActivity_Header_Settings">Einstellungen</string>
-    <string name="MainActivity_Action_ManageAccounts">Account verwalten</string>
-    <string name="MainActivity_Button_Send">Senden</string>
+<string name="MainActivity_Header_Polls">Polls</string>
+<string name="MainActivity_Header_Settings">Settings</string>
+<string name="MainActivity_Action_ManageAccounts">Manage accounts</string>
+<string name="MainActivity_Button_Send">Send</string>
 
-    <string name="RecommendationService_Title_Recommendation">Umfrage</string>
-    <string name="RecommendationService_Content_Recommendation">Wie fühlst du dich?</string>
+<string name="RecommendationService_Title_Recommendation">Poll</string>
+<string name="RecommendationService_Content_Recommendation">How do you feel?</string>
 
-    <string name="SinglePollActivity_Button_Left">Zurück</string>
-    <string name="SinglePollActivity_Button_Right">Weiter</string>
-    <string name="SinglePollActivity_Toast_Error">Fehler beim Startvorgang. Versuchen Sie es später nochmal...</string>
+<string name="SinglePollActivity_Button_Left">Back</string>
+<string name="SinglePollActivity_Button_Right">Next</string>
+<string name="SinglePollActivity_Toast_Error">Error during starting process. Try again later...</string>
 
-    <string name="CSTimePickerDialog_Button_Ok">Ok</string>
-    <string name="CSTimePickerDialog_Title">Zeit auswählen</string>
+<string name="CSTimePickerDialog_Button_Ok">Ok</string>
+<string name="CSTimePickerDialog_Title">Select the time</string>
 
-    <string name="CSDatePickerDialog_Button_Ok">Ok</string>
-    <string name="CSDatePickerDialog_Title">Datum auswählen</string>
+<string name="CSDatePickerDialog_Button_Ok">Ok</string>
+<string name="CSDatePickerDialog_Title">Select the date</string>
 
-    <string name="CSEditTextGroup_Button_Google">Google</string>
-    <string name="CSEditTextGroup_Button_Apple">Apple</string>
-    <string name="CSEditTextGroup_Button_Microsoft">Microsoft</string>
-    <string name="CSEditTextGroup_Button_Measure">Measure</string>
+<string name="CSEditTextGroup_Button_Google">Google</string>
+<string name="CSEditTextGroup_Button_Apple">Apple</string>
+<string name="CSEditTextGroup_Button_Microsoft">Microsoft</string>
+<string name="CSEditTextGroup_Button_Measure">Measure</string>
 
-    <string name="CSHeartRateDialog_Title">Herzfrequenz auswählen</string>
-    <string name="CSHeartRateDialog_Button_Cancel">Abbrechen</string>
+<string name="CSHeartRateDialog_Title">Select heart rate</string>
+<string name="CSHeartRateDialog_Button_Cancel">Cancel</string>
 
-    <string name="ManageAccountActivity_Toast_LoginError">Login-Daten sind falsch!</string>
-    <string name="ManageAccountActivity_Toast_NotSupported">Derzeit nicht unterstützt</string>
-    <string name="ManageAccountActivity_LogoutDialog_Title">Logout</string>
-    <string name="ManageAccountActivity_LogoutDialog_Message">Möchten Sie den derzeitigen Benutzer abmelden?</string>
-    <string name="ManageAccountActivity_LogoutDialog_Button_Ok">Ja</string>
-    <string name="ManageAccountActivity_LogoutDialog_Button_Cancel">Nein</string>
-    <string name="ManageAccountActivity_Header_Account">Account</string>
-    <string name="ManageAccountActivity_Header_ConnectedPortals">Verbundene Portale</string>
-    <string name="ManageAccountActivity_Header_AvailablePortals">Verfügbare Portale</string>
+<string name="ManageAccountActivity_Toast_LoginError">Login incorrect!</string>
+<string name="ManageAccountActivity_Toast_NotSupported">Currently not supported</string>
+<string name="ManageAccountActivity_LogoutDialog_Title">Logout</string>
+<string name="ManageAccountActivity_LogoutDialog_Message">Do you like to logout the current user?</string>
+<string name="ManageAccountActivity_LogoutDialog_Button_Ok">Yes</string>
+<string name="ManageAccountActivity_LogoutDialog_Button_Cancel">No</string>
+<string name="ManageAccountActivity_Header_Account">Account</string>
+<string name="ManageAccountActivity_Header_ConnectedPortals">Connected portals</string>
+<string name="ManageAccountActivity_Header_AvailablePortals">Available portals</string>
 
-    <string name="FinishedPollDialog_Title">Umfrage auswählen</string>
-    <string name="CSEditTextGroup_Button_MeasureHeartRate">Messen</string>
+<string name="FinishedPollDialog_Title">Select next poll</string>
+<string name="CSEditTextGroup_Button_MeasureHeartRate">Measure</string>
 </resources>
